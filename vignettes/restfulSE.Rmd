@@ -1,0 +1,79 @@
+---
+title: "restfulSE -- experiments with HDF5 server content wrapped in SummarizedExperiment"
+author: "Vincent J. Carey, stvjc at channing.harvard.edu, Shweta Gopaulakrishnan, reshg at channing.harvard.edu"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{restfulSE -- experiments with SE interface to remote HDF5}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::pdf_document:
+    toc: yes
+    number_sections: yes
+  BiocStyle::html_document:
+    highlight: pygments
+    number_sections: yes
+    theme: united
+    toc: yes
+---
+
+# Introduction
+
+Extensive human and computational effort is expended on
+downloading and managing large genomic data at site of analysis.
+Interoperable formats that are accessible via generic operations
+like those in RESTful APIs may help to improve cost-effectiveness
+of genome-scale analyses.
+
+In this report we examine the use of HDF5 server as a back end
+for assay data, mediated through the RangedSummarizedExperiment API
+for interactive use.
+
+A modest server configured to deliver HDF5 content via a
+RESTful API has been prepared and is used in this vignette.
+
+# Background
+
+Banovich et al. published a subset of DNA methylation measures
+assembled on 64 samples of immortalized B-cells from the YRI HapMap cohort.
+
+```{r setup,echo=FALSE}
+suppressPackageStartupMessages({
+library(restfulSE)
+library(SummarizedExperiment)
+})
+```{r lkd}
+library(restfulSE)
+data(banoSEMeta)
+banoSEMeta
+```
+
+The numerical data have been exported using H. Pages' 
+saveHDF5SummarizedExperiment applied to the banovichSE
+SummarizedExperiment in the yriMulti package.  The HDF5
+component is simply copied into the server data space
+on the remote server.  A wrapper class has been defined
+in the restfulSE package.
+
+```{r lkass}
+banoh5  = banoH5("http://54.163.220.201:5000")
+banoh5
+```
+
+# Construction
+
+```{r docon}
+restBano = RESTfulSummarizedExperiment(banoSEMeta, banoh5)
+restBano
+```
+
+# Subsetting and assay extraction
+
+Targeted extraction is possible, but index processing needs
+considerable work.
+
+```{r dosub}
+subr = restBano[1:4,1:6]
+subr
+assay(subr)
+```
