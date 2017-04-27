@@ -1,0 +1,14 @@
+Package: restfulSE
+Title: wrap HDF5Server content in SummarizedExperiment interface
+Description: wrap HDF5Server content in SummarizedExperiment interface
+Version: 0.0.0
+Author: Vince Carey
+Suggests: 
+Imports: SummarizedExperiment
+Depends: httr, rjson
+Maintainer: VJ Carey <stvjc@channing.harvard.edu>
+License: Artistic-2.0
+LazyLoad: yes
+BiocViews: infrastructure
+RoxygenNote: 6.0.1.9000
+Collate: h5serv.R RESTfulSE.R banoH5.R 
