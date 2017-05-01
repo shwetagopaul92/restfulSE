@@ -4,7 +4,7 @@
 \alias{banoH5}
 \title{interact with banovichSE content via hdf5 server}
 \usage{
-banoH5(url = "http://170.223.248.164:7248", host = "assays.hdfgroup.org",
+banoH5(url = "http://54.163.220.201:5000", host = "assays.hdfgroup.org",
   ...)
 }
 \description{

@@ -52,11 +52,71 @@ The numerical data have been exported using H. Pages'
 saveHDF5SummarizedExperiment applied to the banovichSE
 SummarizedExperiment in the yriMulti package.  The HDF5
 component is simply copied into the server data space
-on the remote server.  A wrapper class has been defined
+on the remote server.  
+
+# Hierarchy of server resources
+
+## Server
+
+Given the URL of a server running HDF5 server, we create
+an instance of `H5S_source`:
+```{r doso}
+mys = new("H5S_source", serverURL="http://54.163.220.201:5000")
+mys
+```
+
+## Groups
+
+The server identifies a collection of 'groups'.  For the server
+we are working with, only one group, at the root, is of interest.
+```{r lkg}
+groups(mys)
+```
+
+## Links for a group
+
+There is a class to hold the link set for any group:
+```{r lkhl}
+lin1 = links(mys,1)
+lin1
+```
+The relevant URLs are
+```{r lkuuu}
+restfulSE:::targets(lin1)
+```
+
+## Datasets
+
+Some of these URLs do not resolve directly to data.  But the
+first two do.  We obtain some relevant metadata:
+```{r lkdsr}
+ds1 = datasetRefs(lin1, 1, drop=3:5)
+ds1
+```
+Here the `drop` parameter refers to 'host' URLs that will not
+be investigated.
+
+## Acquiring numerical data from a dataset
+
+We use the value/select method directly in the HDF5 row-major
+orientation.
+```{r lknd}
+bano = ds1[["assays"]]
+bano
+bano["0:4:1", "0:6:1"]
+```
+
+This matrix is transposed relative to the banovichSE SummarizedExperiment.
+
+
+
+# OLDER MATERIAL SUPERSEDED BY THE ABOVE
+
+A wrapper class has been defined
 in the restfulSE package.
 
 ```{r lkass}
-banoh5  = banoH5("http://54.163.220.201:5000")
+banoh5  = banoH5() # default uses EC2
 banoh5
 ```
 
