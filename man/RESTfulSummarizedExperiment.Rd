@@ -16,10 +16,14 @@ construct RESTfulSummarizedExperiment
 }
 \examples{
 \dontrun{
-bb = banoH5()
-data(banoSEMeta)
-rr = RESTfulSummarizedExperiment(banoSEMeta, bb)
+shi = new("H5S_source", 
+      serverURL="http://170.223.248.164:7248")
+lin1 = links(shi,1) 
+ds1 = datasetRefs(lin1,1,drop=1:4)
+n100k = ds1[["neurons100k"]]
+data(tenx_100k_sorted)
+rr = RESTfulSummarizedExperiment(tenx_100k_sorted, n100k)
 rr
-assay(rr)
+assay(rr[1:10,1:20])
 }
 }
