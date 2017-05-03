@@ -3,7 +3,7 @@
 #' @exportClass RESTfulSummarizedExperiment
 setClass("RESTfulSummarizedExperiment",
    contains="RangedSummarizedExperiment", 
-     representation(source="H5SDatasets",
+     representation(source="RESTfulH5",
                     globalDimnames="list"))
 
 #' construct RESTfulSummarizedExperiment
@@ -11,11 +11,15 @@ setClass("RESTfulSummarizedExperiment",
 #' @param source instance of H5SDatasets
 #' @examples
 #' \dontrun{
-#' bb = banoH5()
-#' data(banoSEMeta)
-#' rr = RESTfulSummarizedExperiment(banoSEMeta, bb)
+#' shi = new("H5S_source", 
+#'       serverURL="http://170.223.248.164:7248")
+#' lin1 = links(shi,1) 
+#' ds1 = datasetRefs(lin1,1,drop=1:4)
+#' n100k = ds1[["neurons100k"]]
+#' data(tenx_100k_sorted)
+#' rr = RESTfulSummarizedExperiment(tenx_100k_sorted, n100k)
 #' rr
-#' assay(rr)
+#' assay(rr[1:10,1:20])
 #' }
 #' @export RESTfulSummarizedExperiment
 RESTfulSummarizedExperiment = function(se, source) {
@@ -37,6 +41,7 @@ setMethod("[", c("RESTfulSummarizedExperiment",
    x
    })
 
+#' @exportMethod assays
 setMethod("assays", c("RESTfulSummarizedExperiment"), function(x, ...,
    withDimnames=TRUE) {
 #   warning("use assay(), only one allowed at present for RESTful SE")
@@ -53,3 +58,8 @@ setMethod("assay", c("RESTfulSummarizedExperiment",
        dimnames(ans) = dimnames(x)
        ans
 })
+
+#' @exportMethod dim
+setMethod("dim", "RESTfulSummarizedExperiment", function(x)
+   c(length(rownames(x)), length(colnames(x)))
+)
