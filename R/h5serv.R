@@ -198,12 +198,35 @@ setMethod("show", "H5SDatasets", function(object) {
 
 setClass("H5S_source", representation(
 # "host" content
-   serverURL="character"))
+   serverURL="character", dsnames="List"))
 setMethod("show", "H5S_source", function(object) {
 cat("HDF5 server domain: ", object@serverURL, "\n")
-cat(" There are", length(groups(object)), "groups.\n")
+cat(" There are", nrow(grps <- groups(object)), "groups.\n")
 cat(" Use groups(), links(), ..., to probe and access metadata.\n")
+cat(" Use dsnames() to get a list of datasets within groups.\n")
 })
+
+fixtarget = function(x) sub(".*host=(.*).hdfgroup.org", "\\1", x)
+
+#' construct H5S_source
+#' @param serverURL a URL for a port for HDF5Server
+#' @param \dots not used
+#' @export
+H5S_source = function(serverURL, ...) {
+  tmp = new("H5S_source", serverURL=serverURL, dsnames=List())
+  grps = groups(tmp)
+  thel = List(targs=lapply( 1:nrow(grps), 
+        function(x) fixtarget(restfulSE:::hosts(links(tmp,x)))))
+  tmp@dsnames = thel
+  tmp
+}
+#' list datasetnames available in an H5S_source
+#' @param src H5S_source instance
+#' @export
+dsnames = function(src) {
+  src@dsnames
+}
+
 
 setClass("H5S_linkset", representation(links="list", group="character",
    source="H5S_source"))
@@ -243,10 +266,14 @@ setMethod("links", c("H5S_source", "numeric"), function(object, index, ...) {
  ans = fromJSON(readBin(GET(target)$content, w="character"))
  new("H5S_linkset", links=ans, source=object, group=gname)
 })
-
+#' provide the full URLs for link members
+#' @param h5linkset instance of H5S_linkset
+#' @param index numeric index into link vector
+#' @export
 targets = function(h5linkset, index) {
  sapply(h5linkset@links$links, "[[", "target")
  }
+
 hosts = function(h5linkset, index, cleanIP=TRUE) {
  ans = targets(h5linkset, index) #sapply(h5linkset@links$links, "[[", "target")
  ans = ans[grep("host=", ans)]
@@ -352,8 +379,6 @@ datasetRefs = function(linkset, index, drop=5) {
  new("H5S_datasets", source=linkset@source, index=index,
        drop=drop, simpleNames=simpleNames, shapes=list(), hrefs=HRperDS, allatts=attrs)
 }
-
- 
 
 #mys = new("H5S_source", serverURL="http://54.163.220.201:5000")
 #allg = groups(mys, 1)
