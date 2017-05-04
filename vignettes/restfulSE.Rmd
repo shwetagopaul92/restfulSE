@@ -115,14 +115,14 @@ This matrix is transposed relative to the banovichSE SummarizedExperiment.
 A wrapper class has been defined
 in the restfulSE package.
 
-```{r lkass}
+```{r lkass, eval=FALSE}
 banoh5  = banoH5() # default uses EC2
 banoh5
 ```
 
 # Construction
 
-```{r docon}
+```{r docon, eval=FALSE}
 restBano = RESTfulSummarizedExperiment(banoSEMeta, banoh5)
 restBano
 ```
@@ -132,7 +132,7 @@ restBano
 Targeted extraction is possible, but index processing needs
 considerable work.
 
-```{r dosub}
+```{r dosub, eval=FALSE}
 subr = restBano[1:4,1:6]
 subr
 assay(subr)

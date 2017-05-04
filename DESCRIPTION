@@ -11,4 +11,4 @@ License: Artistic-2.0
 LazyLoad: yes
 BiocViews: infrastructure
 RoxygenNote: 6.0.1.9000
-Collate: h5serv.R RESTfulSE.R banoH5.R 
+Collate: h5serv.R RESTfulSE.R banoH5.R oldH5serv.R
