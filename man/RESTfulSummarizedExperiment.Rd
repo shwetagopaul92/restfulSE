@@ -16,8 +16,7 @@ construct RESTfulSummarizedExperiment
 }
 \examples{
 \dontrun{
-shi = new("H5S_source", 
-      serverURL="http://170.223.248.164:7248")
+shi = H5S_source(serverURL="http://170.223.248.164:7248")
 lin1 = links(shi,1) 
 ds1 = datasetRefs(lin1,1,drop=1:4)
 n100k = ds1[["neurons100k"]]
