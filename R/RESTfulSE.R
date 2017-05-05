@@ -1,25 +1,61 @@
+
+# utilities for index processing
+# sproc(isplit(vec)) will convert vec representing R integer vector
+# into a list of HDF5server 'select' index candidates
+#' isplit converts a numeric vector into a list of sequences for compact reexpression
+#' @name isplit
+#' @rdname sproc
+#' @param x a numeric vector (should be integers)
+#' @export
+isplit = function(x) {
+ dx = diff(x)
+ rdx = rle(dx)
+ grps = c(1, rep(1:length(rdx$length), rdx$length))
+ split(x, grps)
+}
+
+#' sproc massages output of isplit into HDF5 select candidates
+#' @name sproc
+#' @rdname sproc
+#' @param spl output of isplit
+#' @examples
+#' inds = c(1:10, seq(25,50,2), seq(200,150,-2))
+#' sproc(isplit(inds))
+#' @export
+sproc = function(spl) {
+# spl is output of isplit
+ans = lapply(spl, function(x) {
+   if (length(x)==1) return(paste(x-1,":",x,":1", sep=""))
+   d = x[2]-x[1]
+   return(paste(x[1]-1, ":", x[length(x)], ":", as.integer(d),
+     sep=""))
+   })
+ans
+}
+
+#myvec = myvec = c(2:6, 12, 17, seq(30,7,-2))
+#sproc(isplit(myvec))
+
 #' hdf5server-based assay for SummarizedExperiment
 #' @import SummarizedExperiment
 #' @exportClass RESTfulSummarizedExperiment
 setClass("RESTfulSummarizedExperiment",
    contains="RangedSummarizedExperiment", 
-     representation(source="RESTfulH5",
+     representation(source="H5S_dataset",
                     globalDimnames="list"))
 
 #' construct RESTfulSummarizedExperiment
 #' @param se SummarizedExperiment instance, assay component can be empty SimpleList
-#' @param source instance of H5SDatasets
+#' @param source instance of H5S_dataset
 #' @examples
-#' \dontrun{
-#' shi = H5S_source(serverURL="http://170.223.248.164:7248")
-#' lin1 = links(shi,1) 
-#' ds1 = datasetRefs(lin1,1,drop=1:4)
-#' n100k = ds1[["neurons100k"]]
+#' bigec2 = H5S_source(serverURL="http://54.174.163.77:5000")
+#' n100k = bigec2[["neurons100k"]]
 #' data(tenx_100k_sorted)
 #' rr = RESTfulSummarizedExperiment(tenx_100k_sorted, n100k)
 #' rr
-#' assay(rr[1:10,1:20])
-#' }
+#' rr2 = rr[1:4, 1:5] # just modify metadata
+#' rr2
+#' assay(rr2) # extract data
 #' @export RESTfulSummarizedExperiment
 RESTfulSummarizedExperiment = function(se, source) {
    stopifnot(is(se, "RangedSummarizedExperiment")) # for now
@@ -40,6 +76,22 @@ setMethod("[", c("RESTfulSummarizedExperiment",
    x
    })
 
+#' @name assay
+#' @rdname RESTfulSummarizedExperiment
+#' @exportMethod assay
+setMethod("assay", c("RESTfulSummarizedExperiment", "missing"), 
+    function(x, i, ...) {
+    rowsToGet = match(rownames(x), x@globalDimnames[[1]])
+    colsToGet = match(colnames(x), x@globalDimnames[[2]])
+    ind1 = sproc(isplit(colsToGet))  # may need to be double loop
+    ind2 = sproc(isplit(rowsToGet))
+    if (length(ind1)>1 | length(ind2)>1) warning("as of 5/5/17 only processing contiguous block requests, will generalize soon; using first block only")
+    ans = t(x@source[ ind1[[1]], ind2[[1]] ])
+    dimnames(ans) = list(x@globalDimnames[[1]][rowsToGet], 
+                x@globalDimnames[[2]][colsToGet])
+    ans
+})
+
 #' @exportMethod assays
 setMethod("assays", c("RESTfulSummarizedExperiment"), function(x, ...,
    withDimnames=TRUE) {
@@ -48,15 +100,6 @@ setMethod("assays", c("RESTfulSummarizedExperiment"), function(x, ...,
    SimpleList("placeholder")
 })
  
-#' @exportMethod assay
-setMethod("assay", c("RESTfulSummarizedExperiment", 
-      "missing"), function(x, i, ...) {
-       rowsToGet = match(rownames(x), x@globalDimnames[[1]])
-       colsToGet = match(colnames(x), x@globalDimnames[[2]])
-       ans = x@source[rowsToGet, colsToGet]
-       dimnames(ans) = dimnames(x)
-       ans
-})
 
 #' @exportMethod dim
 setMethod("dim", "RESTfulSummarizedExperiment", function(x)
