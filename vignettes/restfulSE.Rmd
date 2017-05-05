@@ -32,6 +32,44 @@ for interactive use.
 A modest server configured to deliver HDF5 content via a
 RESTful API has been prepared and is used in this vignette.
 
+# Executive summary
+
+We want to provide rapid access to array-like data.  We'll work
+with the Banovich 450k data as there is a simple check against
+an in-memory representation.
+
+```{r dobanoyy}
+library(restfulSE)
+bigec2 = H5S_source("http://54.174.163.77:5000")
+bigec2
+dsmeta(bigec2)[1:2,] # two groups
+dsmeta(bigec2)[1,2][[1]] # all dataset candidates in group 1
+```
+
+We use double-bracket subscripting to grab a reference to a
+dataset from an H5S source.
+```{r doba2}
+banref = bigec2[["assays"]] # arbitrary name assigned long ago
+banref
+```
+
+We build a RESTfulSummarizedExperiment by combining an assay-free
+RangedSummarizedExperiment with this reference.
+```{r doba3}
+data(banoSEMeta)
+rbano = RESTfulSummarizedExperiment(banoSEMeta, banref)
+rbano
+```
+
+We can update the SummarizedExperiment metadata as we like
+through subsetting operations, and then extract the relevant
+assay data.  The data are retrieved from the remote server.
+```{r doba4}
+rbanoSub = rbano[5:8, 3:9] # currently only trivial subsets retrieved
+assay(rbanoSub) # general index processing under construction
+```
+   
+
 # Background
 
 Banovich et al. published a subset of DNA methylation measures
@@ -53,6 +91,7 @@ saveHDF5SummarizedExperiment applied to the banovichSE
 SummarizedExperiment in the yriMulti package.  The HDF5
 component is simply copied into the server data space
 on the remote server.  
+
 
 # Hierarchy of server resources
 
@@ -89,7 +128,7 @@ restfulSE:::targets(lin1)
 
 Some of these URLs do not resolve directly to data.  But the
 first two do.  We obtain some relevant metadata:
-```{r lkdsr}
+```{r lkdsr,eval=FALSE}
 ds1 = datasetRefs(lin1, 1, drop=3:5)
 ds1
 ```
@@ -100,7 +139,7 @@ be investigated.
 
 We use the value/select method directly in the HDF5 row-major
 orientation.
-```{r lknd}
+```{r lknd,eval=FALSE}
 bano = ds1[["assays"]]
 bano
 bano["0:4:1", "0:6:1"]
