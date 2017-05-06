@@ -38,6 +38,11 @@ We want to provide rapid access to array-like data.  We'll work
 with the Banovich 450k data as there is a simple check against
 an in-memory representation.
 
+```{r setup,echo=FALSE}
+suppressPackageStartupMessages({
+library(restfulSE)
+library(SummarizedExperiment)
+})
 ```{r dobanoyy}
 library(restfulSE)
 bigec2 = H5S_source("http://54.174.163.77:5000")
@@ -61,9 +66,10 @@ rbano = RESTfulSummarizedExperiment(banoSEMeta, banref)
 rbano
 ```
 
-We can update the SummarizedExperiment metadata as we like
+We can update the SummarizedExperiment metadata 
 through subsetting operations, and then extract the relevant
-assay data.  The data are retrieved from the remote server.
+assay data.  The data are retrieved from the remote server
+with the `assay` method.
 ```{r doba4}
 rbanoSub = rbano[5:8, 3:9] # currently only trivial subsets retrieved
 assay(rbanoSub) # general index processing under construction
@@ -75,11 +81,6 @@ assay(rbanoSub) # general index processing under construction
 Banovich et al. published a subset of DNA methylation measures
 assembled on 64 samples of immortalized B-cells from the YRI HapMap cohort.
 
-```{r setup,echo=FALSE}
-suppressPackageStartupMessages({
-library(restfulSE)
-library(SummarizedExperiment)
-})
 ```{r lkd}
 library(restfulSE)
 data(banoSEMeta)
@@ -100,7 +101,7 @@ on the remote server.
 Given the URL of a server running HDF5 server, we create
 an instance of `H5S_source`:
 ```{r doso}
-mys = new("H5S_source", serverURL="http://54.163.220.201:5000")
+mys = H5S_source(serverURL="http://54.163.220.201:5000")
 mys
 ```
 
@@ -119,60 +120,4 @@ There is a class to hold the link set for any group:
 lin1 = links(mys,1)
 lin1
 ```
-The relevant URLs are
-```{r lkuuu}
-restfulSE:::targets(lin1)
-```
 
-## Datasets
-
-Some of these URLs do not resolve directly to data.  But the
-first two do.  We obtain some relevant metadata:
-```{r lkdsr,eval=FALSE}
-ds1 = datasetRefs(lin1, 1, drop=3:5)
-ds1
-```
-Here the `drop` parameter refers to 'host' URLs that will not
-be investigated.
-
-## Acquiring numerical data from a dataset
-
-We use the value/select method directly in the HDF5 row-major
-orientation.
-```{r lknd,eval=FALSE}
-bano = ds1[["assays"]]
-bano
-bano["0:4:1", "0:6:1"]
-```
-
-This matrix is transposed relative to the banovichSE SummarizedExperiment.
-
-
-
-# OLDER MATERIAL SUPERSEDED BY THE ABOVE
-
-A wrapper class has been defined
-in the restfulSE package.
-
-```{r lkass, eval=FALSE}
-banoh5  = banoH5() # default uses EC2
-banoh5
-```
-
-# Construction
-
-```{r docon, eval=FALSE}
-restBano = RESTfulSummarizedExperiment(banoSEMeta, banoh5)
-restBano
-```
-
-# Subsetting and assay extraction
-
-Targeted extraction is possible, but index processing needs
-considerable work.
-
-```{r dosub, eval=FALSE}
-subr = restBano[1:4,1:6]
-subr
-assay(subr)
-```
