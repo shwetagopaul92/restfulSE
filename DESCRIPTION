@@ -1,10 +1,10 @@
 Package: restfulSE
 Title: wrap HDF5Server content in SummarizedExperiment interface
 Description: wrap HDF5Server content in SummarizedExperiment interface
-Version: 0.0.5
+Version: 0.0.6
 Author: Vince Carey
 Suggests: 
-Imports: SummarizedExperiment
+Imports: SummarizedExperiment, S4Vectors
 Depends: httr, rjson
 Maintainer: VJ Carey <stvjc@channing.harvard.edu>
 License: Artistic-2.0

@@ -78,15 +78,41 @@ setMethod("[", c("RESTfulSummarizedExperiment",
 
 #' @name assay
 #' @rdname RESTfulSummarizedExperiment
+#' @note RESTfulSummarizedExperiment contains a global dimnames
+#' list generated at creation.  It is possible that standard operations 
+#' on a SummarizedExperiment will engender dimnames components that
+#' differ from the initial global dimnames, principally through
+#' uniqification (adding suffixes when dimname elements are
+#' repeated).  When this is detected, assay() will fail with a complaint
+#' about length(setdiff(*names(x), x@globalDimnames[[...]])).
 #' @exportMethod assay
 setMethod("assay", c("RESTfulSummarizedExperiment", "missing"), 
     function(x, i, ...) {
+    stopifnot(length(rownames(x))>0)
+    stopifnot(length(colnames(x))>0)
+    stopifnot(length(rownames(x), setdiff(x@globalDimnames[[1]]))==0)
+    stopifnot(length(colnames(x), setdiff(x@globalDimnames[[2]]))==0)
     rowsToGet = match(rownames(x), x@globalDimnames[[1]])
     colsToGet = match(colnames(x), x@globalDimnames[[2]])
     ind1 = sproc(isplit(colsToGet))  # may need to be double loop
     ind2 = sproc(isplit(rowsToGet))
-    if (length(ind1)>1 | length(ind2)>1) warning("as of 5/5/17 only processing contiguous block requests, will generalize soon; using first block only")
-    ans = t(x@source[ ind1[[1]], ind2[[1]] ])
+#    if (length(ind1)>1 | length(ind2)>1) warning("as of 5/5/17 only processing contiguous block requests, will generalize soon; using first block only")
+    if (length(ind1)==1 & length(ind2)==1) 
+       ans = t(x@source[ ind1[[1]], ind2[[1]] ])
+    else if (length(ind2)==1) {
+       ansl = lapply(ind1, function(i1) t(x@source[i1, ind2[[1]] ]))
+       ans = do.call(rbind,ansl)
+       }
+    else if (length(ind1)==1) {
+       ansl = lapply(ind2, function(i2) t(x@source[ind1[[1]], i2 ]))
+       ans = do.call(cbind,ansl)
+       }
+    else {
+        for (i1 in ind1) {
+         ansl = do.call(rbind, lapply(ind2, function(i2) t(x@source[i1, i2 ])))
+         }
+        ans = do.call(cbind,ansl)
+        }
     dimnames(ans) = list(x@globalDimnames[[1]][rowsToGet], 
                 x@globalDimnames[[2]][colsToGet])
     ans
