@@ -3,9 +3,9 @@
 \docType{class}
 \name{H5S_source}
 \alias{H5S_source}
+\alias{H5S_source-class}
 \alias{H5S_source}
 \alias{[[,H5S_source,character,ANY-method}
-\alias{H5S_dataset}
 \alias{dataset}
 \title{H5S_source identifies an HDF5 server and manages some metadata about contents}
 \usage{
@@ -13,14 +13,18 @@ H5S_source(serverURL, ...)
 
 \S4method{[[}{H5S_source,character,ANY}(x, i, j)
 
-\S4method{[}{H5S_dataset,character,character,ANY}(x, i, j, ..., drop = FALSE)
-
 dataset(h5s, tag)
 }
 \arguments{
 \item{serverURL}{a URL for a port for HDF5Server}
 
 \item{\dots}{not used}
+
+\item{x}{instance of H5S_source}
+
+\item{i}{character string intended to identify dataset on server}
+
+\item{j}{not used}
 
 \item{h5s}{instance of H5S_source}
 

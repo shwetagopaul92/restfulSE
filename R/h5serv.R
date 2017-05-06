@@ -1,9 +1,15 @@
+#' @importFrom httr GET
+#' @importFrom rjson fromJSON
+
+.serverURL = function(x) x@serverURL
+
 #' H5S_source identifies an HDF5 server and manages some metadata about contents
 #' 
 #' @name H5S_source
 #' @rdname H5S_source-class
 #' @slot serverURL character string with a URL
 #' @slot dsmeta DataFrame instance with metadata about content of server
+#' @aliases H5S_source-class
 #' @exportClass H5S_source
 setClass("H5S_source", representation(
 # "host" content
@@ -18,6 +24,7 @@ cat(" Use [[ [dsname] ]]  to get a reference suitable for [i, j] subsetting.\n")
 
 #' name H5S_dataset
 #' rdname H5S_dataset-class
+#' @import S4Vectors
 #' @slot source instance of H5S_source instance
 #' @slot simpleName character string naming dataset 
 #' @slot shapes list including dimension information
@@ -63,7 +70,7 @@ H5S_source = function(serverURL, ...) {
   grps = groups(tmp)
   message("analyzing groups for their links...")
   thel = targs=List(targs=lapply( 1:nrow(grps), 
-        function(x) fixtarget(restfulSE:::hosts(links(tmp,x)))))
+        function(x) fixtarget(hosts(links(tmp,x)))))
   message("done")
   tmp@dsmeta = DataFrame(groupnum=1:nrow(grps), dsnames=thel, grp.uuid=grps$groups)
   tmp
@@ -75,6 +82,9 @@ dsmeta = function(src) {
   src@dsmeta
 }
 #' @rdname H5S_source-class
+#' @param x instance of H5S_source
+#' @param i character string intended to identify dataset on server
+#' @param j not used
 #' @exportMethod [[
 setMethod("[[", c("H5S_source", "character", "ANY"), function(x, i, j) {
   dataset(x, i)
@@ -90,12 +100,23 @@ cat(" There are", length(object@links$links), "links.\n")
 cat(" Use targets([linkset]) to extract target URLs.\n")
 })
 
-setGeneric("groups", function(object, index, ...) standardGeneric("groups"))
+transl = function(targ)  fromJSON(readBin(GET(targ)$content, 
+           what="character"))
+
+#' HDF5 server data groups accessor
+#' @param object H5S_source instance
+#' @param index numeric, if present, extracts metadata about selected group (sequential ordering of groups as returned by server)
+#' access for group information for HDF5 server
+#' @rdname groups-H5S_source-missing-method
+#' @param \dots not used
+#' @aliases groups,H5S_source,missing-method
+#' @aliases groups
 #' @exportMethod groups
 #' @export groups
+setGeneric("groups", function(object, index, ...) standardGeneric("groups"))
 setMethod("groups", c("H5S_source", "missing"), function(object, index, ...) {
  target = paste0(.serverURL(object), "/groups")
- ans = fromJSON(readBin(GET(target)$content, w="character"))
+ ans = transl(target) # fromJSON(readBin(GET(target)$content, w="character"))
  # find root group
  hh = t(sapply(ans$hrefs, force))
  rootgroup = sub(".*groups.", "", hh[hh[,2]=="root", 1])
@@ -103,21 +124,33 @@ setMethod("groups", c("H5S_source", "missing"), function(object, index, ...) {
  nl = sapply(1:length(grps), function(x) {
    gname = grps[x]
    target = paste0(.serverURL(object), "/groups/", gname, "/links" )
-   ans = fromJSON(readBin(GET(target)$content, w="character"))
+   ans = transl(target) # fromJSON(readBin(GET(target)$content, w="character"))
    length(ans$links)
    })
  DataFrame(groups=grps, nlinks=nl)
 })
+#' selective group metadata accessor
+#' @rdname groups-H5S_source-numeric-method
+#' @aliases groups,H5S_source,numeric-method
+#' @param object instance of H5S_source
+#' @param index numeric
+#' @param \dots unused
 setMethod("groups", c("H5S_source", "numeric"), function(object, index, ...) {
  groups(object)[index,,drop=FALSE]
 })
-setGeneric("links", function(object, index, ...) standardGeneric("links"))
-#' @exportMethod links
+#' access for link metadata for HDF5 server groups
+#' @param object H5S_source instance
+#' @param index numeric group index
+#' @param \dots not used
+#' @aliases links,H5S_source,numeric-method
+#' @aliases links
 #' @export links
+#' @exportMethod links
+setGeneric("links", function(object, index, ...) standardGeneric("links"))
 setMethod("links", c("H5S_source", "numeric"), function(object, index, ...) {
- gname = groups(object, index)[1,1]
+ gname = groups(object, index)[["groups"]][1] # skirt mcols bug
  target = paste0(.serverURL(object), "/groups/", gname, "/links" )
- ans = fromJSON(readBin(GET(target)$content, w="character"))
+ ans = transl(target) # fromJSON(readBin(GET(target)$content, w="character"))
  new("H5S_linkset", links=ans, source=object, group=gname)
 })
 #' provide the full URLs for link members
@@ -138,41 +171,14 @@ targetIds = function(h5linkset, index) {
  sapply(h5linkset@links$links, "[[", "id")
  }
       
-
-
-makeDatasetRef = function(linkset, index) {
-  source = linkset@source
-  thet = targets(linkset, index)
-  host = sub(".*host=", "host=", thet[index])
-  fromJSON(readBin(GET(paste0(source@serverURL, "/datasets?",  host=host))$content, w="character"))$datasets
-}
-transl = function(targ)  fromJSON(readBin(GET(targ)$content, w="character"))
-
-# SHOULD BE DELETED
-setClass("H5S_datasets", representation(
-  source="H5S_source", index="numeric", drop="ANY", simpleNames="character",
-  shapes="list", hrefs="list", allatts="list"))
-setMethod("show", "H5S_datasets", function(object) {
- cat("H5S_datasets instance:\n")
- aa = object@allatts
- alld = sapply(aa, function(x) paste(x$shape$dims, collapse=" x "))
- cr = sapply(aa, function(x) x$created)#, collapse=" x "))
- ba = sapply(aa, function(x) x$type$base)
- print(data.frame(dims=alld, created=cr, type.base=ba))
-cat("---\n")
-cat("Use [[ [simplename] ]] to acquire reference amenable to [i,j] subsetting.\n")
-})
-# PROBABLY NOT NEEDED
-setClass("RESTfulH5", representation(key="character",
- dataURL="character", dataset="H5S_datasets"))
-#' @exportMethod show
-setMethod("show", "RESTfulH5", function(object) {
- dims = object@dataset@allatts[[ object@key ]]$shape$dims
- cat(paste(object@key, "(", paste(dims, collapse=" x "), ")"), "\n")
-})
-
 #' @name H5S_dataset
-#' @rdname H5S_source-class
+#' @rdname H5S_dataset-class
+#' @aliases [,H5S_dataset,character,character,ANY-method
+#' @param x instance of H5S_dataset
+#' @param i character string usable as select option for first matrix index in HDF5 server value API
+#' @param j character string usable as select option for second matrix index in HDF5 server value API
+#' @param \dots unused
+#' @param drop logical defaults to FALSE
 #' @exportMethod [
 setMethod("[", c("H5S_dataset", "character", "character"), function(x, i, j, ..., drop=FALSE) {
 #
@@ -200,13 +206,14 @@ setMethod("[", c("H5S_dataset", "character", "character"), function(x, i, j, ...
 #' @param tag character string identifying a dataset
 #' @export
 dataset = function(h5s, tag) {
- dsns = dsmeta(h5s)[,"dsnames"]
+ dsns = dsmeta(h5s)[["dsnames"]] # mcols problem with [,"dsnames"]
+# find row of dsmeta DataFrame where tag is a substring of a dataset name
+# to allow substrings to be used for querying (e.g., "100k" for "neurons100k")
  hits = sapply(dsns, function(x) length(grep(tag, x))>0)
  if (!any(hits)) stop("tag not found in dsmeta(h5s)")
  if (sum(hits)>1) warning("tag occurs in several groups, using first")
- #grp = dsns[which(hits),,drop=FALSE]
- fulldsn = dsns[which(hits)][[1]] # unlist
- fulldsn = fulldsn[ grep(tag, fulldsn) ]
+ fulldsn = dsns[[which(hits)]] #[[1]] # unlist; which(hits) is relevant group
+ fulldsn = fulldsn[ grep(tag, fulldsn) ] # find the actual simple name matching substring in [[]]
  lin = links(h5s, which(hits))
  targs = targets(lin)
  targs = targs[grep(tag,targs)]
@@ -216,7 +223,7 @@ dataset = function(h5s, tag) {
       stop("please supply tag to identify single target.")
       }
  targ = sub(".host", "datasets?host", targs)
- uuid = fromJSON(readBin(GET(targ)$content, w="character"))$datasets
+ uuid = transl(targ)$datasets # fromJSON(readBin(GET(targ)$content, w="character"))$datasets
  attrs = transl( sub("datasets", paste0("datasets/", uuid), targ ) )
  hrnm = sapply(attrs$hrefs, "[[", 2)
  hrval = sapply(attrs$hrefs, "[[", 1)
