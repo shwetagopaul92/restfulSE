@@ -4,6 +4,7 @@
 \name{RESTfulSummarizedExperiment}
 \alias{RESTfulSummarizedExperiment}
 \alias{assay}
+\alias{assay,RESTfulSummarizedExperiment,missing-method}
 \title{construct RESTfulSummarizedExperiment}
 \usage{
 RESTfulSummarizedExperiment(se, source)
@@ -14,9 +15,24 @@ RESTfulSummarizedExperiment(se, source)
 \item{se}{SummarizedExperiment instance, assay component can be empty SimpleList}
 
 \item{source}{instance of H5S_dataset}
+
+\item{x}{instance of RESTfulSummarizedExperiment}
+
+\item{i}{not used}
+
+\item{\dots}{not used}
 }
 \description{
 construct RESTfulSummarizedExperiment
+}
+\note{
+RESTfulSummarizedExperiment contains a global dimnames
+list generated at creation.  It is possible that standard operations 
+on a SummarizedExperiment will engender dimnames components that
+differ from the initial global dimnames, principally through
+uniqification (adding suffixes when dimname elements are
+repeated).  When this is detected, assay() will fail with a complaint
+about length(setdiff(*names(x), x@globalDimnames[[...]])).
 }
 \examples{
 bigec2 = H5S_source(serverURL="http://54.174.163.77:5000")

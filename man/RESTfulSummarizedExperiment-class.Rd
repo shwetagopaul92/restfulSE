@@ -3,7 +3,23 @@
 \docType{class}
 \name{RESTfulSummarizedExperiment-class}
 \alias{RESTfulSummarizedExperiment-class}
+\alias{[,RESTfulSummarizedExperiment,numeric,numeric,ANY-method}
 \title{hdf5server-based assay for SummarizedExperiment}
+\usage{
+\S4method{[}{RESTfulSummarizedExperiment,numeric,numeric,ANY}(x, i, j, ...,
+  drop = FALSE)
+}
+\arguments{
+\item{x}{instance of RESTfulSummarizedExperiment}
+
+\item{i}{numeric selection vector}
+
+\item{j}{numeric selection vector}
+
+\item{\dots}{not used}
+
+\item{drop}{not used}
+}
 \description{
 hdf5server-based assay for SummarizedExperiment
 }

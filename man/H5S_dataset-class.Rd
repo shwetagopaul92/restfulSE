@@ -3,8 +3,24 @@
 \docType{class}
 \name{H5S_dataset-class}
 \alias{H5S_dataset-class}
+\alias{H5S_dataset}
+\alias{[,H5S_dataset,character,character,ANY-method}
 \title{name H5S_dataset
 rdname H5S_dataset-class}
+\usage{
+\S4method{[}{H5S_dataset,character,character,ANY}(x, i, j, ..., drop = FALSE)
+}
+\arguments{
+\item{x}{instance of H5S_dataset}
+
+\item{i}{character string usable as select option for first matrix index in HDF5 server value API}
+
+\item{j}{character string usable as select option for second matrix index in HDF5 server value API}
+
+\item{\dots}{unused}
+
+\item{drop}{logical defaults to FALSE}
+}
 \description{
 name H5S_dataset
 rdname H5S_dataset-class

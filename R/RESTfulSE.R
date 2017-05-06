@@ -5,6 +5,7 @@
 #' isplit converts a numeric vector into a list of sequences for compact reexpression
 #' @name isplit
 #' @rdname sproc
+#' @import methods
 #' @param x a numeric vector (should be integers)
 #' @export
 isplit = function(x) {
@@ -67,6 +68,13 @@ setMethod("assayNames", "RESTfulSummarizedExperiment", function(x, ...) {
  "(served by HDF5Server)"
 })
 
+#' @rdname RESTfulSummarizedExperiment-class
+#' @aliases [,RESTfulSummarizedExperiment,numeric,numeric,ANY-method
+#' @param x instance of RESTfulSummarizedExperiment
+#' @param i numeric selection vector
+#' @param j numeric selection vector
+#' @param \dots not used
+#' @param drop not used
 #' @exportMethod [
 setMethod("[", c("RESTfulSummarizedExperiment",
      "numeric", "numeric", "ANY"), function(x,i,j,...,drop=FALSE) {
@@ -85,13 +93,17 @@ setMethod("[", c("RESTfulSummarizedExperiment",
 #' uniqification (adding suffixes when dimname elements are
 #' repeated).  When this is detected, assay() will fail with a complaint
 #' about length(setdiff(*names(x), x@globalDimnames[[...]])).
+#' @aliases assay,RESTfulSummarizedExperiment,missing-method
+#' @param x instance of RESTfulSummarizedExperiment
+#' @param i not used
+#' @param \dots not used
 #' @exportMethod assay
 setMethod("assay", c("RESTfulSummarizedExperiment", "missing"), 
     function(x, i, ...) {
     stopifnot(length(rownames(x))>0)
     stopifnot(length(colnames(x))>0)
-    stopifnot(length(rownames(x), setdiff(x@globalDimnames[[1]]))==0)
-    stopifnot(length(colnames(x), setdiff(x@globalDimnames[[2]]))==0)
+    stopifnot(length(setdiff(rownames(x), x@globalDimnames[[1]]))==0)
+    stopifnot(length(setdiff(colnames(x), x@globalDimnames[[2]]))==0)
     rowsToGet = match(rownames(x), x@globalDimnames[[1]])
     colsToGet = match(colnames(x), x@globalDimnames[[2]])
     ind1 = sproc(isplit(colsToGet))  # may need to be double loop
@@ -118,6 +130,10 @@ setMethod("assay", c("RESTfulSummarizedExperiment", "missing"),
     ans
 })
 
+#' assays access for RESTfulSummarizedExperiment
+#' @param x instance of RESTfulSummarizedExperiment
+#' @param \dots not used
+#' @param withDimnames logical defaults to TRUE
 #' @exportMethod assays
 setMethod("assays", c("RESTfulSummarizedExperiment"), function(x, ...,
    withDimnames=TRUE) {
@@ -127,6 +143,8 @@ setMethod("assays", c("RESTfulSummarizedExperiment"), function(x, ...,
 })
  
 
+#' dimension access for RESTfulSummarizedExperiment
+#' @param x instance of RESTfulSummarizedExperiment
 #' @exportMethod dim
 setMethod("dim", "RESTfulSummarizedExperiment", function(x)
    c(length(rownames(x)), length(colnames(x)))

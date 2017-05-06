@@ -1,14 +1,15 @@
 Package: restfulSE
-Title: wrap HDF5Server content in SummarizedExperiment interface
+Title: Access matrix-like HDF5 server content through a SummarizedExperiment interface.
 Description: wrap HDF5Server content in SummarizedExperiment interface
-Version: 0.0.6
+Version: 0.0.9
 Author: Vince Carey
-Suggests: 
-Imports: SummarizedExperiment, S4Vectors
-Depends: httr, rjson
+Suggests: knitr
+Imports: SummarizedExperiment, S4Vectors, httr, rjson
+Depends: R (>= 3.4), methods
 Maintainer: VJ Carey <stvjc@channing.harvard.edu>
 License: Artistic-2.0
 LazyLoad: yes
 BiocViews: infrastructure
 RoxygenNote: 6.0.1.9000
-Collate: h5serv.R RESTfulSE.R banoH5.R oldH5serv.R
+Collate: h5serv.R RESTfulSE.R data.R
+VignetteBuilder: knitr
