@@ -44,17 +44,29 @@ test_that("RESTfulSummarizedExperiment infrastructure works against server", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
  data(tenx_100k_sorted)
  n100k = bigec2[["neurons100k"]]
- rr = RESTfulSummarizedExperiment( tenx_100k_sorted, n100k )
+ expect_error( rr = RESTfulSummarizedExperiment( tenx_100k_sorted, n100k ))
+ data(banoSEMeta) 
+ bigec2 = H5S_source("http://54.174.163.77:5000")
+ banoh5 = bigec2[["assays"]]
+ rr = RESTfulSummarizedExperiment( banoSEMeta, banoh5 )
  expect_true(validObject(rr))
- expect_true(all(dim(rr)==c(26755, 100000)))
- rr2 = rr[,1:10]
+ expect_true(all(dim(rr)==rev(internalDim(banoh5))))
+ rr2 = rr[5:12000,3:10]
  arr2 = assay(rr2)
- sumstr = structure(c(3667, 1844, 4329, 2928, 7787, 10084, 2151, 3318, 
-2851, 4158), .Names = c("AAACCTGAGATAGGAG-1", "AAACCTGAGCGGCTTC-1", 
-"AAACCTGAGGAATCGC-1", "AAACCTGAGGACACCA-1", "AAACCTGAGGCCCGTT-1", 
-"AAACCTGAGTCCGGTC-1", "AAACCTGCAACACGCC-1", "AAACCTGCACAGCGTC-1", 
-"AAACCTGCAGCCACCA-1", "AAACCTGCAGGATTGG-1"))
- expect_true(identical(apply(arr2,2,sum), sumstr))
+ arr2s = structure(c(310.234826991, -574.26777552, 
+            -443.279313398, -8.31305800099999, 
+            -420.419219739, -41.648322087, 
+            160.146168073, -39.986112183), 
+         .Names = c("NA18501", "NA18502", "NA18516", "NA18517", 
+                     "NA18519", "NA18520", "NA18855", "NA18856"))
+ csums = apply(arr2,2,sum)
+ expect_true(max(abs(arr2s-csums)) < 1e-6)
+# sumstr = structure(c(3667, 1844, 4329, 2928, 7787, 10084, 2151, 3318, 
+#2851, 4158), .Names = c("AAACCTGAGATAGGAG-1", "AAACCTGAGCGGCTTC-1", 
+#"AAACCTGAGGAATCGC-1", "AAACCTGAGGACACCA-1", "AAACCTGAGGCCCGTT-1", 
+#"AAACCTGAGTCCGGTC-1", "AAACCTGCAACACGCC-1", "AAACCTGCACAGCGTC-1", 
+#"AAACCTGCAGCCACCA-1", "AAACCTGCAGGATTGG-1"))
+# expect_true(identical(apply(arr2,2,sum), sumstr))
 })
  
 test_that("complex indexing succeeds", {
@@ -74,3 +86,9 @@ test_that("complex indexing succeeds", {
  expect_true(ncol(rrass0)==1)
 })
 
+test_that("dim compatibility check is sensitive", {
+ data(banoSEMeta) 
+ bigec2 = H5S_source("http://54.174.163.77:5000")
+ banoh5 = bigec2[["assays"]]
+ expect_error( rr = RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )
+})

@@ -237,7 +237,16 @@ dataset = function(h5s, tag) {
     shapes=attrs$shape, hrefs=ans, allatts=attrs, presel=prep)
 }
 
+#' acquire internal HDF5 dimension information for matrix
+#' @param h5d instance of H5S_dataset
+#' @export
+internalDim = function(h5d) {
+  d = slot(h5d, "shapes")$dims
+  c(intl.dim1=d[1], intl.dim2=d[2])
+}
+
 
 #mys = new("H5S_source", serverURL="http://54.163.220.201:5000")
 #allg = groups(mys, 1)
 #lin1 = links(mys,1)
+
