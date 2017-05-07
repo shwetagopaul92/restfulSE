@@ -9,6 +9,7 @@
 #' @param x a numeric vector (should be integers)
 #' @export
 isplit = function(x) {
+ if (length(x)==1) return(list(`1`=x))
  dx = diff(x)
  rdx = rle(dx)
  grps = c(1, rep(1:length(rdx$length), rdx$length))
@@ -113,18 +114,18 @@ setMethod("assay", c("RESTfulSummarizedExperiment", "missing"),
        ans = t(x@source[ ind1[[1]], ind2[[1]] ])
     else if (length(ind2)==1) {
        ansl = lapply(ind1, function(i1) t(x@source[i1, ind2[[1]] ]))
-       ans = do.call(rbind,ansl)
+       ans = do.call(cbind,ansl)
        }
     else if (length(ind1)==1) {
        ansl = lapply(ind2, function(i2) t(x@source[ind1[[1]], i2 ]))
-       ans = do.call(cbind,ansl)
+       ans = do.call(rbind,ansl)
        }
     else {
-        for (i1 in ind1) {
-         ansl = do.call(rbind, lapply(ind2, function(i2) t(x@source[i1, i2 ])))
+       ansl = lapply(ind1, function(i1) 
+                do.call(rbind, lapply(ind2, 
+                  function(i2) t(x@source[i1, i2]))))
+       ans = do.call(cbind, ansl)
          }
-        ans = do.call(cbind,ansl)
-        }
     dimnames(ans) = list(x@globalDimnames[[1]][rowsToGet], 
                 x@globalDimnames[[2]][colsToGet])
     ans

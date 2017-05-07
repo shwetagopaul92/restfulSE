@@ -57,3 +57,20 @@ test_that("RESTfulSummarizedExperiment infrastructure works against server", {
  expect_true(identical(apply(arr2,2,sum), sumstr))
 })
  
+test_that("complex indexing succeeds", {
+ library(yriMulti)
+ data(banovichSE)
+ bansel = assay(banovichSE[c(1,3,5,200000,300000),c(1,5,7)])
+ library(restfulSE)
+ data(banoSEMeta) 
+ bigec2 = H5S_source("http://54.174.163.77:5000")
+ banh = bigec2[["assays"]]
+ rr = RESTfulSummarizedExperiment( banoSEMeta, banh )
+ rrsel = rr[c(1,3,5,200000,300000),c(1,5,7)]
+ rrass = assay(rrsel)
+ expect_true( max(abs(rrass-bansel))<1e-6 )
+ rrsel0 = rr[c(1,3,5,200000,300000),c(1)]
+ rrass0 = assay(rrsel0)
+ expect_true(ncol(rrass0)==1)
+})
+
