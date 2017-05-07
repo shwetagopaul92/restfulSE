@@ -36,9 +36,9 @@ about length(setdiff(*names(x), x@globalDimnames[[...]])).
 }
 \examples{
 bigec2 = H5S_source(serverURL="http://54.174.163.77:5000")
-n100k = bigec2[["neurons100k"]]
-data(tenx_100k_sorted)
-rr = RESTfulSummarizedExperiment(tenx_100k_sorted, n100k)
+banoh5 = bigec2[["assays"]] # banovichSE
+data(banoSEMeta)
+rr = RESTfulSummarizedExperiment(banoSEMeta, banoh5)
 rr
 rr2 = rr[1:4, 1:5] # just modify metadata
 rr2

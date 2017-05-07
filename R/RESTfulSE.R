@@ -51,9 +51,9 @@ setClass("RESTfulSummarizedExperiment",
 #' @param source instance of H5S_dataset
 #' @examples
 #' bigec2 = H5S_source(serverURL="http://54.174.163.77:5000")
-#' n100k = bigec2[["neurons100k"]]
-#' data(tenx_100k_sorted)
-#' rr = RESTfulSummarizedExperiment(tenx_100k_sorted, n100k)
+#' banoh5 = bigec2[["assays"]] # banovichSE
+#' data(banoSEMeta)
+#' rr = RESTfulSummarizedExperiment(banoSEMeta, banoh5)
 #' rr
 #' rr2 = rr[1:4, 1:5] # just modify metadata
 #' rr2
@@ -61,6 +61,12 @@ setClass("RESTfulSummarizedExperiment",
 #' @export RESTfulSummarizedExperiment
 RESTfulSummarizedExperiment = function(se, source) {
    stopifnot(is(se, "RangedSummarizedExperiment")) # for now
+   d = internalDim(source)
+   if (!all(d == rev(dim(se)))) {
+       cat("rev(internal dimensions of H5S_dataset) is", rev(d), "\n")
+       cat("dim(se) is", dim(se), "\n")
+       stop("these must agree.\n")
+       }
    new("RESTfulSummarizedExperiment", se, source=source,
         globalDimnames=dimnames(se))
 }
@@ -70,6 +76,7 @@ setMethod("assayNames", "RESTfulSummarizedExperiment", function(x, ...) {
 })
 
 #' @rdname RESTfulSummarizedExperiment-class
+#' @importFrom DelayedArray rowRanges
 #' @aliases [,RESTfulSummarizedExperiment,numeric,numeric,ANY-method
 #' @param x instance of RESTfulSummarizedExperiment
 #' @param i numeric selection vector
@@ -79,9 +86,16 @@ setMethod("assayNames", "RESTfulSummarizedExperiment", function(x, ...) {
 #' @exportMethod [
 setMethod("[", c("RESTfulSummarizedExperiment",
      "numeric", "numeric", "ANY"), function(x,i,j,...,drop=FALSE) {
+  if (is(x, "RangedSummarizedExperiment")) {
    x = BiocGenerics:::replaceSlots(x, rowRanges = rowRanges(x)[i],
                          colData = colData(x)[j,],
                          check=FALSE)
+   }
+  else if (is(x, "SummarizedExperiment")) {
+   x = BiocGenerics:::replaceSlots(x, rowData = rowData(x)[i],
+                         colData = colData(x)[j,],
+                         check=FALSE)
+   }
    x
    })
 
