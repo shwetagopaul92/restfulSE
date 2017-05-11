@@ -42,6 +42,7 @@ an in-memory representation.
 suppressPackageStartupMessages({
 library(restfulSE)
 library(SummarizedExperiment)
+library(Rtsne)
 })
 ```{r dobanoyy}
 library(restfulSE)
@@ -71,9 +72,63 @@ through subsetting operations, and then extract the relevant
 assay data.  The data are retrieved from the remote server
 with the `assay` method.
 ```{r doba4}
-rbanoSub = rbano[5:8, 3:9] # currently only trivial subsets retrieved
-assay(rbanoSub) # general index processing under construction
+rbanoSub = rbano[5:8, c(3:9, 40:50)] 
+assay(rbanoSub) 
 ```
+
+# 10xGenomics example
+
+We have used Martin Morgan's TENxGenomics package
+to create a dense HDF5 representation of the 
+assay data, and placed it on the `bigec2` server.
+The metadata are available as `st100k` in this package;
+we have used EnsDb.Mmusculus.v79 to supply gene ranges
+where available; genes reported but without addresses
+are addressed at chr1:2 with width 0.  The rows
+are sorted by genomic address within chromosomes.
+
+```{r gettx}
+txdat = bigec2[["tenx_100k_sorted"]]
+data(st100k)
+tenx100k = RESTfulSummarizedExperiment( st100k, 
+   txdat )
+tenx100k
+```
+
+We will subset genes annotated to hippocampus development.
+Here are some related categories:
+
+```
+12092 GO:0021766                      hippocampus development
+12096 GO:0021770            parahippocampal gyrus development
+34609 GO:0097410      hippocampal interneuron differentiation
+34631 GO:0097432 hippocampal pyramidal neuron differentiation
+34656 GO:0097457                      hippocampal mossy fiber
+35169 GO:0098686       hippocampal mossy fiber to CA3 synapse
+42398 GO:1990026            hippocampal mossy fiber expansion
+```
+
+```{r anno}
+library(org.Mm.eg.db)
+atab = select(org.Mm.eg.db, keys="GO:0021766", keytype="GO", columns="ENSEMBL")
+hg = atab[,"ENSEMBL"]
+length(hgok <- intersect(hg, rownames(tenx100k)))
+```
+This is a very scattered collection of rows in the matrix.  We
+acquire expression measures for genes annotated to
+hippocampus on 4000 samples.  t-SNE is then used to project
+the log-transformed measures to the plane.
+```{r getdat, cache=TRUE}
+hipn = assay(tenx100k[hgok,1:4000])  # slow
+d = dist(t(log(1+hipn)), method="manhattan")
+proj = Rtsne(d)
+```
+```{r plt,fig=TRUE}
+plot(proj$Y)
+```
+
+
+
    
 
 # Background
@@ -101,7 +156,7 @@ on the remote server.
 Given the URL of a server running HDF5 server, we create
 an instance of `H5S_source`:
 ```{r doso}
-mys = H5S_source(serverURL="http://54.163.220.201:5000")
+mys = H5S_source(serverURL="http://54.174.163.77:5000")
 mys
 ```
 
@@ -117,7 +172,7 @@ groups(mys)
 
 There is a class to hold the link set for any group:
 ```{r lkhl}
-lin1 = links(mys,1)
+lin1 = restfulSE::links(mys,1)
 lin1
 ```
 
