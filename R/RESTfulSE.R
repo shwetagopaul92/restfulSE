@@ -12,6 +12,7 @@ isplit = function(x) {
  if (length(x)==1) return(list(`1`=x))
  dx = diff(x)
  rdx = rle(dx)
+ if (all(rdx$lengths==1)) return(split(x,x)[as.character(x)])
  grps = c(1, rep(1:length(rdx$length), rdx$length))
  split(x, grps)
 }
@@ -20,6 +21,7 @@ isplit = function(x) {
 #' @name sproc
 #' @rdname sproc
 #' @param spl output of isplit
+#' @note Very preliminary implementation.
 #' @examples
 #' inds = c(1:10, seq(25,50,2), seq(200,150,-2))
 #' sproc(isplit(inds))
