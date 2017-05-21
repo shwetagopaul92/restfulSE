@@ -13,8 +13,8 @@ test_that("H5S_source processes", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
  expect_true(all(dim(groups(bigec2))==c(10,2))) 
  expect_true(is(links(bigec2,1), "H5S_linkset"))
- expect_true(is(dataset(bigec2, "100k"), "H5S_dataset"))
- expect_true(is(bigec2[["100k"]], "H5S_dataset"))
+ expect_true(is(dataset(bigec2, "tenx_100k"), "H5S_dataset"))
+ expect_true(is(bigec2[["tenx_100k"]], "H5S_dataset"))
  expect_true(is(dsmeta(bigec2), "DataFrame"))
  expect_true(all(dim(dsmeta(bigec2))==c(10,3))) 
 })
@@ -34,17 +34,18 @@ context("targets generation")
 test_that("targets method works", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
  tt = targets(links(bigec2, 1))
- expect_true(length(tt)==6)
- expect_true(length(grep("host", tt))==4)
+ expect_true(length(tt)==7)
+ expect_true(length(grep("host", tt))==5) # added 400k datasets
 })
 
 context("RESTful SE")
 
 test_that("RESTfulSummarizedExperiment infrastructure works against server", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
- data(tenx_100k_sorted)
- n100k = bigec2[["neurons100k"]]
- expect_error( rr = RESTfulSummarizedExperiment( tenx_100k_sorted, n100k ))
+ data(st100k)
+ n100k_served = bigec2[["tenx_100k_sorted"]]  
+ rr = RESTfulSummarizedExperiment( st100k, n100k_served )
+ expect_true(is(rr, "RangedSummarizedExperiment"))
  data(banoSEMeta) 
  bigec2 = H5S_source("http://54.174.163.77:5000")
  banoh5 = bigec2[["assays"]]
