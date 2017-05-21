@@ -19,6 +19,9 @@ isplit converts a numeric vector into a list of sequences for compact reexpressi
 
 sproc massages output of isplit into HDF5 select candidates
 }
+\note{
+Very preliminary implementation.
+}
 \examples{
 inds = c(1:10, seq(25,50,2), seq(200,150,-2))
 sproc(isplit(inds))
