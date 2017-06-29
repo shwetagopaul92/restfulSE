@@ -28,4 +28,8 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 "ENSMUSG00000024411", "ENSMUSG00000029231", "ENSMUSG00000076439", 
 "ENSMUSG00000030786", "ENSMUSG00000031375")), .Names = c("SYMBOL", 
 "GENEID"), row.names = c(NA, -13L), class = "data.frame")
-
+#' gtexRecount: metadata RangedSummarizedExperiment shell for RECOUNT gtex rse_gene
+#' @docType data
+#' @format RangedSummarizedExperiment instance
+#' @source \url{http://duffel.rail.bio/recount/SRP059959/rse_gene.Rdata}
+"gtexRecount"
