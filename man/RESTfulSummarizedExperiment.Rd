@@ -7,7 +7,7 @@
 \alias{assay,RESTfulSummarizedExperiment,missing-method}
 \title{construct RESTfulSummarizedExperiment}
 \usage{
-RESTfulSummarizedExperiment(se, source)
+RESTfulSummarizedExperiment(se, source, requireRangedSE = FALSE)
 
 \S4method{assay}{RESTfulSummarizedExperiment,missing}(x, i, ...)
 }
@@ -21,6 +21,8 @@ RESTfulSummarizedExperiment(se, source)
 \item{i}{not used}
 
 \item{\dots}{not used}
+
+\item{nonrangedOK}{logical allow simple SummarizedExperiment without ranges, default=TRUE}
 }
 \description{
 construct RESTfulSummarizedExperiment
