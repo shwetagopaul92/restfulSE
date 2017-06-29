@@ -44,7 +44,7 @@ ans
 #' @import SummarizedExperiment
 #' @exportClass RESTfulSummarizedExperiment
 setClass("RESTfulSummarizedExperiment",
-   contains="RangedSummarizedExperiment", 
+   contains="SummarizedExperiment", 
      representation(source="H5S_dataset",
                     globalDimnames="list"))
 
@@ -95,9 +95,10 @@ setMethod("[", c("RESTfulSummarizedExperiment",
                          check=FALSE)
    }
   else if (is(x, "SummarizedExperiment")) {
-   x = BiocGenerics:::replaceSlots(x, rowData = rowData(x)[i],
+   x = BiocGenerics:::replaceSlots(x, 
                          colData = colData(x)[j,],
                          check=FALSE)
+   mcols(x) = mcols(x)[i,]
    }
    x
    })
