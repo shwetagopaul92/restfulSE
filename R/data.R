@@ -1,4 +1,5 @@
 #' banoSEMeta: metadata RangedSummarizedExperiment shell for banovichSE
+#' @importFrom utils data
 #' @docType data
 #' @format RangedSummarizedExperiment instance
 #' @source 10.1371/journal.pgen.1004663
@@ -33,3 +34,16 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 #' @format RangedSummarizedExperiment instance
 #' @source \url{http://duffel.rail.bio/recount/SRP059959/rse_gene.Rdata}
 "gtexRecount"
+#' full 1.3 million cell dataset from 10x genomics
+#' @docType data
+#' @format SummarizedExperiment instance
+#' @source \url{https://community.10xgenomics.com/t5/10x-Blog/Our-1-3-million-single-cell-dataset-is-ready-to-download/ba-p/276} massaged into SummarizedExperiment shell
+"full_1Mneurons"
+#' range-sorted 400k cell subset of 1.3 million cells from 10x genomics
+#' @docType data
+#' @format RangedSummarizedExperiment instance
+#' @source \url{https://community.10xgenomics.com/t5/10x-Blog/Our-1-3-million-single-cell-dataset-is-ready-to-download/ba-p/276}
+#' @note used github.com/mtmorgan/TENxGenomics package to obtain 
+#' SummarizedExperiment, then added range information, sorted within
+#' chromosome, and saved shell for use with HDF5 server
+"st400k"
