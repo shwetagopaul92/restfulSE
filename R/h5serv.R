@@ -22,8 +22,8 @@ cat(" Use dsmeta() to get information on datasets within groups.\n")
 cat(" Use [[ [dsname] ]]  to get a reference suitable for [i, j] subsetting.\n")
 })
 
-#' name H5S_dataset
-#' rdname H5S_dataset-class
+#' H5S_dataset class representation
+#' @rdname H5S_dataset-class
 #' @import S4Vectors
 #' @slot source instance of H5S_source instance
 #' @slot simpleName character string naming dataset 
@@ -59,6 +59,7 @@ fixtarget = function(x) sub(".*host=(.*).hdfgroup.org", "\\1", x)
 #' that is a list with ith element a character vector of all dsnames
 #' available for the ith group.  There is no effort at present to
 #' search all groups for candidate datasets.
+#' @return instance of \code{\link[restfulSE]{H5S_source-class}}
 #' @examples
 #' bigec2 = H5S_source("http://54.174.163.77:5000")
 #' bigec2
@@ -171,7 +172,7 @@ targetIds = function(h5linkset, index) {
  sapply(h5linkset@links$links, "[[", "id")
  }
       
-#' @name H5S_dataset
+#' definition of H5S_dataset subsetting operation
 #' @rdname H5S_dataset-class
 #' @aliases [,H5S_dataset,character,character,ANY-method
 #' @param x instance of H5S_dataset
