@@ -1,7 +1,7 @@
 Package: restfulSE
 Title: Access matrix-like HDF5 server content through a SummarizedExperiment interface.
 Description: We wrap HDF5Server content in SummarizedExperiment interface.
-Version: 0.0.23
+Version: 0.0.25
 Author: Vince Carey
 Suggests: knitr, testthat
 Imports: SummarizedExperiment, S4Vectors, httr, rjson,
