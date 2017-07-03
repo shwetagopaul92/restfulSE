@@ -30,6 +30,9 @@ dataset(h5s, tag)
 
 \item{tag}{character string identifying a dataset}
 }
+\value{
+instance of \code{\link[restfulSE]{H5S_source-class}}
+}
 \description{
 H5S_source identifies an HDF5 server and manages some metadata about contents
 
