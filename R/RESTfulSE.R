@@ -44,14 +44,13 @@ ans
 #' @import SummarizedExperiment
 #' @exportClass RESTfulSummarizedExperiment
 setClass("RESTfulSummarizedExperiment",
-   contains="SummarizedExperiment", 
+   contains="RangedSummarizedExperiment", 
      representation(source="H5S_dataset",
                     globalDimnames="list"))
 
 #' construct RESTfulSummarizedExperiment
 #' @param se SummarizedExperiment instance, assay component can be empty SimpleList
 #' @param source instance of H5S_dataset
-#' @param nonrangedOK logical allow simple SummarizedExperiment without ranges, default=TRUE
 #' @examples
 #' bigec2 = H5S_source(serverURL="http://54.174.163.77:5000")
 #' banoh5 = bigec2[["assays"]] # banovichSE
@@ -62,8 +61,8 @@ setClass("RESTfulSummarizedExperiment",
 #' rr2
 #' assay(rr2) # extract data
 #' @export RESTfulSummarizedExperiment
-RESTfulSummarizedExperiment = function(se, source, requireRangedSE=FALSE) {
-   if (requireRangedSE) stopifnot(is(se, "RangedSummarizedExperiment")) # for now
+RESTfulSummarizedExperiment = function(se, source) {
+   stopifnot(is(se, "RangedSummarizedExperiment")) # for now
    d = internalDim(source)
    if (!all(d == rev(dim(se)))) {
        cat("rev(internal dimensions of H5S_dataset) is", rev(d), "\n")
@@ -95,10 +94,9 @@ setMethod("[", c("RESTfulSummarizedExperiment",
                          check=FALSE)
    }
   else if (is(x, "SummarizedExperiment")) {
-   x = BiocGenerics:::replaceSlots(x, 
+   x = BiocGenerics:::replaceSlots(x, rowData = rowData(x)[i],
                          colData = colData(x)[j,],
                          check=FALSE)
-   mcols(x) = mcols(x)[i,]
    }
    x
    })
