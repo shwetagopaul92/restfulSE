@@ -3,10 +3,8 @@
 \docType{class}
 \name{H5S_dataset-class}
 \alias{H5S_dataset-class}
-\alias{H5S_dataset}
 \alias{[,H5S_dataset,character,character,ANY-method}
-\title{name H5S_dataset
-rdname H5S_dataset-class}
+\title{H5S_dataset class representation}
 \usage{
 \S4method{[}{H5S_dataset,character,character,ANY}(x, i, j, ..., drop = FALSE)
 }
@@ -22,8 +20,9 @@ rdname H5S_dataset-class}
 \item{drop}{logical defaults to FALSE}
 }
 \description{
-name H5S_dataset
-rdname H5S_dataset-class
+H5S_dataset class representation
+
+definition of H5S_dataset subsetting operation
 }
 \section{Slots}{
 
