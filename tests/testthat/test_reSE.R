@@ -12,7 +12,8 @@ context("content wrapper structure")
 test_that("H5S_source processes", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
  expect_true(all(dim(groups(bigec2))==c(10,2))) 
- expect_true(is(restfulSE::links(bigec2,1), "H5S_linkset"))
+ expect_true(is(restfulSE::links(bigec2,1), "H5S
+                _linkset"))
  expect_true(is(dataset(bigec2, "tenx_100k"), "H5S_dataset"))
  expect_true(is(bigec2[["tenx_100k"]], "H5S_dataset"))
  expect_true(is(dsmeta(bigec2), "DataFrame"))
@@ -34,8 +35,8 @@ context("targets generation")
 test_that("targets method works", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
  tt = targets(restfulSE::links(bigec2, 1))
- expect_true(length(tt)==8)  # july 3 2017
- expect_true(length(grep("host", tt))==6) # added 400k datasets
+ expect_true(length(tt)==9)  # july 5 2017
+ expect_true(length(grep("host", tt))==7) # added tenx_full dataset
 })
 
 context("RESTful SE")
