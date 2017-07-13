@@ -18,3 +18,18 @@ se100k = function(url="http://54.174.163.77:5000",
   data(st100k)
   RESTfulSummarizedExperiment(st100k, ds)
 }
+#' @rdname se100k
+#' @aliases se1.3M
+#' @note se1.3M provides access to the full 1.3 million neurons
+#' with features in their order as given in the original HDF5
+#' while se100k provides access to only 100k neurons with
+#' expression features sorted by genomic location
+#' @export
+se1.3M = function(url="http://54.174.163.77:5000",
+   tag="tenx_full") {
+  src = H5S_source(url)
+  ds = src[[tag]]
+  data(full_1Mneurons)
+  full_1Mneurons = as(full_1Mneurons, "RangedSummarizedExperiment")
+  RESTfulSummarizedExperiment(full_1Mneurons, ds)
+}
