@@ -2,9 +2,12 @@
 % Please edit documentation in R/demos.R
 \name{se100k}
 \alias{se100k}
+\alias{se1.3M}
 \title{convenience function using 2017 Channing server to extract 100k tenx neurons subset}
 \usage{
 se100k(url = "http://54.174.163.77:5000", tag = "tenx_100k_sorted")
+
+se1.3M(url = "http://54.174.163.77:5000", tag = "tenx_full")
 }
 \arguments{
 \item{url}{server URL}
@@ -13,6 +16,12 @@ se100k(url = "http://54.174.163.77:5000", tag = "tenx_100k_sorted")
 }
 \description{
 convenience function using 2017 Channing server to extract 100k tenx neurons subset
+}
+\note{
+se1.3M provides access to the full 1.3 million neurons
+with features in their order as given in the original HDF5
+while se100k provides access to only 100k neurons with
+expression features sorted by genomic location
 }
 \examples{
 ss = se100k()
