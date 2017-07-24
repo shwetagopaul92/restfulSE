@@ -4,9 +4,9 @@
 \name{full_1Mneurons}
 \alias{full_1Mneurons}
 \title{full 1.3 million cell dataset from 10x genomics}
-\format{SummarizedExperiment instance}
+\format{RangedSummarizedExperiment instance}
 \source{
-\url{https://community.10xgenomics.com/t5/10x-Blog/Our-1-3-million-single-cell-dataset-is-ready-to-download/ba-p/276} massaged into SummarizedExperiment shell
+\url{https://community.10xgenomics.com/t5/10x-Blog/Our-1-3-million-single-cell-dataset-is-ready-to-download/ba-p/276} massaged into RangedSummarizedExperiment shell
 }
 \usage{
 full_1Mneurons
