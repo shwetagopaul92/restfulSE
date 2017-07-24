@@ -36,8 +36,8 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 "gtexRecount"
 #' full 1.3 million cell dataset from 10x genomics
 #' @docType data
-#' @format SummarizedExperiment instance
-#' @source \url{https://community.10xgenomics.com/t5/10x-Blog/Our-1-3-million-single-cell-dataset-is-ready-to-download/ba-p/276} massaged into SummarizedExperiment shell
+#' @format RangedSummarizedExperiment instance
+#' @source \url{https://community.10xgenomics.com/t5/10x-Blog/Our-1-3-million-single-cell-dataset-is-ready-to-download/ba-p/276} massaged into RangedSummarizedExperiment shell
 "full_1Mneurons"
 #' range-sorted 400k cell subset of 1.3 million cells from 10x genomics
 #' @docType data
