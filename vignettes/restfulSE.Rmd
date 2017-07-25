@@ -76,7 +76,9 @@ rbanoSub = rbano[5:8, c(3:9, 40:50)]
 assay(rbanoSub) 
 ```
 
-# 10xGenomics example
+# 10xGenomics examples
+
+## t-SNE for a set of genes annotated to hippocampus
 
 We have used Martin Morgan's TENxGenomics package
 to create a dense HDF5 representation of the 
@@ -127,6 +129,24 @@ proj = Rtsne(d)
 plot(proj$Y)
 ```
 
+## A set of genes related to the visual cortex
+
+Tasic et al. (Nature neuro 2016, DOI 10.1038/nn.4216)
+describe single cell analysis of the adult murine
+brain, identify clusters of cells with distinct
+transcriptional profiles and anatomic location,
+and enumerate lists of genes that discriminate
+these clusters.  The tasicST6 DataFrame provides
+details.
+
+```{r lktas}
+data(tasicST6)
+tasicST6
+```
+
+Key high-level discrimination concerns cells regarded as
+GABAergic vs. glutamatergic (inhibitory vs excitatory
+neurotransmission).
 
 
    
