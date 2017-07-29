@@ -12,8 +12,7 @@ context("content wrapper structure")
 test_that("H5S_source processes", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
  expect_true(all(dim(groups(bigec2))==c(10,2))) 
- expect_true(is(restfulSE::links(bigec2,1), "H5S
-                _linkset"))
+ expect_true(is(restfulSE::links(bigec2,1), "H5S_linkset"))
  expect_true(is(dataset(bigec2, "tenx_100k"), "H5S_dataset"))
  expect_true(is(bigec2[["tenx_100k"]], "H5S_dataset"))
  expect_true(is(dsmeta(bigec2), "DataFrame"))
