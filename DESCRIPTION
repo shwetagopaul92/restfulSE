@@ -1,16 +1,16 @@
 Package: restfulSE
 Title: Access matrix-like HDF5 server content through a SummarizedExperiment interface
 Description: We wrap HDF5Server content in SummarizedExperiment interface.
-Version: 0.0.31
+Version: 0.0.32
 Author: Vince Carey
-Suggests: knitr, testthat
+Suggests: knitr, testthat, Rtsne, org.Mm.eg.db
 Imports: utils, SummarizedExperiment, S4Vectors, httr, rjson,
-	DelayedArray
+	DelayedArray, dplyr (>= 0.7.1), magrittr
 Depends: R (>= 3.4), methods
 Maintainer: VJ Carey <stvjc@channing.harvard.edu>
 License: Artistic-2.0
 LazyLoad: yes
 biocViews: Infrastructure, SingleCell, Transcriptomics
 RoxygenNote: 6.0.1.9000
-Collate: h5serv.R RESTfulSE.R data.R demos.R
+Collate: h5serv.R RESTfulSE.R data.R demos.R seByTumor.R
 VignetteBuilder: knitr
