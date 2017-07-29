@@ -47,3 +47,9 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 #' SummarizedExperiment, then added range information, sorted within
 #' chromosome, and saved shell for use with HDF5 server
 "st400k"
+#' tasicST6: supplemental table from Tasic et al. 2016
+#' @importFrom utils data
+#' @docType data
+#' @format DataFrame
+#' @source \url{http://www.nature.com/doifinder/10.1038/nn.4216}
+"tasicST6"
