@@ -49,6 +49,7 @@ setClass("RESTfulSummarizedExperiment",
                     globalDimnames="list"))
 
 #' construct RESTfulSummarizedExperiment
+#' @aliases RESTfulSummarizedExperiment,RangedSummarizedExperiment,H5S_dataset-method
 #' @param se SummarizedExperiment instance, assay component can be empty SimpleList
 #' @param source instance of H5S_dataset
 #' @examples
@@ -60,8 +61,16 @@ setClass("RESTfulSummarizedExperiment",
 #' rr2 = rr[1:4, 1:5] # just modify metadata
 #' rr2
 #' assay(rr2) # extract data
+#' @exportMethod RESTfulSummarizedExperiment
 #' @export RESTfulSummarizedExperiment
-RESTfulSummarizedExperiment = function(se, source) {
+setGeneric("RESTfulSummarizedExperiment",
+  function(se, source) standardGeneric("RESTfulSummarizedExperiment"))
+setMethod("RESTfulSummarizedExperiment", c("RangedSummarizedExperiment",
+   "H5S_dataset"), function(se, source) {
+ .RESTfulSummarizedExperiment(se, source)
+})
+
+.RESTfulSummarizedExperiment = function(se, source) {
    stopifnot(is(se, "RangedSummarizedExperiment")) # for now
    d = internalDim(source)
    if (!all(d == rev(dim(se)))) {
