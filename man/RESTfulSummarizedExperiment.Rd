@@ -3,6 +3,7 @@
 \docType{methods}
 \name{RESTfulSummarizedExperiment}
 \alias{RESTfulSummarizedExperiment}
+\alias{RESTfulSummarizedExperiment,RangedSummarizedExperiment,H5S_dataset-method}
 \alias{assay}
 \alias{assay,RESTfulSummarizedExperiment,missing-method}
 \title{construct RESTfulSummarizedExperiment}
