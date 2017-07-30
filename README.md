@@ -12,4 +12,6 @@ several data structures are introduced
 - to perform targeted extraction of numerical data from HDF5 arrays stored on the server. 
 
 We maintain, thanks to a grant from the National Cancer Institute,
-the server [http://54.174.163.77:5000/](http://54.174.163.77:5000/)
+the server [http://54.174.163.77:5000/](http://54.174.163.77:5000/).  Visit this URL to get a flavor of the
+server structure: datasets, groups, and datatypes are high-level elements to be manipulated to work
+with data values from the server.
