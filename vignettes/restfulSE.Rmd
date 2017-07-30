@@ -17,7 +17,27 @@ output:
     toc: yes
 ---
 
-# Introduction
+# restfulSE
+
+This R package includes proof-of-concept code illustrating several approaches to SummarizedExperiment design with
+assays stored out-of-memory.
+
+## HDF5 server backed SummarizedExperiment
+
+[HDF Server](https://support.hdfgroup.org/projects/hdfserver/) "extends the HDF5 data model to efficiently store large data objects (e.g. up to multi-TB data arrays) and access them over the web using a RESTful API."  In this `restfulSE` package,
+several data structures are introduced 
+
+- to model the server data architecture and 
+- to perform targeted extraction of numerical data from HDF5 arrays stored on the server. 
+
+We maintain, thanks to a grant from the National Cancer Institute,
+the server [http://54.174.163.77:5000/](http://54.174.163.77:5000/).  Visit this URL to get a flavor of the
+server structure: datasets, groups, and datatypes are high-level elements to be manipulated to work
+with data values from the server.
+
+# Some details
+
+## Motivation
 
 Extensive human and computational effort is expended on
 downloading and managing large genomic data at site of analysis.
@@ -32,7 +52,7 @@ for interactive use.
 A modest server configured to deliver HDF5 content via a
 RESTful API has been prepared and is used in this vignette.
 
-# Executive summary
+## Executive summary
 
 We want to provide rapid access to array-like data.  We'll work
 with the Banovich 450k data as there is a simple check against
@@ -76,9 +96,9 @@ rbanoSub = rbano[5:8, c(3:9, 40:50)]
 assay(rbanoSub) 
 ```
 
-# 10xGenomics examples
+## 10xGenomics examples
 
-## t-SNE for a set of genes annotated to hippocampus
+### t-SNE for a set of genes annotated to hippocampus
 
 We have used Martin Morgan's TENxGenomics package
 to create a dense HDF5 representation of the 
@@ -129,7 +149,7 @@ proj = Rtsne(d)
 plot(proj$Y)
 ```
 
-## A set of genes related to the visual cortex
+### A set of genes related to the visual cortex
 
 Tasic et al. (Nature neuro 2016, DOI 10.1038/nn.4216)
 describe single cell analysis of the adult murine
@@ -151,7 +171,7 @@ neurotransmission).
 
    
 
-# Background
+## Background
 
 Banovich et al. published a subset of DNA methylation measures
 assembled on 64 samples of immortalized B-cells from the YRI HapMap cohort.
@@ -169,9 +189,9 @@ component is simply copied into the server data space
 on the remote server.  
 
 
-# Hierarchy of server resources
+## Hierarchy of server resources
 
-## Server
+### Server
 
 Given the URL of a server running HDF5 server, we create
 an instance of `H5S_source`:
@@ -180,7 +200,7 @@ mys = H5S_source(serverURL="http://54.174.163.77:5000")
 mys
 ```
 
-## Groups
+### Groups
 
 The server identifies a collection of 'groups'.  For the server
 we are working with, only one group, at the root, is of interest.
@@ -188,7 +208,7 @@ we are working with, only one group, at the root, is of interest.
 groups(mys)
 ```
 
-## Links for a group
+### Links for a group
 
 There is a class to hold the link set for any group:
 ```{r lkhl}
