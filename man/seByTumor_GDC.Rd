@@ -4,9 +4,8 @@
 \alias{seByTumor_GDC}
 \title{given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData}
 \usage{
-seByTumor_GDC(tumorCode = "LUAD",
-  assayTblName = "RNAseq_Gene_Expression_UNC_RSEM",
-  rdColsToKeep = c("original_gene_symbol", "HGNC_gene_symbol", "gene_id"),
+seByTumor_GDC(tumorCode = "LUAD", assayTblName = "RNAseq_Gene_Expression",
+  rdColsToKeep = c("gene_name", "Ensembl_gene_id", "gene_type"),
   bqConnClinical, bqConnAssay)
 }
 \arguments{
@@ -24,16 +23,14 @@ seByTumor_GDC(tumorCode = "LUAD",
 given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
 }
 \examples{
-\dontrun{
 require(bigrquery)
-# provide a valid billing code in the following and authenticate as needed
-# clinQ = DBI::dbConnect(dbi_driver(), project = "isb-cgc", 
-#       dataset = "TCGA_bioclin_v0", billing = "cgc-xx-xxxx")
-# assayQ = DBI::dbConnect(dbi_driver(), project = "isb-cgc", 
-#       dataset = "TCGA_hg19_data_v0", billing = "cgc-xx-xxxx")
+# be sure that .cgcBilling is set in .GlobalEnv
+if (exists(".cgcBilling")) {
+ clinQ = cgcConn()
+ assayQ = cgcConn( dataset = "TCGA_hg38_data_v0" )
  myexpShell = seByTumor_GDC( bqConnClinical=clinQ,
-      bqConnAssay=assayQ)
+       bqConnAssay=assayQ)
  nrow(myexpShell) == 20531
  ncol(myexpShell) == 522
-}
+ }
 }

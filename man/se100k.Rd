@@ -3,7 +3,7 @@
 \name{se100k}
 \alias{se100k}
 \alias{se1.3M}
-\title{convenience function using 2017 Channing server to extract 100k tenx neurons subset}
+\title{convenience functions using EC2 server to extract tenx neurons full or subset data}
 \usage{
 se100k(url = "http://54.174.163.77:5000", tag = "tenx_100k_sorted")
 
@@ -15,7 +15,7 @@ se1.3M(url = "http://54.174.163.77:5000", tag = "tenx_full")
 \item{tag}{string giving the internal dataset name}
 }
 \description{
-convenience function using 2017 Channing server to extract 100k tenx neurons subset
+convenience functions using EC2 server to extract tenx neurons full or subset data
 }
 \note{
 se1.3M provides access to the full 1.3 million neurons
