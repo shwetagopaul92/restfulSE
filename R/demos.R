@@ -1,4 +1,4 @@
-#' convenience function using 2017 Channing server to extract 100k tenx neurons subset
+#' convenience functions using EC2 server to extract tenx neurons full or subset data
 #' @param url server URL
 #' @param tag string giving the internal dataset name
 #' @examples
@@ -32,4 +32,40 @@ se1.3M = function(url="http://54.174.163.77:5000",
   data(full_1Mneurons)
   full_1Mneurons = as(full_1Mneurons, "RangedSummarizedExperiment")
   RESTfulSummarizedExperiment(full_1Mneurons, ds)
+}
+
+#' convenience function for access to gene-level GTEx tissues, as quantified in recount
+#' @export
+gtexTiss = function(url="http://54.174.163.77:5000",
+   tag="tissues") {
+  src = H5S_source(url)
+  ds = src[[tag]]
+  data(gtexRecount)
+  gtexTiss = as(gtexRecount, "RangedSummarizedExperiment")
+  RESTfulSummarizedExperiment(gtexTiss, ds)
+}
+
+#library(restfulSE)
+#tiss = gtexTiss()
+#binds = grep("Brain", tiss$smtsd); table(tiss$smtsd[binds])
+
+#' create a data.frame with ENSEMBL and SYMBOL identifiers associated with a GO TERM specified by a regular expression in \code{termPattern}
+#' @param termPattern a character string encoding a regular expression to be matched to keys of type TERM in GO.db
+#' @param targets \code{columns} to be returned from org.[organism].[inst].db
+#' @param organism two-letter code for organism in the OrgDb family of packages
+#' @param inst two- or three-letter code (e.g., \code{eg} for ENTREZ GENE or \code{sgd} for yeastgenome.org) identifying institute responsible for annotation
+#' @examples
+#' gp = goPatt()
+#' dim(gp)
+#' head(gp)
+#' @export
+goPatt = function(termPattern="neurotro", 
+   targets=c("ENSEMBL", "SYMBOL"), organism="Hs", inst="eg") {
+require(GO.db)
+require(opackn <- paste0("org.", organism, ".", inst, ".db"), character.only=TRUE)
+tms = keys(GO.db, keytype="TERM")
+nterms = grep(termPattern, tms, value=TRUE) 
+nids = select(GO.db, keys=nterms, keytype="TERM", columns=c("GOID", "TERM")) 
+select(get(opackn), keys=nids[[2]], 
+   keytype="GO", columns=c("ENSEMBL", "SYMBOL"))
 }
