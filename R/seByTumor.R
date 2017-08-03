@@ -1,3 +1,12 @@
+#' simplify connection to a BigQuery dataset for ISB CGC
+#' @param dataset character string with dataset name
+#' @param project character string with project name
+#' @param billing string with billing code
+#' @export
+cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=.cgcBilling)
+  DBI::dbConnect(dbi_driver(), project = project,
+        dataset = dataset, billing = billing)
+
 #' given a BigQueryConnection to the 2016 ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
 #' @importFrom dplyr tbl filter
 #' @importFrom magrittr "%>%"
@@ -28,28 +37,26 @@ seByTumor_2016 = function(tumorCode = "LUAD", assayTblName="mRNA_UNC_HiSeq_RSEM"
 #' @param bqConnClinical instance of BigQueryConnection from bigrquery, for access to clinical metadata -- current expectation is that the BigQuery dataset is named "TCGA_bioclin_v0" and has a table called "Clinical"
 #' @param bqConnAssay instance of BigQueryConnection from bigrquery -- current expectation is that the BigQuery dataset is named "TCGA_hg19_data_v0"
 #' @examples
-#' \dontrun{
 #' require(bigrquery)
-#' # provide a valid billing code in the following and authenticate as needed
-#' # clinQ = DBI::dbConnect(dbi_driver(), project = "isb-cgc", 
-#' #       dataset = "TCGA_bioclin_v0", billing = "cgc-xx-xxxx")
-#' # assayQ = DBI::dbConnect(dbi_driver(), project = "isb-cgc", 
-#' #       dataset = "TCGA_hg19_data_v0", billing = "cgc-xx-xxxx")
+#' # be sure that .cgcBilling is set in .GlobalEnv
+#' if (exists(".cgcBilling")) {
+#'  clinQ = cgcConn()
+#'  assayQ = cgcConn( dataset = "TCGA_hg38_data_v0" )
 #'  myexpShell = seByTumor_GDC( bqConnClinical=clinQ,
-#'       bqConnAssay=assayQ)
+#'        bqConnAssay=assayQ)
 #'  nrow(myexpShell) == 20531
 #'  ncol(myexpShell) == 522
-#' }
+#'  }
 #' @export
 seByTumor_GDC = function(tumorCode = "LUAD", 
-      assayTblName="RNAseq_Gene_Expression_UNC_RSEM",
-      rdColsToKeep = c("original_gene_symbol", "HGNC_gene_symbol", 
-      "gene_id"), bqConnClinical, bqConnAssay ){
+      assayTblName="RNAseq_Gene_Expression",
+      rdColsToKeep = c("gene_name", "Ensembl_gene_id", "gene_type"),
+      bqConnClinical, bqConnAssay ){
 #
 # assumes bqConn is a live instance of bigrquery BigQueryConnection
 #
  if (bqConnClinical@dataset != "TCGA_bioclin_v0") warning("bqConnClinical dataset name not 'TCGA_bioclin_v0', table/column-name expectations may fail")
- if (bqConnAssay@dataset != "TCGA_hg19_data_v0") warning("bqConnClinical dataset name not 'TCGA_hg19_data_v0', table/column-name expectations may fail")
+ if (bqConnAssay@dataset != "TCGA_hg38_data_v0") warning("bqConnAssay dataset name not 'TCGA_hg38data_v0', table/column-name expectations may fail")
  require(SummarizedExperiment)
  newn = paste0("TCGA-", tumorCode)
  clin = bqConnClinical %>% tbl("Clinical") %>% filter(project_short_name==newn)
