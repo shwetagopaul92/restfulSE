@@ -49,6 +49,7 @@ setClass("BQSummarizedExperiment", contains="SummarizedExperiment",
 #'  assayQ = cgcConn( dataset = "TCGA_hg38_data_v0" )
 #'  myexpShell = seByTumor( bqConnClinical=clinQ,
 #'        bqConnAssay=assayQ)
+#'  print(myexpShell)
 #'  print(nrow(myexpShell) == 60483)
 #'  print(ncol(myexpShell) == 522)
 #'  assay(myexpShell[11:15,1:4]) # some case_barcodes repeat
@@ -72,7 +73,10 @@ seByTumor = function(tumorCode = "LUAD",
  keeper = h[[1]][1]
  assayRef = bqConnAssay %>% tbl(assayTblName)
  assay = assayRef %>% filter(case_barcode==keeper) %>% select(rdColsToKeep)
- se = SummarizedExperiment(colData=as.data.frame(clin), rowData=DataFrame(assay %>% as.data.frame()))
+ clin = as.data.frame(clin)
+ rownames(clin) = clin[,colkey]
+ se = SummarizedExperiment(colData=clin, rowData=DataFrame(assay %>% as.data.frame()))
+ se@NAMES = rowData(se)[,rowkey]
  new("BQSummarizedExperiment", se, rowQref = assayRef,
      colQref = clinRef, rowkey=rowkey, colkey=colkey, assayvbl=assayvbl)
 }
@@ -97,3 +101,10 @@ setMethod("assay", c("BQSummarizedExperiment", "missing"),
   rownames(mat) = as.character(res[,1])
   mat
 })
+
+#' @exportMethod assayNames
+setMethod("assayNames", "BQSummarizedExperiment", function(x, ...) {
+ "(served by BigQuery)"
+})
+
+
