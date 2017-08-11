@@ -1,3 +1,4 @@
+library(rhdf5client)
 
 # utilities for index processing
 # sproc(isplit(vec)) will convert vec representing R integer vector
