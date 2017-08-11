@@ -6,11 +6,11 @@ Author: Vince Carey
 Suggests: knitr, testthat, Rtsne, org.Mm.eg.db
 Imports: utils, SummarizedExperiment, S4Vectors, httr, rjson,
 	DelayedArray, reshape2
-Depends: R (>= 3.4), methods, dplyr (>= 0.7.1), magrittr, bigrquery
+Depends: R (>= 3.4), methods, dplyr (>= 0.7.1), magrittr, bigrquery, rhdf5client
 Maintainer: VJ Carey <stvjc@channing.harvard.edu>
 License: Artistic-2.0
 LazyLoad: yes
 biocViews: Infrastructure, SingleCell, Transcriptomics
 RoxygenNote: 6.0.1.9000
-Collate: h5serv.R RESTfulSE.R data.R demos.R seByTumor.R isbCgc.R
+Collate: RESTfulSE.R data.R demos.R seByTumor.R isbCgc.R
 VignetteBuilder: knitr
