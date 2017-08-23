@@ -24,6 +24,7 @@ isbCgcDatasets = function() {
 }
 
 #' list the tables in a selected dataset
+#' @importFrom DBI dbConnect
 #' @param dataset character string identifying a table in ISB CGC
 #' @param billing Google BigQuery billing code
 isbCgcTables = function(dataset="TCGA_hg19_data_v0", billing=.cgcBilling) {

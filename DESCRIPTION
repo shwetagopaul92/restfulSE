@@ -1,12 +1,13 @@
 Package: restfulSE
 Title: Access matrix-like HDF5 server content or BigQuery content through a SummarizedExperiment interface
 Description: We wrap HDF5Server content or BigQuery content in SummarizedExperiment interface.
-Version: 0.0.39
+Version: 0.0.40
 Author: Vince Carey
-Suggests: knitr, testthat, Rtsne, org.Mm.eg.db
+Suggests: knitr, testthat, Rtsne, org.Mm.eg.db, GO.db
 Imports: utils, SummarizedExperiment, S4Vectors, httr, rjson,
 	DelayedArray, reshape2
-Depends: R (>= 3.4), methods, dplyr (>= 0.7.1), magrittr, bigrquery, rhdf5client
+Depends: R (>= 3.4), methods, dplyr (>= 0.7.1), 
+	magrittr, bigrquery, SummarizedExperiment
 Maintainer: VJ Carey <stvjc@channing.harvard.edu>
 License: Artistic-2.0
 LazyLoad: yes
