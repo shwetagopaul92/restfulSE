@@ -152,6 +152,8 @@ setMethod("assay", c("RESTfulSummarizedExperiment", "missing"),
                   function(i2) t(x@source[i1, i2]))))
        ans = do.call(cbind, ansl)
          }
+
+
     dimnames(ans) = list(x@globalDimnames[[1]][rowsToGet], 
                 x@globalDimnames[[2]][colsToGet])
     ans
