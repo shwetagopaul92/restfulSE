@@ -4,12 +4,13 @@
 \alias{isbCgcTables}
 \title{list the tables in a selected dataset}
 \usage{
-isbCgcTables(dataset = "TCGA_hg19_data_v0", billing = .cgcBilling)
+isbCgcTables(dataset = "TCGA_hg19_data_v0",
+  billing = Sys.getenv("CGC_BILLING"))
 }
 \arguments{
 \item{dataset}{character string identifying a table in ISB CGC}
 
-\item{billing}{Google BigQuery billing code}
+\item{billing}{Google BigQuery billing code, which can be set in an environment variable \code{CGC_BILLING}}
 }
 \description{
 list the tables in a selected dataset
