@@ -150,7 +150,10 @@ suppressPackageStartupMessages({
 library(restfulSE)
 library(SummarizedExperiment)
 library(Rtsne)
+library(rhdf5client)
 })
+```
+
 ```{r dobanoyy}
 library(restfulSE)
 bigec2 = H5S_source("http://54.174.163.77:5000")
@@ -299,7 +302,7 @@ groups(mys)
 
 There is a class to hold the link set for any group:
 ```{r lkhl}
-lin1 = restfulSE::links(mys,1)
+lin1 = rhdf5client::links(mys,1)
 lin1
 ```
 

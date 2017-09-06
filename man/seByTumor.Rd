@@ -31,6 +31,7 @@ if (exists(".cgcBilling")) {
  assayQ = cgcConn( dataset = "TCGA_hg38_data_v0" )
  myexpShell = seByTumor( bqConnClinical=clinQ,
        bqConnAssay=assayQ)
+ print(myexpShell)
  print(nrow(myexpShell) == 60483)
  print(ncol(myexpShell) == 522)
  assay(myexpShell[11:15,1:4]) # some case_barcodes repeat
