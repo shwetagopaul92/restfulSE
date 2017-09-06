@@ -19,16 +19,23 @@ seByTumor(tumorCode = "LUAD", assayTblName = "RNAseq_Gene_Expression",
 \item{bqConnClinical}{instance of BigQueryConnection from bigrquery, for access to clinical metadata -- current expectation is that the BigQuery dataset is named "TCGA_bioclin_v0" and has a table called "Clinical"}
 
 \item{bqConnAssay}{instance of BigQueryConnection from bigrquery -- current expectation is that the BigQuery dataset is named "TCGA_hg19_data_v0"}
+
+\item{rowkey}{name of a field to be used as key for rows}
+
+\item{colkey}{name of a field to use as key for samples}
+
+\item{assayvbl}{name of field to use for numerical values}
 }
 \description{
 given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
 }
 \examples{
 require(bigrquery)
-# be sure that .cgcBilling is set in .GlobalEnv
-if (exists(".cgcBilling")) {
- clinQ = cgcConn()
- assayQ = cgcConn( dataset = "TCGA_hg38_data_v0" )
+# be sure that .cgcBilling is set 
+code = Sys.getenv("CGC_BILLING")
+if (!(nchar(code)==0)) {
+ clinQ = cgcConn(billing=code)
+ assayQ = cgcConn( dataset = "TCGA_hg38_data_v0", billing=code )
  myexpShell = seByTumor( bqConnClinical=clinQ,
        bqConnAssay=assayQ)
  print(myexpShell)
