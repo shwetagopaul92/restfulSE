@@ -1,4 +1,6 @@
 #' convenience functions using EC2 server to extract tenx neurons full or subset data
+#' @import rhdf5client
+#' @import AnnotationDbi
 #' @param url server URL
 #' @param tag string giving the internal dataset name
 #' @examples
@@ -35,6 +37,8 @@ se1.3M = function(url="http://54.174.163.77:5000",
 }
 
 #' convenience function for access to gene-level GTEx tissues, as quantified in recount
+#' @param url ip address/host for HDF5 server
+#' @param tag name of hdf5 file on server
 #' @export
 gtexTiss = function(url="http://54.174.163.77:5000",
    tag="tissues") {
@@ -50,6 +54,7 @@ gtexTiss = function(url="http://54.174.163.77:5000",
 #binds = grep("Brain", tiss$smtsd); table(tiss$smtsd[binds])
 
 #' create a data.frame with ENSEMBL and SYMBOL identifiers associated with a GO TERM specified by a regular expression in \code{termPattern}
+#' @import GO.db
 #' @param termPattern a character string encoding a regular expression to be matched to keys of type TERM in GO.db
 #' @param targets \code{columns} to be returned from org.[organism].[inst].db
 #' @param organism two-letter code for organism in the OrgDb family of packages
@@ -65,7 +70,7 @@ require(GO.db)
 require(opackn <- paste0("org.", organism, ".", inst, ".db"), character.only=TRUE)
 tms = keys(GO.db, keytype="TERM")
 nterms = grep(termPattern, tms, value=TRUE) 
-nids = select(GO.db, keys=nterms, keytype="TERM", columns=c("GOID", "TERM")) 
-select(get(opackn), keys=nids[[2]], 
+nids = AnnotationDbi::select(GO.db, keys=nterms, keytype="TERM", columns=c("GOID", "TERM")) 
+AnnotationDbi::select(get(opackn), keys=nids[[2]], 
    keytype="GO", columns=c("ENSEMBL", "SYMBOL"))
 }

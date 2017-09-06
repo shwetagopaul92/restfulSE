@@ -7,6 +7,13 @@
 \usage{
 \S4method{assay}{BQSummarizedExperiment,missing}(x, i, ...)
 }
+\arguments{
+\item{x}{BQSummarizedExperiment instance}
+
+\item{i}{index for retrieval, ignored at present}
+
+\item{\dots}{not used}
+}
 \description{
 extract assay data
 }
