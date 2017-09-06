@@ -4,11 +4,14 @@
 \name{RESTfulSummarizedExperiment}
 \alias{RESTfulSummarizedExperiment}
 \alias{RESTfulSummarizedExperiment,RangedSummarizedExperiment,H5S_dataset-method}
+\alias{.RESTfulSummarizedExperiment}
 \alias{assay}
 \alias{assay,RESTfulSummarizedExperiment,missing-method}
 \title{construct RESTfulSummarizedExperiment}
 \usage{
 RESTfulSummarizedExperiment(se, source)
+
+.RESTfulSummarizedExperiment(se, source)
 
 \S4method{assay}{RESTfulSummarizedExperiment,missing}(x, i, ...)
 }
@@ -25,6 +28,8 @@ RESTfulSummarizedExperiment(se, source)
 }
 \description{
 construct RESTfulSummarizedExperiment
+
+hidden constructor
 }
 \note{
 RESTfulSummarizedExperiment contains a global dimnames
