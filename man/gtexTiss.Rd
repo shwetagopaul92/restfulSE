@@ -6,6 +6,11 @@
 \usage{
 gtexTiss(url = "http://54.174.163.77:5000", tag = "tissues")
 }
+\arguments{
+\item{url}{ip address/host for HDF5 server}
+
+\item{tag}{name of hdf5 file on server}
+}
 \description{
 convenience function for access to gene-level GTEx tissues, as quantified in recount
 }
