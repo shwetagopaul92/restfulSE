@@ -43,6 +43,7 @@ ans
 
 #' hdf5server-based assay for SummarizedExperiment
 #' @import SummarizedExperiment
+#' @importClassesFrom rhdf5client H5S_dataset
 #' @exportClass RESTfulSummarizedExperiment
 setClass("RESTfulSummarizedExperiment",
    contains="RangedSummarizedExperiment", 
@@ -71,6 +72,9 @@ setMethod("RESTfulSummarizedExperiment", c("RangedSummarizedExperiment",
  .RESTfulSummarizedExperiment(se, source)
 })
 
+#' hidden constructor
+#' @rdname RESTfulSummarizedExperiment
+#' @importFrom rhdf5client internalDim
 .RESTfulSummarizedExperiment = function(se, source) {
    stopifnot(is(se, "RangedSummarizedExperiment")) # for now
    d = internalDim(source)
@@ -83,6 +87,8 @@ setMethod("RESTfulSummarizedExperiment", c("RangedSummarizedExperiment",
         globalDimnames=dimnames(se))
 }
 
+#' @rdname RESTfulSummarizedExperiment-class
+#' @aliases assayNames,RESTfulSummarizedExperiment-method
 setMethod("assayNames", "RESTfulSummarizedExperiment", function(x, ...) {
  "(served by HDF5Server)"
 })

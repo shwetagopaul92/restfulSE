@@ -1,16 +1,17 @@
 #' simplify connection to a BigQuery dataset for ISB CGC
-#' @importFrom DBI dbConnect
+#' @importFrom bigrquery dbConnect dbi_driver
 #' @param dataset character string with dataset name
 #' @param project character string with project name
 #' @param billing string with billing code
 #' @export
-cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=.cgcBilling)
+cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=Sys.getenv("CGC_BILLING"))
   DBI::dbConnect(dbi_driver(), project = project,
         dataset = dataset, billing = billing)
 
 #' given a BigQueryConnection to the 2016 ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
-#' @importFrom dplyr tbl filter
+#' @importFrom dplyr tbl filter select
 #' @importFrom magrittr "%>%"
+#' @import SummarizedExperiment
 #' @param tumorCode one of the concise TCGA codes in a character string -- not checked, defaults to "LUAD", lung adenocarcinoma
 #' @param assayTblName the name of the assay whose annotation will be used as rowData
 #' @param rdColsToKeep columns of assay table to use in rowData component
@@ -23,7 +24,7 @@ seByTumor_2016 = function(tumorCode = "LUAD", assayTblName="mRNA_UNC_HiSeq_RSEM"
 # assumes bqConn is a live instance of bigrquery BigQueryConnection
 #
  stopifnot(bqConn@dataset == "tcga_201607_beta")
- require(SummarizedExperiment)
+ requireNamespace("SummarizedExperiment")
  clin = bqConn %>% tbl("Clinical_data") %>% filter(Study==tumorCode) 
  h = clin %>% select(ParticipantBarcode) %>% head() %>% as.data.frame()
  keeper = h[[1]][1]
@@ -31,6 +32,8 @@ seByTumor_2016 = function(tumorCode = "LUAD", assayTblName="mRNA_UNC_HiSeq_RSEM"
  SummarizedExperiment(colData=as.data.frame(clin), rowData=DataFrame(assay %>% as.data.frame()))
 }
 
+#' define a class to use BigQuery data through SummarizedExperiment interface
+#' @rdname BQSummarizedExperiment
 #' @exportClass BQSummarizedExperiment
 setClass("BQSummarizedExperiment", contains="SummarizedExperiment",
    representation(rowQref = "ANY", colQref = "ANY",
@@ -42,12 +45,16 @@ setClass("BQSummarizedExperiment", contains="SummarizedExperiment",
 #' @param rdColsToKeep columns of assay table to use in rowData component
 #' @param bqConnClinical instance of BigQueryConnection from bigrquery, for access to clinical metadata -- current expectation is that the BigQuery dataset is named "TCGA_bioclin_v0" and has a table called "Clinical"
 #' @param bqConnAssay instance of BigQueryConnection from bigrquery -- current expectation is that the BigQuery dataset is named "TCGA_hg19_data_v0"
+#' @param rowkey name of a field to be used as key for rows
+#' @param colkey name of a field to use as key for samples
+#' @param assayvbl name of field to use for numerical values
 #' @examples
 #' require(bigrquery)
-#' # be sure that .cgcBilling is set in .GlobalEnv
-#' if (exists(".cgcBilling")) {
-#'  clinQ = cgcConn()
-#'  assayQ = cgcConn( dataset = "TCGA_hg38_data_v0" )
+#' # be sure that .cgcBilling is set 
+#' code = Sys.getenv("CGC_BILLING")
+#' if (!(nchar(code)==0)) {
+#'  clinQ = cgcConn(billing=code)
+#'  assayQ = cgcConn( dataset = "TCGA_hg38_data_v0", billing=code )
 #'  myexpShell = seByTumor( bqConnClinical=clinQ,
 #'        bqConnAssay=assayQ)
 #'  print(myexpShell)
@@ -84,6 +91,9 @@ seByTumor = function(tumorCode = "LUAD",
 
 #' extract assay data
 #' @importFrom reshape2 dcast
+#' @param x BQSummarizedExperiment instance
+#' @param i index for retrieval, ignored at present
+#' @param \dots not used
 #' @note Very experimental approach to retrieving numerical data given
 #' a SummarizedExperiment 'shell'.  We need more checking of
 #' consistency between assay and clinical data before creating the
@@ -103,6 +113,9 @@ setMethod("assay", c("BQSummarizedExperiment", "missing"),
   mat
 })
 
+#' get assay names
+#' @aliases assayNames,BQSummarizedExperiment-method
+#' @aliases assayNames
 #' @exportMethod assayNames
 setMethod("assayNames", "BQSummarizedExperiment", function(x, ...) {
  "(served by BigQuery)"
