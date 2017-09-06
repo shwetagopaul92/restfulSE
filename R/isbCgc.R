@@ -26,10 +26,10 @@ isbCgcDatasets = function() {
 #' list the tables in a selected dataset
 #' @importFrom DBI dbConnect
 #' @param dataset character string identifying a table in ISB CGC
-#' @param billing Google BigQuery billing code
-isbCgcTables = function(dataset="TCGA_hg19_data_v0", billing=.cgcBilling) {
+#' @param billing Google BigQuery billing code, which can be set in an environment variable \code{CGC_BILLING}
+isbCgcTables = function(dataset="TCGA_hg19_data_v0", billing=Sys.getenv("CGC_BILLING")) {
   stopifnot(dataset %in% isbCgcDatasets())
-  con <- DBI::dbConnect(dbi_driver(), project = "isb-cgc", 
+  con <- dbConnect(dbi_driver(), project = "isb-cgc", 
         dataset = dataset, billing = billing)
   on.exit(dbDisconnect(con))
   dbListTables(con)
@@ -44,7 +44,7 @@ setMethod("show", "TableSet", function(object) {
 }) 
 
 TCGA_tablerefs = function(build="hg19", billing=.cgcBilling) {
- getConn = function(dataset) DBI::dbConnect(dbi_driver(), project = "isb-cgc", 
+ getConn = function(dataset) dbConnect(dbi_driver(), project = "isb-cgc", 
         dataset = dataset, billing = .cgcBilling)
  if (build == "hg19") {
    ds = "TCGA_hg19_data_v0"
