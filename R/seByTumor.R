@@ -1,4 +1,5 @@
 #' simplify connection to a BigQuery dataset for ISB CGC
+#' @importFrom DBI dbConnect
 #' @param dataset character string with dataset name
 #' @param project character string with project name
 #' @param billing string with billing code
