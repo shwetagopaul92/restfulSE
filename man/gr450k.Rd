@@ -14,4 +14,8 @@ gr450k
 \description{
 gr450k: GRanges with metadata for illumina 450k methylation assay
 }
+\examples{
+data(gr450k)
+gr450k
+}
 \keyword{datasets}
