@@ -14,4 +14,8 @@ tasicST6
 \description{
 tasicST6: supplemental table from Tasic et al. 2016
 }
+\examples{
+data(tasicST6)
+tasicST6
+}
 \keyword{datasets}
