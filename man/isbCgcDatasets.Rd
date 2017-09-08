@@ -6,6 +6,12 @@
 \usage{
 isbCgcDatasets()
 }
+\value{
+character vector
+}
 \description{
 vector of dataset names in isb-cgc project
+}
+\examples{
+isbCgcDatasets() # might be out of date ... can use list_datasets in bigrquery
 }

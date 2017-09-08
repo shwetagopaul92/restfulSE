@@ -2,6 +2,9 @@
 # August 2017
 
 #' vector of dataset names in isb-cgc project
+#' @return character vector
+#' @examples
+#' isbCgcDatasets() # might be out of date ... can use list_datasets in bigrquery
 #' @export
 isbCgcDatasets = function() {
  c("ccle_201602_alpha",
@@ -27,6 +30,8 @@ isbCgcDatasets = function() {
 #' @importFrom DBI dbConnect
 #' @param dataset character string identifying a table in ISB CGC
 #' @param billing Google BigQuery billing code, which can be set in an environment variable \code{CGC_BILLING}
+#' @return character vector
+#' @export
 isbCgcTables = function(dataset="TCGA_hg19_data_v0", billing=Sys.getenv("CGC_BILLING")) {
   stopifnot(dataset %in% isbCgcDatasets())
   con <- dbConnect(dbi_driver(), project = "isb-cgc", 

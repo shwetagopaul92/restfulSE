@@ -12,6 +12,9 @@ isbCgcTables(dataset = "TCGA_hg19_data_v0",
 
 \item{billing}{Google BigQuery billing code, which can be set in an environment variable \code{CGC_BILLING}}
 }
+\value{
+character vector
+}
 \description{
 list the tables in a selected dataset
 }

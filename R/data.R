@@ -30,6 +30,7 @@
 #' @note \url{http://www.nature.com/doifinder/10.1038/nn.4216}, Fig 1C
 #' @examples
 #' head(tasicCortex())
+#' @return data.frame with columns SYMBOL, GENEID
 #' @export
 tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst", "Pvalb", 
 "Slc17a7", "Rorb", "Foxp2", "Aqp4", "Pdgfra", "Mog", "Itgam", 

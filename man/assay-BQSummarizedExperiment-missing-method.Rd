@@ -14,6 +14,9 @@
 
 \item{\dots}{not used}
 }
+\value{
+matrix
+}
 \description{
 extract assay data
 }
