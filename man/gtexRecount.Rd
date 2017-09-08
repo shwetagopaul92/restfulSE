@@ -14,4 +14,8 @@ gtexRecount
 \description{
 gtexRecount: metadata RangedSummarizedExperiment shell for RECOUNT gtex rse_gene
 }
+\examples{
+data(gtexRecount)
+gtexRecount
+}
 \keyword{datasets}

@@ -12,3 +12,6 @@ A set of mouse cortex marker genes.
 \note{
 \url{http://www.nature.com/doifinder/10.1038/nn.4216}, Fig 1C
 }
+\examples{
+head(tasicCortex())
+}
