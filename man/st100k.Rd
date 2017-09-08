@@ -18,5 +18,7 @@ st100k: metadata RangedSummarizedExperiment shell for 100k cells from 10x genomi
 used github.com/mtmorgan/TENxGenomics package to obtain 
 SummarizedExperiment, then added range information, sorted within
 chromosome, and saved shell for use with HDF5 server
+data(st100k)
+st100k
 }
 \keyword{datasets}
