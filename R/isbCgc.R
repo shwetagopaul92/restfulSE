@@ -43,9 +43,9 @@ setMethod("show", "TableSet", function(object) {
 
 }) 
 
-TCGA_tablerefs = function(build="hg19", billing=.cgcBilling) {
+TCGA_tablerefs = function(build="hg19", billing=Sys.getenv("CGC_BILLING")) {
  getConn = function(dataset) dbConnect(dbi_driver(), project = "isb-cgc", 
-        dataset = dataset, billing = .cgcBilling)
+        dataset = dataset, billing = billing)
  if (build == "hg19") {
    ds = "TCGA_hg19_data_v0"
    }

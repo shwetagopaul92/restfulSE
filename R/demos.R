@@ -1,6 +1,6 @@
 #' convenience functions using EC2 server to extract tenx neurons full or subset data
 #' @import rhdf5client
-#' @import AnnotationDbi
+#' @importFrom AnnotationDbi select
 #' @param url server URL
 #' @param tag string giving the internal dataset name
 #' @examples
@@ -66,7 +66,7 @@ gtexTiss = function(url="http://54.174.163.77:5000",
 #' @export
 goPatt = function(termPattern="neurotro", 
    targets=c("ENSEMBL", "SYMBOL"), organism="Hs", inst="eg") {
-require(GO.db)
+requireNamespace("GO.db")
 require(opackn <- paste0("org.", organism, ".", inst, ".db"), character.only=TRUE)
 tms = keys(GO.db, keytype="TERM")
 nterms = grep(termPattern, tms, value=TRUE) 
