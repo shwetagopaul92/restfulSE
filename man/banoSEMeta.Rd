@@ -14,4 +14,8 @@ banoSEMeta
 \description{
 banoSEMeta: metadata RangedSummarizedExperiment shell for banovichSE
 }
+\examples{
+data(banoSEMeta)
+banoSEMeta
+}
 \keyword{datasets}
