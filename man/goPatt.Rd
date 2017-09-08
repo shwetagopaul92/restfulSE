@@ -16,6 +16,9 @@ goPatt(termPattern = "neurotro", targets = c("ENSEMBL", "SYMBOL"),
 
 \item{inst}{two- or three-letter code (e.g., \code{eg} for ENTREZ GENE or \code{sgd} for yeastgenome.org) identifying institute responsible for annotation}
 }
+\value{
+data.frame
+}
 \description{
 create a data.frame with ENSEMBL and SYMBOL identifiers associated with a GO TERM specified by a regular expression in \code{termPattern}
 }
