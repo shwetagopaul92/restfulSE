@@ -10,6 +10,9 @@
 \arguments{
 \item{x}{instance of RESTfulSummarizedExperiment}
 }
+\value{
+vector of nrows, ncols
+}
 \description{
 dimension access for RESTfulSummarizedExperiment
 }

@@ -14,6 +14,17 @@ cgcConn(dataset = "TCGA_bioclin_v0", project = "isb-cgc",
 
 \item{billing}{string with billing code}
 }
+\value{
+instance of \code{\link[bigrquery]{BigQueryConnection-class}}
+}
 \description{
 simplify connection to a BigQuery dataset for ISB CGC
+}
+\examples{
+cgcConn
+# defaults concern new GDC-compliant format
+if (nchar(Sys.getenv("CGC_BILLING"))>0) {
+    clin = cgcConn()
+    dbListTables(clin)
+}
 }
