@@ -14,6 +14,9 @@ se1.3M(url = "http://54.174.163.77:5000", tag = "tenx_full")
 
 \item{tag}{string giving the internal dataset name}
 }
+\value{
+RESTfulSummarizedExperiment
+}
 \description{
 convenience functions using EC2 server to extract tenx neurons full or subset data
 }
