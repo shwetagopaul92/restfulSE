@@ -7,6 +7,11 @@
 \usage{
 \S4method{assayNames}{BQSummarizedExperiment}(x, ...)
 }
+\arguments{
+\item{x}{instance of BQSummarizedExperiment}
+
+\item{\dots}{not used}
+}
 \description{
 get assay names
 }
