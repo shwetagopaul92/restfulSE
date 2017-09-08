@@ -26,6 +26,11 @@ RESTfulSummarizedExperiment(se, source)
 
 \item{\dots}{not used}
 }
+\value{
+instance of RESTfulSummarizedExperiment
+
+matrix
+}
 \description{
 construct RESTfulSummarizedExperiment
 

@@ -23,6 +23,7 @@ setClass("RESTfulSummarizedExperiment",
 #' rr2 = rr[1:4, 1:5] # just modify metadata
 #' rr2
 #' assay(rr2) # extract data
+#' @return instance of RESTfulSummarizedExperiment
 #' @exportMethod RESTfulSummarizedExperiment
 #' @export RESTfulSummarizedExperiment
 setGeneric("RESTfulSummarizedExperiment",
@@ -61,6 +62,7 @@ setMethod("assayNames", "RESTfulSummarizedExperiment", function(x, ...) {
 #' @param j numeric selection vector
 #' @param \dots not used
 #' @param drop not used
+#' @return instance of RESTfulSummarizedExperiment
 #' @exportMethod [
 setMethod("[", c("RESTfulSummarizedExperiment",
      "numeric", "numeric", "ANY"), function(x,i,j,...,drop=FALSE) {
@@ -91,6 +93,7 @@ setMethod("[", c("RESTfulSummarizedExperiment",
 #' @param x instance of RESTfulSummarizedExperiment
 #' @param i not used
 #' @param \dots not used
+#' @return matrix
 #' @exportMethod assay
 setMethod("assay", c("RESTfulSummarizedExperiment", "missing"), 
     function(x, i, ...) {
@@ -131,6 +134,7 @@ setMethod("assay", c("RESTfulSummarizedExperiment", "missing"),
 #' @param x instance of RESTfulSummarizedExperiment
 #' @param \dots not used
 #' @param withDimnames logical defaults to TRUE
+#' @return at present a SimpleList is returned as a dummy placeholder
 #' @exportMethod assays
 setMethod("assays", c("RESTfulSummarizedExperiment"), function(x, ...,
    withDimnames=TRUE) {
@@ -142,6 +146,7 @@ setMethod("assays", c("RESTfulSummarizedExperiment"), function(x, ...,
 
 #' dimension access for RESTfulSummarizedExperiment
 #' @param x instance of RESTfulSummarizedExperiment
+#' @return vector of nrows, ncols
 #' @exportMethod dim
 setMethod("dim", "RESTfulSummarizedExperiment", function(x)
    c(length(rownames(x)), length(colnames(x)))
