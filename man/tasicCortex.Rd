@@ -6,6 +6,9 @@
 \usage{
 tasicCortex()
 }
+\value{
+data.frame with columns SYMBOL, GENEID
+}
 \description{
 A set of mouse cortex marker genes.
 }

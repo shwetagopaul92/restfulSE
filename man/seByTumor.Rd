@@ -26,6 +26,9 @@ seByTumor(tumorCode = "LUAD", assayTblName = "RNAseq_Gene_Expression",
 
 \item{assayvbl}{name of field to use for numerical values}
 }
+\value{
+SummarizedExperiment
+}
 \description{
 given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
 }
