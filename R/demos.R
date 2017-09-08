@@ -3,6 +3,7 @@
 #' @importFrom AnnotationDbi select keys
 #' @param url server URL
 #' @param tag string giving the internal dataset name
+#' @return RESTfulSummarizedExperiment
 #' @examples
 #' ss = se100k()
 #' # get a set of genes from Tasic et al. 2016 Nature Neuroscience
@@ -39,6 +40,9 @@ se1.3M = function(url="http://54.174.163.77:5000",
 #' convenience function for access to gene-level GTEx tissues, as quantified in recount
 #' @param url ip address/host for HDF5 server
 #' @param tag name of hdf5 file on server
+#' @return RESTfulSummarizedExperiment instance
+#' @examples
+#' gtexTiss()
 #' @export
 gtexTiss = function(url="http://54.174.163.77:5000",
    tag="tissues") {
@@ -59,6 +63,7 @@ gtexTiss = function(url="http://54.174.163.77:5000",
 #' @param targets \code{columns} to be returned from org.[organism].[inst].db
 #' @param organism two-letter code for organism in the OrgDb family of packages
 #' @param inst two- or three-letter code (e.g., \code{eg} for ENTREZ GENE or \code{sgd} for yeastgenome.org) identifying institute responsible for annotation
+#' @return data.frame
 #' @examples
 #' gp = goPatt()
 #' dim(gp)
