@@ -72,9 +72,15 @@ test_that("RESTfulSummarizedExperiment infrastructure works against server", {
 })
  
 test_that("complex indexing succeeds", {
- library(yriMulti)
- data(banovichSE)
- bansel = assay(banovichSE[c(1,3,5,200000,300000),c(1,5,7)])
+# library(yriMulti)
+# data(banovichSE)
+# bansel = assay(banovichSE[c(1,3,5,200000,300000),c(1,5,7)])
+ bansel = structure(c(0.473396289, -0.222581829, -0.150630834, 1.754529575, 
+-0.604892835, -0.903498324, -0.027544132, 0.596699897, 0.317356179, 
+0.393075519, 1.377916164, -1.473102055, -0.268610844, 0.63228941, 
+-0.286316831), .Dim = c(5L, 3L), .Dimnames = list(c("cg00000029", 
+"cg00000236", "cg00000363", "cg16010467", "cg25249241"), c("NA18498", 
+"NA18516", "NA18519")))
  library(restfulSE)
  data(banoSEMeta) 
  bigec2 = H5S_source("http://54.174.163.77:5000")
