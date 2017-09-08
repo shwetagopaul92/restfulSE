@@ -23,6 +23,9 @@
 
 \item{drop}{not used}
 }
+\value{
+instance of RESTfulSummarizedExperiment
+}
 \description{
 hdf5server-based assay for SummarizedExperiment
 }
