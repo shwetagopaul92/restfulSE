@@ -14,4 +14,8 @@ full_1Mneurons
 \description{
 full 1.3 million cell dataset from 10x genomics
 }
+\examples{
+data(full_1Mneurons)
+full_1Mneurons
+}
 \keyword{datasets}
