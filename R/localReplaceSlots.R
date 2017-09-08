@@ -74,3 +74,9 @@ updateS4 <- function(...)
     replaceSlots(...)
 }
 
+isTRUEorFALSE <- function(x)
+{
+  
+  is.logical(x) && length(x) == 1L && !is.na(x)
+  
+}
