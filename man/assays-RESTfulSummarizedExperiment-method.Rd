@@ -14,6 +14,9 @@
 
 \item{withDimnames}{logical defaults to TRUE}
 }
+\value{
+at present a SimpleList is returned as a dummy placeholder
+}
 \description{
 assays access for RESTfulSummarizedExperiment
 }

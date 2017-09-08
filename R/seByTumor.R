@@ -3,6 +3,14 @@
 #' @param dataset character string with dataset name
 #' @param project character string with project name
 #' @param billing string with billing code
+#' @return instance of \code{\link[bigrquery]{BigQueryConnection-class}}
+#' @examples
+#' cgcConn
+#' # defaults concern new GDC-compliant format
+#' if (nchar(Sys.getenv("CGC_BILLING"))>0) {
+#'     clin = cgcConn()
+#'     dbListTables(clin)
+#' }
 #' @export
 cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=Sys.getenv("CGC_BILLING"))
   DBI::dbConnect(dbi_driver(), project = project,
@@ -18,6 +26,10 @@ cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=Sys.get
 #' @param assayTblName the name of the assay whose annotation will be used as rowData
 #' @param rdColsToKeep columns of assay table to use in rowData component
 #' @param bqConn instance of BigQueryConnection from bigrquery
+#' @return SummarizedExperiment instance, with BigQuery reference as assay
+#' @examples
+#' # uses outdated tables
+#' seByTumor_2016
 #' @export
 seByTumor_2016 = function(tumorCode = "LUAD", assayTblName="mRNA_UNC_HiSeq_RSEM",
     rdColsToKeep = c("original_gene_symbol", "HGNC_gene_symbol", 
@@ -50,6 +62,7 @@ setClass("BQSummarizedExperiment", contains="SummarizedExperiment",
 #' @param rowkey name of a field to be used as key for rows
 #' @param colkey name of a field to use as key for samples
 #' @param assayvbl name of field to use for numerical values
+#' @return SummarizedExperiment
 #' @examples
 #' require(bigrquery)
 #' # be sure that .cgcBilling is set 
@@ -103,6 +116,7 @@ seByTumor = function(tumorCode = "LUAD",
 #' shell.  We use dcast to transform query result to a matrix, and
 #' some 'individuals' may have multiple contributions ... we use
 #' \code{fun.aggregate = max} and will see warnings until this is cleared up.
+#' @return matrix
 #' @exportMethod assay
 setMethod("assay", c("BQSummarizedExperiment", "missing"), 
   function(x, i, ...) {
@@ -121,6 +135,7 @@ setMethod("assay", c("BQSummarizedExperiment", "missing"),
 #' @aliases assayNames
 #' @param x instance of BQSummarizedExperiment
 #' @param \dots not used
+#' @return string indicating that assay is served by BigQuery, nameless
 #' @exportMethod assayNames
 setMethod("assayNames", "BQSummarizedExperiment", function(x, ...) {
  "(served by BigQuery)"
