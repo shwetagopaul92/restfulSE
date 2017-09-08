@@ -19,4 +19,8 @@ used github.com/mtmorgan/TENxGenomics package to obtain
 SummarizedExperiment, then added range information, sorted within
 chromosome, and saved shell for use with HDF5 server
 }
+\examples{
+data(st400k)
+st400k
+}
 \keyword{datasets}
