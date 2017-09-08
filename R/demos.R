@@ -1,6 +1,6 @@
 #' convenience functions using EC2 server to extract tenx neurons full or subset data
 #' @import rhdf5client
-#' @importFrom AnnotationDbi select
+#' @importFrom AnnotationDbi select keys
 #' @param url server URL
 #' @param tag string giving the internal dataset name
 #' @examples
