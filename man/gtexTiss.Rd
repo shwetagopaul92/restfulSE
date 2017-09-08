@@ -11,6 +11,12 @@ gtexTiss(url = "http://54.174.163.77:5000", tag = "tissues")
 
 \item{tag}{name of hdf5 file on server}
 }
+\value{
+RESTfulSummarizedExperiment instance
+}
 \description{
 convenience function for access to gene-level GTEx tissues, as quantified in recount
+}
+\examples{
+gtexTiss()
 }
