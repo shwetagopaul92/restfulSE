@@ -41,6 +41,7 @@ repeated).  When this is detected, assay() will fail with a complaint
 about length(setdiff(*names(x), x@globalDimnames[[...]])).
 }
 \examples{
+require("rhdf5client")
 bigec2 = H5S_source(serverURL="http://54.174.163.77:5000")
 banoh5 = bigec2[["assays"]] # banovichSE
 data(banoSEMeta)
