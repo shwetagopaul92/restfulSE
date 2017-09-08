@@ -17,6 +17,13 @@ seByTumor_2016(tumorCode = "LUAD", assayTblName = "mRNA_UNC_HiSeq_RSEM",
 
 \item{bqConn}{instance of BigQueryConnection from bigrquery}
 }
+\value{
+SummarizedExperiment instance, with BigQuery reference as assay
+}
 \description{
 given a BigQueryConnection to the 2016 ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
+}
+\examples{
+# uses outdated tables
+seByTumor_2016
 }
