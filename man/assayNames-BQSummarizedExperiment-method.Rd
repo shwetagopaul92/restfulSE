@@ -12,6 +12,9 @@
 
 \item{\dots}{not used}
 }
+\value{
+string indicating that assay is served by BigQuery, nameless
+}
 \description{
 get assay names
 }
