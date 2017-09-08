@@ -1,4 +1,3 @@
-library(rhdf5client)
 
 # utilities for index processing
 # sproc(isplit(vec)) will convert vec representing R integer vector
@@ -55,6 +54,7 @@ setClass("RESTfulSummarizedExperiment",
 #' @param se SummarizedExperiment instance, assay component can be empty SimpleList
 #' @param source instance of H5S_dataset
 #' @examples
+#' require("rhdf5client")
 #' bigec2 = H5S_source(serverURL="http://54.174.163.77:5000")
 #' banoh5 = bigec2[["assays"]] # banovichSE
 #' data(banoSEMeta)
@@ -166,6 +166,7 @@ setMethod("assay", c("RESTfulSummarizedExperiment", "missing"),
 })
 
 #' assays access for RESTfulSummarizedExperiment
+#' @importFrom S4Vectors SimpleList
 #' @param x instance of RESTfulSummarizedExperiment
 #' @param \dots not used
 #' @param withDimnames logical defaults to TRUE

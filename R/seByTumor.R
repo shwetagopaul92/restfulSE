@@ -9,9 +9,11 @@ cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=Sys.get
         dataset = dataset, billing = billing)
 
 #' given a BigQueryConnection to the 2016 ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
-#' @importFrom dplyr tbl filter select
+#' @importFrom dplyr tbl filter filter_ one_of
 #' @importFrom magrittr "%>%"
 #' @import SummarizedExperiment
+#' @importFrom S4Vectors DataFrame
+#' @importFrom utils head
 #' @param tumorCode one of the concise TCGA codes in a character string -- not checked, defaults to "LUAD", lung adenocarcinoma
 #' @param assayTblName the name of the assay whose annotation will be used as rowData
 #' @param rdColsToKeep columns of assay table to use in rowData component
@@ -26,9 +28,9 @@ seByTumor_2016 = function(tumorCode = "LUAD", assayTblName="mRNA_UNC_HiSeq_RSEM"
  stopifnot(bqConn@dataset == "tcga_201607_beta")
  requireNamespace("SummarizedExperiment")
  clin = bqConn %>% tbl("Clinical_data") %>% filter(Study==tumorCode) 
- h = clin %>% select(ParticipantBarcode) %>% head() %>% as.data.frame()
+ h = clin %>% dplyr::select(ParticipantBarcode) %>% head() %>% as.data.frame()
  keeper = h[[1]][1]
- assay = bqConn %>% tbl(assayTblName) %>% filter(Study==tumorCode & ParticipantBarcode==keeper) %>% select(rdColsToKeep)
+ assay = bqConn %>% tbl(assayTblName) %>% filter(Study==tumorCode & ParticipantBarcode==keeper) %>% dplyr::select(rdColsToKeep)
  SummarizedExperiment(colData=as.data.frame(clin), rowData=DataFrame(assay %>% as.data.frame()))
 }
 
@@ -73,14 +75,14 @@ seByTumor = function(tumorCode = "LUAD",
 #
  if (bqConnClinical@dataset != "TCGA_bioclin_v0") warning("bqConnClinical dataset name not 'TCGA_bioclin_v0', table/column-name expectations may fail")
  if (bqConnAssay@dataset != "TCGA_hg38_data_v0") warning("bqConnAssay dataset name not 'TCGA_hg38data_v0', table/column-name expectations may fail")
- require(SummarizedExperiment)
+ requireNamespace("SummarizedExperiment")
  newn = paste0("TCGA-", tumorCode)
  clinRef = bqConnClinical %>% tbl("Clinical")
  clin = clinRef %>% filter(project_short_name==newn)
- h = clin %>% select(case_barcode) %>% head() %>% as.data.frame()
+ h = clin %>% dplyr::select(case_barcode) %>% head() %>% as.data.frame()
  keeper = h[[1]][1]
  assayRef = bqConnAssay %>% tbl(assayTblName)
- assay = assayRef %>% filter(case_barcode==keeper) %>% select(rdColsToKeep)
+ assay = assayRef %>% filter(case_barcode==keeper) %>% dplyr::select(rdColsToKeep)
  clin = as.data.frame(clin)
  rownames(clin) = clin[,colkey]
  se = SummarizedExperiment(colData=clin, rowData=DataFrame(assay %>% as.data.frame()))
@@ -91,6 +93,7 @@ seByTumor = function(tumorCode = "LUAD",
 
 #' extract assay data
 #' @importFrom reshape2 dcast
+#' @importFrom stats as.formula
 #' @param x BQSummarizedExperiment instance
 #' @param i index for retrieval, ignored at present
 #' @param \dots not used
@@ -105,7 +108,7 @@ setMethod("assay", c("BQSummarizedExperiment", "missing"),
   function(x, i, ...) {
   rd = rowData(x)[,x@rowkey]
   cd = colData(x)[,x@colkey]
-  df = x@rowQref %>% select(one_of(c(x@rowkey, x@colkey, x@assayvbl))) %>% filter_(paste0(x@rowkey, " %in% rd & ", x@colkey, " %in% cd")) %>% # assumes colkey shared to assay table
+  df = x@rowQref %>% dplyr::select(one_of(c(x@rowkey, x@colkey, x@assayvbl))) %>% filter_(paste0(x@rowkey, " %in% rd & ", x@colkey, " %in% cd")) %>% # assumes colkey shared to assay table
       as.data.frame()
   res = dcast(df, as.formula(paste0(x@rowkey, "~", x@colkey)), fun.aggregate=max, value.var=x@assayvbl)
   mat = data.matrix(res[,-1])
@@ -116,6 +119,8 @@ setMethod("assay", c("BQSummarizedExperiment", "missing"),
 #' get assay names
 #' @aliases assayNames,BQSummarizedExperiment-method
 #' @aliases assayNames
+#' @param x instance of BQSummarizedExperiment
+#' @param \dots not used
 #' @exportMethod assayNames
 setMethod("assayNames", "BQSummarizedExperiment", function(x, ...) {
  "(served by BigQuery)"
