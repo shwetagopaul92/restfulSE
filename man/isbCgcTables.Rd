@@ -18,3 +18,10 @@ character vector
 \description{
 list the tables in a selected dataset
 }
+\examples{
+# be sure that .cgcBilling is set
+code = Sys.getenv("CGC_BILLING")
+if (!(nchar(code)==0)) {
+ isbCgcTables()
+ }
+}
