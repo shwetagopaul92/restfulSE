@@ -27,7 +27,7 @@ isbCgcDatasets = function() {
 }
 
 #' list the tables in a selected dataset
-#' @importFrom DBI dbConnect
+#' @import DBI
 #' @param dataset character string identifying a table in ISB CGC
 #' @param billing Google BigQuery billing code, which can be set in an environment variable \code{CGC_BILLING}
 #' @return character vector
