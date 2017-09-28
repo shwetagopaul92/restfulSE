@@ -18,7 +18,7 @@ se100k = function(url="http://54.174.163.77:5000",
    tag="tenx_100k_sorted") {
   src = H5S_source(url)
   ds = src[[tag]]
-  data(st100k)
+  data("st100k", package = "restfulSEData")
   RESTfulSummarizedExperiment(st100k, ds)
 }
 #' @rdname se100k
@@ -32,7 +32,7 @@ se1.3M = function(url="http://54.174.163.77:5000",
    tag="tenx_full") {
   src = H5S_source(url)
   ds = src[[tag]]
-  data(full_1Mneurons)
+  data("full_1Mneurons", package = "restfulSEData")
   full_1Mneurons = as(full_1Mneurons, "RangedSummarizedExperiment")
   RESTfulSummarizedExperiment(full_1Mneurons, ds)
 }
@@ -48,7 +48,7 @@ gtexTiss = function(url="http://54.174.163.77:5000",
    tag="tissues") {
   src = H5S_source(url)
   ds = src[[tag]]
-  data(gtexRecount)
+  data("gtexRecount", package = "restfulSEData")
   gtexTiss = as(gtexRecount, "RangedSummarizedExperiment")
   RESTfulSummarizedExperiment(gtexTiss, ds)
 }
