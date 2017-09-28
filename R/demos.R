@@ -1,10 +1,12 @@
 #' convenience functions using EC2 server to extract tenx neurons full or subset data
 #' @import rhdf5client
+#' @import restfulSEData
 #' @importFrom AnnotationDbi select keys
 #' @param url server URL
 #' @param tag string giving the internal dataset name
 #' @return RESTfulSummarizedExperiment
 #' @examples
+#' require(restfulSEData)
 #' ss = se100k()
 #' # get a set of genes from Tasic et al. 2016 Nature Neuroscience
 #' tc = tasicCortex()
