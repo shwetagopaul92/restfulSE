@@ -6,6 +6,7 @@
 #' @return instance of \code{\link[bigrquery]{BigQueryConnection-class}}
 #' @examples
 #' cgcConn
+#' require(bigrquery)
 #' # defaults concern new GDC-compliant format
 #' if (nchar(Sys.getenv("CGC_BILLING"))>0) {
 #'     clin = cgcConn()
