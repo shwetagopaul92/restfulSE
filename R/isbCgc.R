@@ -31,6 +31,12 @@ isbCgcDatasets = function() {
 #' @param dataset character string identifying a table in ISB CGC
 #' @param billing Google BigQuery billing code, which can be set in an environment variable \code{CGC_BILLING}
 #' @return character vector
+#' @examples 
+#' # be sure that .cgcBilling is set
+#' code = Sys.getenv("CGC_BILLING")
+#' if (!(nchar(code)==0)) {
+#'  isbCgcTables()
+#'  }
 #' @export
 isbCgcTables = function(dataset="TCGA_hg19_data_v0", billing=Sys.getenv("CGC_BILLING")) {
   stopifnot(dataset %in% isbCgcDatasets())
