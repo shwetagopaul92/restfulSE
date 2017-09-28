@@ -22,6 +22,7 @@ simplify connection to a BigQuery dataset for ISB CGC
 }
 \examples{
 cgcConn
+require(bigrquery)
 # defaults concern new GDC-compliant format
 if (nchar(Sys.getenv("CGC_BILLING"))>0) {
     clin = cgcConn()
