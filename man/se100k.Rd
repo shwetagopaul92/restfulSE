@@ -27,6 +27,7 @@ while se100k provides access to only 100k neurons with
 expression features sorted by genomic location
 }
 \examples{
+require(restfulSEData)
 ss = se100k()
 # get a set of genes from Tasic et al. 2016 Nature Neuroscience
 tc = tasicCortex()
