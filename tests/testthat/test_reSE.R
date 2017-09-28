@@ -1,5 +1,6 @@
 library(restfulSE)
 library(rhdf5client)
+library(restfulSEData)
 
 context("connection")
 
