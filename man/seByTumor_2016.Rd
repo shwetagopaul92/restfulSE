@@ -23,7 +23,3 @@ SummarizedExperiment instance, with BigQuery reference as assay
 \description{
 given a BigQueryConnection to the 2016 ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
 }
-\examples{
-# uses outdated tables
-seByTumor_2016
-}
