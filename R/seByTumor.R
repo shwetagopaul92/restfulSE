@@ -27,10 +27,6 @@ cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=Sys.get
 #' @param rdColsToKeep columns of assay table to use in rowData component
 #' @param bqConn instance of BigQueryConnection from bigrquery
 #' @return SummarizedExperiment instance, with BigQuery reference as assay
-#' @examples
-#' # uses outdated tables
-#' seByTumor_2016
-#' @export
 seByTumor_2016 = function(tumorCode = "LUAD", assayTblName="mRNA_UNC_HiSeq_RSEM",
     rdColsToKeep = c("original_gene_symbol", "HGNC_gene_symbol", 
       "gene_id", "Study"), bqConn ){
@@ -39,6 +35,8 @@ seByTumor_2016 = function(tumorCode = "LUAD", assayTblName="mRNA_UNC_HiSeq_RSEM"
 #
  stopifnot(bqConn@dataset == "tcga_201607_beta")
  requireNamespace("SummarizedExperiment")
+ Study = NULL
+ ParticipantBarcode = NULL
  clin = bqConn %>% tbl("Clinical_data") %>% filter(Study==tumorCode) 
  h = clin %>% dplyr::select(ParticipantBarcode) %>% head() %>% as.data.frame()
  keeper = h[[1]][1]
@@ -88,6 +86,8 @@ seByTumor = function(tumorCode = "LUAD",
 #
  if (bqConnClinical@dataset != "TCGA_bioclin_v0") warning("bqConnClinical dataset name not 'TCGA_bioclin_v0', table/column-name expectations may fail")
  if (bqConnAssay@dataset != "TCGA_hg38_data_v0") warning("bqConnAssay dataset name not 'TCGA_hg38data_v0', table/column-name expectations may fail")
+ case_barcode = NULL
+ project_short_name = NULL
  requireNamespace("SummarizedExperiment")
  newn = paste0("TCGA-", tumorCode)
  clinRef = bqConnClinical %>% tbl("Clinical")
