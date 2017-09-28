@@ -172,7 +172,7 @@ banref
 We build a RESTfulSummarizedExperiment by combining an assay-free
 RangedSummarizedExperiment with this reference.
 ```{r doba3}
-data(banoSEMeta)
+data("banoSEMeta", package = "restfulSEData")
 rbano = RESTfulSummarizedExperiment(banoSEMeta, banref)
 rbano
 ```
@@ -201,7 +201,7 @@ are sorted by genomic address within chromosomes.
 
 ```{r gettx}
 txdat = bigec2[["tenx_100k_sorted"]]
-data(st100k)
+data("st100k", package = "restfulSEData")
 tenx100k = RESTfulSummarizedExperiment( st100k, 
    txdat )
 tenx100k
@@ -250,7 +250,7 @@ these clusters.  The tasicST6 DataFrame provides
 details.
 
 ```{r lktas}
-data(tasicST6)
+data("tasicST6", package = "restfulSEData")
 tasicST6
 ```
 
@@ -268,7 +268,7 @@ assembled on 64 samples of immortalized B-cells from the YRI HapMap cohort.
 
 ```{r lkd}
 library(restfulSE)
-data(banoSEMeta)
+data("banoSEMeta", package = "restfulSEData")
 banoSEMeta
 ```
 
