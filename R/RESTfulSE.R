@@ -35,6 +35,7 @@ setMethod("RESTfulSummarizedExperiment", c("RangedSummarizedExperiment",
 
 #' hidden constructor
 #' @rdname RESTfulSummarizedExperiment
+#' @rawNamespace importFrom("methods", "as", "is", "new", "slot", "slot<-", "validObject")
 #' @importFrom rhdf5client internalDim
 .RESTfulSummarizedExperiment = function(se, source) {
    stopifnot(is(se, "RangedSummarizedExperiment")) # for now
