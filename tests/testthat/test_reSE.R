@@ -24,10 +24,14 @@ test_that("H5S_source processes", {
 context("indexing infrastructure")
 
 test_that("sproc/isplit work", {
- expect_true(length(isplit(c(1,2,3,4,5,10,15,20,30:40)))==4)
+ expect_true(length(isplit(c(1,2,3,4,5,10,15,20,30:40)))==3)
  ii = isplit(c(1,2,3,4,5,10,15,20,30:40))
- ss = structure(c("0:5:1", "9:20:5", "29:30:1", "30:40:1"), .Names = c("1", 
-"2", "3", "4"))
+ ss = structure(c("0:5:1", "9:20:5", "29:40:1"), .Names = c("1", 
+"2", "3"))
+ expect_true(identical(ss, unlist(sproc(ii))))
+ ii = isplit(c(1:10, seq(50,25,-5), seq(80,100,2)))
+ ss = structure(c("0:10:1", "50:24:-5", "79:100:2"), 
+                .Names = c("1", "2", "3"))
  expect_true(identical(ss, unlist(sproc(ii))))
 })
 
@@ -44,11 +48,11 @@ context("RESTful SE")
 
 test_that("RESTfulSummarizedExperiment infrastructure works against server", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
- data(st100k)
+ data("st100k", package="restfulSEData")
  n100k_served = bigec2[["tenx_100k_sorted"]]  
  rr = RESTfulSummarizedExperiment( st100k, n100k_served )
  expect_true(is(rr, "RangedSummarizedExperiment"))
- data(banoSEMeta) 
+ data("banoSEMeta", package="restfulSEData") 
  bigec2 = H5S_source("http://54.174.163.77:5000")
  banoh5 = bigec2[["assays"]]
  rr = RESTfulSummarizedExperiment( banoSEMeta, banoh5 )
@@ -83,10 +87,11 @@ test_that("complex indexing succeeds", {
 "cg00000236", "cg00000363", "cg16010467", "cg25249241"), c("NA18498", 
 "NA18516", "NA18519")))
  library(restfulSE)
- data(banoSEMeta) 
+ data("banoSEMeta", package="restfulSEData") 
  bigec2 = H5S_source("http://54.174.163.77:5000")
  banh = bigec2[["assays"]]
  rr = RESTfulSummarizedExperiment( banoSEMeta, banh )
+ options(scipen = 999)
  rrsel = rr[c(1,3,5,200000,300000),c(1,5,7)]
  rrass = assay(rrsel)
  expect_true( max(abs(rrass-bansel))<1e-6 )
@@ -96,7 +101,7 @@ test_that("complex indexing succeeds", {
 })
 
 test_that("dim compatibility check is sensitive", {
- data(banoSEMeta) 
+ data("banoSEMeta", package="restfulSEData") 
  bigec2 = H5S_source("http://54.174.163.77:5000")
  banoh5 = bigec2[["assays"]]
  expect_error( rr = RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )
