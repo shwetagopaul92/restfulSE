@@ -3,7 +3,7 @@
 \docType{methods}
 \name{assays,RESTfulSummarizedExperiment-method}
 \alias{assays,RESTfulSummarizedExperiment-method}
-\title{assays access for RESTfulSummarizedExperiment}
+\title{Assays access for RESTfulSummarizedExperiment}
 \usage{
 \S4method{assays}{RESTfulSummarizedExperiment}(x, ..., withDimnames = TRUE)
 }
@@ -18,5 +18,5 @@
 at present a SimpleList is returned as a dummy placeholder
 }
 \description{
-assays access for RESTfulSummarizedExperiment
+Assays access for RESTfulSummarizedExperiment
 }

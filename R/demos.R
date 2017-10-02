@@ -1,4 +1,4 @@
-#' convenience functions using EC2 server to extract tenx neurons full or subset data
+#' Convenience functions using EC2 server to extract tenx neurons full or subset data
 #' @import rhdf5client
 #' @importFrom utils data
 #' @importFrom AnnotationDbi select keys
@@ -6,10 +6,9 @@
 #' @param tag string giving the internal dataset name
 #' @return RESTfulSummarizedExperiment
 #' @examples
-#' require(restfulSEData)
 #' ss = se100k()
 #' # get a set of genes from Tasic et al. 2016 Nature Neuroscience
-#' tc = tasicCortex()
+#' tc = restfulSEData::tasicCortex()
 #' adultCort = tc$GENEID
 #' # subset
 #' csums = apply(assay(ss[adultCort,1:500]),1,sum)
@@ -39,7 +38,7 @@ se1.3M = function(url="http://54.174.163.77:5000",
   RESTfulSummarizedExperiment(full_1Mneurons, ds)
 }
 
-#' convenience function for access to gene-level GTEx tissues, as quantified in recount
+#' Convenience function for access to gene-level GTEx tissues, as quantified in recount
 #' @param url ip address/host for HDF5 server
 #' @param tag name of hdf5 file on server
 #' @return RESTfulSummarizedExperiment instance
@@ -59,7 +58,7 @@ gtexTiss = function(url="http://54.174.163.77:5000",
 #tiss = gtexTiss()
 #binds = grep("Brain", tiss$smtsd); table(tiss$smtsd[binds])
 
-#' create a data.frame with ENSEMBL and SYMBOL identifiers associated with a GO TERM specified by a regular expression in \code{termPattern}
+#' Create a data.frame with ENSEMBL and SYMBOL identifiers associated with a GO TERM specified by a regular expression in \code{termPattern}
 #' @import GO.db
 #' @param termPattern a character string encoding a regular expression to be matched to keys of type TERM in GO.db
 #' @param targets \code{columns} to be returned from org.[organism].[inst].db
