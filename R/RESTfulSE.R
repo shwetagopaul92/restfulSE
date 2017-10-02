@@ -1,6 +1,6 @@
 # isplit/sproc from rhdf5client
 
-#' hdf5server-based assay for SummarizedExperiment
+#' HDF5Server-based assay for SummarizedExperiment
 #' @import SummarizedExperiment
 #' @importClassesFrom rhdf5client H5S_dataset
 #' @exportClass RESTfulSummarizedExperiment
@@ -9,7 +9,7 @@ setClass("RESTfulSummarizedExperiment",
      representation(source="H5S_dataset",
                     globalDimnames="list"))
 
-#' construct RESTfulSummarizedExperiment
+#' Construct RESTfulSummarizedExperiment
 #' @aliases RESTfulSummarizedExperiment,RangedSummarizedExperiment,H5S_dataset-method
 #' @param se SummarizedExperiment instance, assay component can be empty SimpleList
 #' @param source instance of H5S_dataset
@@ -132,7 +132,7 @@ setMethod("assay", c("RESTfulSummarizedExperiment", "missing"),
     ans
 })
 
-#' assays access for RESTfulSummarizedExperiment
+#' Assays access for RESTfulSummarizedExperiment
 #' @importFrom S4Vectors SimpleList
 #' @param x instance of RESTfulSummarizedExperiment
 #' @param \dots not used
@@ -147,7 +147,7 @@ setMethod("assays", c("RESTfulSummarizedExperiment"), function(x, ...,
 })
  
 
-#' dimension access for RESTfulSummarizedExperiment
+#' Dimension access for RESTfulSummarizedExperiment
 #' @param x instance of RESTfulSummarizedExperiment
 #' @return vector of nrows, ncols
 #' @exportMethod dim
