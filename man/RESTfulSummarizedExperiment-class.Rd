@@ -5,7 +5,7 @@
 \alias{RESTfulSummarizedExperiment-class}
 \alias{assayNames,RESTfulSummarizedExperiment-method}
 \alias{[,RESTfulSummarizedExperiment,numeric,numeric,ANY-method}
-\title{hdf5server-based assay for SummarizedExperiment}
+\title{HDF5Server-based assay for SummarizedExperiment}
 \usage{
 \S4method{assayNames}{RESTfulSummarizedExperiment}(x, ...)
 
@@ -27,5 +27,5 @@
 instance of RESTfulSummarizedExperiment
 }
 \description{
-hdf5server-based assay for SummarizedExperiment
+HDF5Server-based assay for SummarizedExperiment
 }

@@ -3,7 +3,7 @@
 \docType{methods}
 \name{assayNames,BQSummarizedExperiment-method}
 \alias{assayNames,BQSummarizedExperiment-method}
-\title{get assay names}
+\title{Get assay names}
 \usage{
 \S4method{assayNames}{BQSummarizedExperiment}(x, ...)
 }
@@ -16,5 +16,5 @@
 string indicating that assay is served by BigQuery, nameless
 }
 \description{
-get assay names
+Get assay names
 }
