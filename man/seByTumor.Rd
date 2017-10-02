@@ -2,7 +2,7 @@
 % Please edit documentation in R/seByTumor.R
 \name{seByTumor}
 \alias{seByTumor}
-\title{given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData}
+\title{Given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData}
 \usage{
 seByTumor(tumorCode = "LUAD", assayTblName = "RNAseq_Gene_Expression",
   rdColsToKeep = c("gene_name", "Ensembl_gene_id", "gene_type"),
@@ -30,7 +30,7 @@ seByTumor(tumorCode = "LUAD", assayTblName = "RNAseq_Gene_Expression",
 SummarizedExperiment
 }
 \description{
-given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
+Given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
 }
 \examples{
 require(bigrquery)
