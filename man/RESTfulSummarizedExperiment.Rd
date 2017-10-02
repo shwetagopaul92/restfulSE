@@ -7,7 +7,7 @@
 \alias{.RESTfulSummarizedExperiment}
 \alias{assay}
 \alias{assay,RESTfulSummarizedExperiment,missing-method}
-\title{construct RESTfulSummarizedExperiment}
+\title{Construct RESTfulSummarizedExperiment}
 \usage{
 RESTfulSummarizedExperiment(se, source)
 
@@ -32,7 +32,7 @@ instance of RESTfulSummarizedExperiment
 matrix
 }
 \description{
-construct RESTfulSummarizedExperiment
+Construct RESTfulSummarizedExperiment
 
 hidden constructor
 }
