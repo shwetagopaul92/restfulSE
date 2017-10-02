@@ -3,7 +3,7 @@
 \docType{methods}
 \name{dim,RESTfulSummarizedExperiment-method}
 \alias{dim,RESTfulSummarizedExperiment-method}
-\title{dimension access for RESTfulSummarizedExperiment}
+\title{Dimension access for RESTfulSummarizedExperiment}
 \usage{
 \S4method{dim}{RESTfulSummarizedExperiment}(x)
 }
@@ -14,5 +14,5 @@
 vector of nrows, ncols
 }
 \description{
-dimension access for RESTfulSummarizedExperiment
+Dimension access for RESTfulSummarizedExperiment
 }
