@@ -3,7 +3,35 @@
 \docType{class}
 \name{BQSummarizedExperiment-class}
 \alias{BQSummarizedExperiment-class}
-\title{define a class to use BigQuery data through SummarizedExperiment interface}
+\title{Define a class to use BigQuery data through SummarizedExperiment interface}
 \description{
-define a class to use BigQuery data through SummarizedExperiment interface
+Define a class to use BigQuery data through SummarizedExperiment interface
+}
+\section{Slots}{
+
+\describe{
+\item{\code{rowQref}}{a BigQueryConnection wrapped in tbl_dbi that
+holds rowData for the SummarizedExperiment instance}
+
+\item{\code{colQref}}{a BigQueryConnection wrapped in tbl_dbi that
+holds colData for the SummarizedExperiment instance}
+
+\item{\code{rowkey}}{character(1) name of a field in the table
+referenced by \code{rowQref} to be used as key for features}
+
+\item{\code{colkey}}{character(1) name of a field in the table
+referenced by \code{colQref} to use as key for samples}
+
+\item{\code{assayvbl}}{character(1) name to be used to select table
+providing assay content}
+}}
+
+\note{
+This is an experimental structure to probe the concept that
+one can use a SummarizedExperiment object to interact with
+BigQuery data, particularly TCGA data.  The slots \code{rowQref}
+and \code{colQref} are expected to be BigQuery connections
+which supply information on features and samples respectively, in
+a way that is consistent with the assay representation.
+See \code{\link{seByTumor}} for illustration.
 }
