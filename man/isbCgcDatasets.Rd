@@ -2,7 +2,7 @@
 % Please edit documentation in R/isbCgc.R
 \name{isbCgcDatasets}
 \alias{isbCgcDatasets}
-\title{vector of dataset names in isb-cgc project}
+\title{Access the dataset names in the "isb-cgc" project}
 \usage{
 isbCgcDatasets()
 }
@@ -10,7 +10,7 @@ isbCgcDatasets()
 character vector
 }
 \description{
-vector of dataset names in isb-cgc project
+Access the dataset names in the "isb-cgc" project
 }
 \examples{
 isbCgcDatasets() # might be out of date ... can use list_datasets in bigrquery
