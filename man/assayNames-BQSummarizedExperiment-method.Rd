@@ -3,7 +3,7 @@
 \docType{methods}
 \name{assayNames,BQSummarizedExperiment-method}
 \alias{assayNames,BQSummarizedExperiment-method}
-\title{Get assay names}
+\title{Placeholder for assay name extractor for a BQSummarizedExperiment instance.}
 \usage{
 \S4method{assayNames}{BQSummarizedExperiment}(x, ...)
 }
@@ -16,5 +16,11 @@
 string indicating that assay is served by BigQuery, nameless
 }
 \description{
-Get assay names
+Placeholder for assay name extractor for a BQSummarizedExperiment instance.
+}
+\note{
+This function supplies a placeholder for this early
+version of a SummarizedExperiment instance to BigQuery.
+At present there is only one assay supported; future work will
+help to reduce special coding for BigQuery back end.
 }
