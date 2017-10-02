@@ -1,12 +1,12 @@
 Package: restfulSE
 Title: Access matrix-like HDF5 server content or BigQuery content through a SummarizedExperiment interface
 Description: This package provides functions and classes to interface with remote data stores by operating on SummarizedExperiment-like objects.
-Version: 0.99.9
+Version: 0.99.10
 Authors@R: c(
  person("Vincent", "Carey", role = c("aut"), email = "stvjc@channing.harvard.edu"),
  person("Shweta", "Gopaulakrishnan", role = c("cre","aut"), email = "reshg@channing.harvard.edu")
  )
-Suggests: knitr, testthat, Rtsne, org.Mm.eg.db, org.Hs.eg.db, restfulSEData
+Suggests: knitr, testthat, Rtsne, org.Mm.eg.db, org.Hs.eg.db, restfulSEData, BiocStyle
 Imports: utils, stats, methods, S4Vectors,
 	DelayedArray, reshape2, AnnotationDbi, DBI, GO.db, 
         rhdf5client, dplyr (>= 0.7.1), magrittr, bigrquery
