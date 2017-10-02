@@ -1,4 +1,4 @@
-#' simplify connection to a BigQuery dataset for ISB CGC
+#' Simplify connection to a BigQuery dataset for the project "isb-cgc"
 #' @importFrom bigrquery dbConnect dbi_driver
 #' @param dataset character string with dataset name
 #' @param project character string with project name
@@ -17,7 +17,7 @@ cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=Sys.get
   DBI::dbConnect(dbi_driver(), project = project,
         dataset = dataset, billing = billing)
 
-#' given a BigQueryConnection to the 2016 ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
+#' Given a BigQueryConnection to the 2016 ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
 #' @importFrom dplyr tbl filter filter_ one_of
 #' @importFrom magrittr "%>%"
 #' @import SummarizedExperiment
@@ -52,7 +52,7 @@ setClass("BQSummarizedExperiment", contains="SummarizedExperiment",
    representation(rowQref = "ANY", colQref = "ANY",
    rowkey="character", colkey="character", assayvbl = "character"))
 
-#' given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
+#' Given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
 #' @param tumorCode one of the concise TCGA codes in a character string -- not checked, defaults to "LUAD", lung adenocarcinoma
 #' @param assayTblName the name of the assay whose annotation will be used as rowData
 #' @param rdColsToKeep columns of assay table to use in rowData component
@@ -131,7 +131,7 @@ setMethod("assay", c("BQSummarizedExperiment", "missing"),
   mat
 })
 
-#' get assay names
+#' Get assay names
 #' @aliases assayNames,BQSummarizedExperiment-method
 #' @aliases assayNames
 #' @param x instance of BQSummarizedExperiment
