@@ -3,7 +3,7 @@
 \name{se100k}
 \alias{se100k}
 \alias{se1.3M}
-\title{convenience functions using EC2 server to extract tenx neurons full or subset data}
+\title{Convenience functions using EC2 server to extract tenx neurons full or subset data}
 \usage{
 se100k(url = "http://54.174.163.77:5000", tag = "tenx_100k_sorted")
 
@@ -18,7 +18,7 @@ se1.3M(url = "http://54.174.163.77:5000", tag = "tenx_full")
 RESTfulSummarizedExperiment
 }
 \description{
-convenience functions using EC2 server to extract tenx neurons full or subset data
+Convenience functions using EC2 server to extract tenx neurons full or subset data
 }
 \note{
 se1.3M provides access to the full 1.3 million neurons
@@ -27,10 +27,9 @@ while se100k provides access to only 100k neurons with
 expression features sorted by genomic location
 }
 \examples{
-require(restfulSEData)
 ss = se100k()
 # get a set of genes from Tasic et al. 2016 Nature Neuroscience
-tc = tasicCortex()
+tc = restfulSEData::tasicCortex()
 adultCort = tc$GENEID
 # subset
 csums = apply(assay(ss[adultCort,1:500]),1,sum)
