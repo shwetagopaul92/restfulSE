@@ -2,7 +2,7 @@
 % Please edit documentation in R/demos.R
 \name{goPatt}
 \alias{goPatt}
-\title{create a data.frame with ENSEMBL and SYMBOL identifiers associated with a GO TERM specified by a regular expression in \code{termPattern}}
+\title{Create a data.frame with ENSEMBL and SYMBOL identifiers associated with a GO TERM specified by a regular expression in \code{termPattern}}
 \usage{
 goPatt(termPattern = "neurotro", targets = c("ENSEMBL", "SYMBOL"),
   organism = "Hs", inst = "eg")
@@ -20,7 +20,7 @@ goPatt(termPattern = "neurotro", targets = c("ENSEMBL", "SYMBOL"),
 data.frame
 }
 \description{
-create a data.frame with ENSEMBL and SYMBOL identifiers associated with a GO TERM specified by a regular expression in \code{termPattern}
+Create a data.frame with ENSEMBL and SYMBOL identifiers associated with a GO TERM specified by a regular expression in \code{termPattern}
 }
 \examples{
 gp = goPatt()

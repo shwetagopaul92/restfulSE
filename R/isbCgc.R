@@ -1,7 +1,7 @@
 # some utilities to simplify exploration of ISB Cancer Genomic Cloud BigQuery
 # August 2017
 
-#' vector of dataset names in isb-cgc project
+#' Access the dataset names in the "isb-cgc" project
 #' @return character vector
 #' @examples
 #' isbCgcDatasets() # might be out of date ... can use list_datasets in bigrquery
@@ -26,9 +26,9 @@ isbCgcDatasets = function() {
  "Toil_recompute")
 }
 
-#' list the tables in a selected dataset
+#' List the tables in a selected dataset
 #' @import DBI
-#' @param dataset character string identifying a table in ISB CGC
+#' @param dataset character string identifying a table in "isb-cgc"
 #' @param billing Google BigQuery billing code, which can be set in an environment variable \code{CGC_BILLING}
 #' @return character vector
 #' @examples 
