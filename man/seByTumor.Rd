@@ -32,6 +32,17 @@ SummarizedExperiment
 \description{
 Given a BigQueryConnection to the 2017 GDC-oriented ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData
 }
+\note{
+This function demonstrates the use of external resources
+for rowData, colData and assay components of a SummarizedExperiment
+instance.  The intention is that the full complement of activities
+supported by \code{\link[SummarizedExperiment]{SummarizedExperiment-class}}
+are likewise supported through this class, with 
+assay data and sample and feature
+metadata all external and in BigQuery projects.  The \code{seByTumor}
+function is provided to generate an example of this approach
+with minimal user configuration.
+}
 \examples{
 require(bigrquery)
 # be sure that .cgcBilling is set 
