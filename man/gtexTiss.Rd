@@ -2,7 +2,7 @@
 % Please edit documentation in R/demos.R
 \name{gtexTiss}
 \alias{gtexTiss}
-\title{convenience function for access to gene-level GTEx tissues, as quantified in recount}
+\title{Convenience function for access to gene-level GTEx tissues, as quantified in recount}
 \usage{
 gtexTiss(url = "http://54.174.163.77:5000", tag = "tissues")
 }
@@ -15,7 +15,7 @@ gtexTiss(url = "http://54.174.163.77:5000", tag = "tissues")
 RESTfulSummarizedExperiment instance
 }
 \description{
-convenience function for access to gene-level GTEx tissues, as quantified in recount
+Convenience function for access to gene-level GTEx tissues, as quantified in recount
 }
 \examples{
 gtexTiss()

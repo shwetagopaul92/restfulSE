@@ -2,13 +2,13 @@
 % Please edit documentation in R/isbCgc.R
 \name{isbCgcTables}
 \alias{isbCgcTables}
-\title{list the tables in a selected dataset}
+\title{List the tables in a selected dataset}
 \usage{
 isbCgcTables(dataset = "TCGA_hg19_data_v0",
   billing = Sys.getenv("CGC_BILLING"))
 }
 \arguments{
-\item{dataset}{character string identifying a table in ISB CGC}
+\item{dataset}{character string identifying a table in "isb-cgc"}
 
 \item{billing}{Google BigQuery billing code, which can be set in an environment variable \code{CGC_BILLING}}
 }
@@ -16,7 +16,7 @@ isbCgcTables(dataset = "TCGA_hg19_data_v0",
 character vector
 }
 \description{
-list the tables in a selected dataset
+List the tables in a selected dataset
 }
 \examples{
 # be sure that .cgcBilling is set
