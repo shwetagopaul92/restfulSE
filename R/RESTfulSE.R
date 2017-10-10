@@ -17,7 +17,9 @@ setClass("RESTfulSummarizedExperiment",
 #' require("rhdf5client")
 #' bigec2 = H5S_source(serverURL="http://54.174.163.77:5000")
 #' banoh5 = bigec2[["assays"]] # banovichSE
-#' data("banoSEMeta", package = "restfulSEData")
+#' ehub = ExperimentHub::ExperimentHub()
+#' myfiles <- AnnotationHub::query(ehub , "restfulSEData")
+#' myfiles[["EH551"]] -> banoSEMeta
 #' rr = RESTfulSummarizedExperiment(banoSEMeta, banoh5)
 #' rr
 #' rr2 = rr[1:4, 1:5] # just modify metadata
