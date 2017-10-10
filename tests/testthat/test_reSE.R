@@ -48,11 +48,15 @@ context("RESTful SE")
 
 test_that("RESTfulSummarizedExperiment infrastructure works against server", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
- data("st100k", package="restfulSEData")
+ #data("st100k", package="restfulSEData")
+ ehub = ExperimentHub::ExperimentHub()
+ myfiles <- AnnotationHub::query(ehub , "restfulSEData")
+ myfiles[["EH552"]] -> st100k
  n100k_served = bigec2[["tenx_100k_sorted"]]  
  rr = RESTfulSummarizedExperiment( st100k, n100k_served )
  expect_true(is(rr, "RangedSummarizedExperiment"))
- data("banoSEMeta", package="restfulSEData") 
+ #data("banoSEMeta", package="restfulSEData")
+ myfiles[["EH551"]] -> banoSEMeta
  bigec2 = H5S_source("http://54.174.163.77:5000")
  banoh5 = bigec2[["assays"]]
  rr = RESTfulSummarizedExperiment( banoSEMeta, banoh5 )
@@ -87,7 +91,10 @@ test_that("complex indexing succeeds", {
 "cg00000236", "cg00000363", "cg16010467", "cg25249241"), c("NA18498", 
 "NA18516", "NA18519")))
  library(restfulSE)
- data("banoSEMeta", package="restfulSEData") 
+ #data("banoSEMeta", package="restfulSEData") 
+ ehub = ExperimentHub::ExperimentHub()
+ myfiles <- AnnotationHub::query(ehub , "restfulSEData")
+ myfiles[["EH551"]] -> banoSEMeta
  bigec2 = H5S_source("http://54.174.163.77:5000")
  banh = bigec2[["assays"]]
  rr = RESTfulSummarizedExperiment( banoSEMeta, banh )
@@ -101,7 +108,10 @@ test_that("complex indexing succeeds", {
 })
 
 test_that("dim compatibility check is sensitive", {
- data("banoSEMeta", package="restfulSEData") 
+ #data("banoSEMeta", package="restfulSEData") 
+ ehub = ExperimentHub::ExperimentHub()
+ myfiles <- AnnotationHub::query(ehub , "restfulSEData")
+ myfiles[["EH551"]] -> banoSEMeta
  bigec2 = H5S_source("http://54.174.163.77:5000")
  banoh5 = bigec2[["assays"]]
  expect_error( rr = RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )

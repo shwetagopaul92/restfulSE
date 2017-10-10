@@ -29,7 +29,7 @@ expression features sorted by genomic location
 \examples{
 ss = se100k()
 # get a set of genes from Tasic et al. 2016 Nature Neuroscience
-tc = restfulSEData::tasicCortex()
+tc = tasicCortex()
 adultCort = tc$GENEID
 # subset
 csums = apply(assay(ss[adultCort,1:500]),1,sum)
