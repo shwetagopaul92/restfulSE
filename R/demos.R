@@ -1,3 +1,17 @@
+#' A set of mouse cortex marker genes.
+#' @note \url{http://www.nature.com/doifinder/10.1038/nn.4216}, Fig 1C
+#' @examples
+#' head(tasicCortex())
+#' @return data.frame with columns SYMBOL, GENEID
+#' @export
+tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst", "Pvalb", 
+                                                   "Slc17a7", "Rorb", "Foxp2", "Aqp4", "Pdgfra", "Mog", "Itgam", 
+                                                   "Bgn"), GENEID = c("ENSMUSG00000027273", "ENSMUSG00000070880", 
+                                                                      "ENSMUSG00000019772", "ENSMUSG00000004366", "ENSMUSG00000005716", 
+                                                                      "ENSMUSG00000070570", "ENSMUSG00000036192", "ENSMUSG00000029563", 
+                                                                      "ENSMUSG00000024411", "ENSMUSG00000029231", "ENSMUSG00000076439", 
+                                                                      "ENSMUSG00000030786", "ENSMUSG00000031375")), .Names = c("SYMBOL", 
+                                                                                                                               "GENEID"), row.names = c(NA, -13L), class = "data.frame")
 #' Convenience functions using EC2 server to extract tenx neurons full or subset data
 #' @import rhdf5client
 #' @importFrom utils data
@@ -8,7 +22,7 @@
 #' @examples
 #' ss = se100k()
 #' # get a set of genes from Tasic et al. 2016 Nature Neuroscience
-#' tc = restfulSEData::tasicCortex()
+#' tc = tasicCortex()
 #' adultCort = tc$GENEID
 #' # subset
 #' csums = apply(assay(ss[adultCort,1:500]),1,sum)
@@ -19,7 +33,9 @@ se100k = function(url="http://54.174.163.77:5000",
    tag="tenx_100k_sorted") {
   src = H5S_source(url)
   ds = src[[tag]]
-  data("st100k", package = "restfulSEData")
+  ehub = ExperimentHub::ExperimentHub()
+  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
+  myfiles[["EH552"]] -> st100k
   RESTfulSummarizedExperiment(st100k, ds)
 }
 #' @rdname se100k
@@ -33,12 +49,16 @@ se1.3M = function(url="http://54.174.163.77:5000",
    tag="tenx_full") {
   src = H5S_source(url)
   ds = src[[tag]]
-  data("full_1Mneurons", package = "restfulSEData")
+  #data("full_1Mneurons", package = "restfulSEData")
+  ehub = ExperimentHub::ExperimentHub()
+  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
+  myfiles[["EH554"]] -> full_1Mneurons
   full_1Mneurons = as(full_1Mneurons, "RangedSummarizedExperiment")
   RESTfulSummarizedExperiment(full_1Mneurons, ds)
 }
 
 #' Convenience function for access to gene-level GTEx tissues, as quantified in recount
+#' @import ExperimentHub
 #' @param url ip address/host for HDF5 server
 #' @param tag name of hdf5 file on server
 #' @return RESTfulSummarizedExperiment instance
@@ -49,7 +69,10 @@ gtexTiss = function(url="http://54.174.163.77:5000",
    tag="tissues") {
   src = H5S_source(url)
   ds = src[[tag]]
-  data("gtexRecount", package = "restfulSEData")
+  #data("gtexRecount", package = "restfulSEData")
+  ehub = ExperimentHub::ExperimentHub()
+  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
+  myfiles[["EH556"]] -> gtexRecount
   gtexTiss = as(gtexRecount, "RangedSummarizedExperiment")
   RESTfulSummarizedExperiment(gtexTiss, ds)
 }
