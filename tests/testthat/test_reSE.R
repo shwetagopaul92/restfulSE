@@ -40,8 +40,8 @@ context("targets generation")
 test_that("targets method works", {
  bigec2 = H5S_source("http://54.174.163.77:5000")
  tt = targets(rhdf5client::links(bigec2, 1))
- expect_true(length(tt)==9)  # july 5 2017
- expect_true(length(grep("host", tt))==7) # added tenx_full dataset
+ expect_true(length(tt)>=9)  # july 5 2017
+ expect_true(length(grep("host", tt))>=7) # added tenx_full dataset
 })
 
 context("RESTful SE")
