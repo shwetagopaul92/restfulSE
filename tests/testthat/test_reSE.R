@@ -114,5 +114,5 @@ test_that("dim compatibility check is sensitive", {
  myfiles[["EH551"]] -> banoSEMeta
  bigec2 = H5S_source("http://54.174.163.77:5000")
  banoh5 = bigec2[["assays"]]
- expect_error( rr = RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )
+ expect_error(rr==RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )
 })
