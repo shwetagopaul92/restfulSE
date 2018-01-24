@@ -29,7 +29,7 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 #' names(csums) = tc$SYMBOL
 #' csums
 #' @export
-se100k = function(url="http://54.174.163.77:5000",
+se100k = function(url="http://h5s.channingremotedata.org:5000",
    tag="tenx_100k_sorted") {
   src = H5S_source(url)
   ds = src[[tag]]
@@ -45,7 +45,7 @@ se100k = function(url="http://54.174.163.77:5000",
 #' while se100k provides access to only 100k neurons with
 #' expression features sorted by genomic location
 #' @export
-se1.3M = function(url="http://54.174.163.77:5000",
+se1.3M = function(url="http://h5s.channingremotedata.org:5000",
    tag="tenx_full") {
   src = H5S_source(url)
   ds = src[[tag]]
@@ -65,7 +65,7 @@ se1.3M = function(url="http://54.174.163.77:5000",
 #' @examples
 #' gtexTiss()
 #' @export
-gtexTiss = function(url="http://54.174.163.77:5000",
+gtexTiss = function(url="http://h5s.channingremotedata.org:5000",
    tag="tissues") {
   src = H5S_source(url)
   ds = src[[tag]]
