@@ -5,9 +5,10 @@
 \alias{se1.3M}
 \title{Convenience functions using EC2 server to extract tenx neurons full or subset data}
 \usage{
-se100k(url = "http://54.174.163.77:5000", tag = "tenx_100k_sorted")
+se100k(url = "http://h5s.channingremotedata.org:5000",
+  tag = "tenx_100k_sorted")
 
-se1.3M(url = "http://54.174.163.77:5000", tag = "tenx_full")
+se1.3M(url = "http://h5s.channingremotedata.org:5000", tag = "tenx_full")
 }
 \arguments{
 \item{url}{server URL}
