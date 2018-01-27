@@ -10,6 +10,9 @@
 \arguments{
 \item{x}{instance of H5S_ArraySeed}
 }
+\value{
+currently returns list(NULL, NULL) as we do not store dimnames in HDF5
+}
 \description{
 dimnames not stored with H5S_source as of Jan 2018
 }
