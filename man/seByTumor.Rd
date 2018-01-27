@@ -44,17 +44,19 @@ function is provided to generate an example of this approach
 with minimal user configuration.
 }
 \examples{
-require(bigrquery)
-# be sure that .cgcBilling is set 
-code = Sys.getenv("CGC_BILLING")
-if (!(nchar(code)==0)) {
- clinQ = cgcConn(billing=code)
- assayQ = cgcConn( dataset = "TCGA_hg38_data_v0", billing=code )
- myexpShell = seByTumor( bqConnClinical=clinQ,
-       bqConnAssay=assayQ)
- print(myexpShell)
- print(nrow(myexpShell) == 60483)
- print(ncol(myexpShell) == 522)
- assay(myexpShell[11:15,1:4]) # some case_barcodes repeat
+if (interactive()) {
+ require(bigrquery)
+ # be sure that .cgcBilling is set 
+ code = Sys.getenv("CGC_BILLING")
+ if (!(nchar(code)==0)) {
+  clinQ = cgcConn(billing=code)
+  assayQ = cgcConn( dataset = "TCGA_hg38_data_v0", billing=code )
+  myexpShell = seByTumor( bqConnClinical=clinQ,
+        bqConnAssay=assayQ)
+  print(myexpShell)
+  print(nrow(myexpShell) == 60483)
+  print(ncol(myexpShell) == 522)
+  assay(myexpShell[11:15,1:4]) # some case_barcodes repeat
+  }
  }
 }
