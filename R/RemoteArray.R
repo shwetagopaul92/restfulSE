@@ -1,12 +1,20 @@
+# 
+# implementation of 
+# https://github.com/Bioconductor/DelayedArray/blob/master/vignettes/02-Implementing_a_backend.Rmd
+# for HDF server back end, based on rhdf5client
+#
+# key contract: if is (X, "H5S_source") and host is the
+# name of an HDF5 file on the server, in /data, then Z = X[[ host ]]
+# returns an H5S_dataset instance; this in turn answers to Z[i,j]
+# with a numeric matrix
+#
 # longrunning jan 2018
 # domain http://54.174.163.77:5000
 # host tenx_full
 
-#' RemoteArray for HDF Server content
+#' H5S_Array for HDF Server content
 #' @import DelayedArray
-#' @exportClass RemoteArray
-#' @exportClass RemoteMatrix
-setClass("RemoteArraySeed",
+setClass("H5S_ArraySeed",
    contains="Array",
    slots = c(
      filepath="character",
@@ -15,29 +23,41 @@ setClass("RemoteArraySeed",
      H5S_dataset="H5S_dataset"
      ))
 
-RemoteArraySeed = function(filepath, host) {
+H5S_ArraySeed = function(filepath, host) {
   requireNamespace("rhdf5client")
   dom = try(rhdf5client::H5S_source(filepath))
   if (!is(dom, "H5S_source")) stop("could not resolve H5S_source request on filepath")
+#
+# for HDF Server back end, the following invocation of [[
+# establishes the link to numerical data source
+#
   ds = try(dom[[host]])
   if (!is(ds, "H5S_dataset")) stop("could not resolve H5S_dataset request on filepath[[host]]")
-  new("RemoteArraySeed", filepath=filepath,
+  new("H5S_ArraySeed", filepath=filepath,
          domain=filepath, host=host, H5S_dataset=ds)
   }
 
-setMethod("dimnames", "RemoteArraySeed", function(x) {
+#' dimnames not stored with H5S_source as of Jan 2018
+#' @param x instance of H5S_ArraySeed
+#' @return currently returns list(NULL, NULL) as we do not store dimnames in HDF5
+#' @export
+setMethod("dimnames", "H5S_ArraySeed", function(x) {
   list(NULL, NULL)
 })
-setMethod("dim", "RemoteArraySeed", function(x) {
+#' HDF Server content is assumed transposed relative to R matrix layout
+#' @param x instance of H5S_ArraySeed
+#' @return integer(2) vector of dimensions corresponding to R's layout, assuming 2-d data
+#' @export
+setMethod("dim", "H5S_ArraySeed", function(x) {
   # note that for HDF Server the internal dims are
   # transposed relative to R expectations
   rev(as.integer(x@H5S_dataset@shapes$dims))
 })
 
 #
-# this seems incredibly convoluted -- VJ Carey, the author
+# this seems incredibly convoluted 
 #
-setMethod("extract_array", "RemoteArraySeed", function(x, index) {
+setMethod("extract_array", "H5S_ArraySeed", function(x, index) {
   stopifnot(length(index)==2)
   dims_at_source = rev(dim(x))
   index = rev(index)
@@ -62,24 +82,32 @@ setMethod("extract_array", "RemoteArraySeed", function(x, index) {
   t(x@H5S_dataset[ request[[2]], request[[1]] ]) # native method has drop=FALSE
 })
   
-setClass("RemoteArray", contains="DelayedArray")
-setClass("RemoteMatrix", contains=c("DelayedMatrix", 
-     "RemoteArray"))
+#' extension of DelayedArray for HDF Server content
+#' @exportClass H5S_Array
+setClass("H5S_Array", contains="DelayedArray")
+#' extension of DelayedMatrix for HDF Server content
+#' @exportClass H5S_Matrix
+setClass("H5S_Matrix", contains=c("DelayedMatrix", 
+     "H5S_Array"))
 
-setMethod("matrixClass", "RemoteArray", function(x) "RemoteMatrix")
+setMethod("matrixClass", "H5S_Array", function(x) "H5S_Matrix")
+
 #' coercion for remote array to remote matrix
-#' @name setAs-RemoteArray-RemoteMatrix
-#' @rdname RemoteArray-class
-#' @exportMethod coerce
-setAs("RemoteArray", "RemoteMatrix", function(from)
-   new("RemoteMatrix", from))
 
-setMethod("DelayedArray", "RemoteArraySeed",
-   function(seed) DelayedArray:::new_DelayedArray(seed, Class="RemoteArray"))
+#' @name as
+#' @rdname H5S_Array-class
+#' @aliases coerce,H5S_Array,H5S_Matrix-method
+#' @export
+setAs("H5S_Array", "H5S_Matrix", function(from)
+   new("H5S_Matrix", from))
 
-#' create RemoteArray instance given url (filepath) and entity (host) name
+setMethod("DelayedArray", "H5S_ArraySeed",
+   function(seed) DelayedArray:::new_DelayedArray(seed, Class="H5S_Array"))
+
+#' create H5S_Array instance given url (filepath) and entity (host) name
 #' @param filepath a character(1) URL to port for HDF Server
 #' @param host a character(1) name of 'host' in server
+#' @return an instance of \code{\link[DelayedArray]{DelayedArray-class}}
 #' @examples
 #' # The true values from yriMulti data element 'banovichSE':
 #' # > assay(banovichSE[c(1:5,329465:329469),c(1:3,63:64)])
@@ -96,13 +124,9 @@ setMethod("DelayedArray", "RemoteArraySeed",
 #' # ch.9.98989607R -1.80646652  0.4760022  1.4771808  |  0.9479602  0.49921375
 #' # ch.9.991104F    0.08180195 -0.2434306  1.0281002  | -0.1653721  0.55612215
 #' #
-#' # compare to that delivered by RemoteArray
+#' # compare to that delivered by H5S_Array
 #' #
-#' RemoteArray("http://h5s.channingremotedata.org:5000", "assays")
+#' H5S_Array("http://h5s.channingremotedata.org:5000", "assays")
 #' @export
-RemoteArray = function(filepath, host) 
-  DelayedArray(RemoteArraySeed(filepath, host))
-
-
-  
-  
+H5S_Array = function(filepath, host) 
+  DelayedArray(H5S_ArraySeed(filepath, host))
