@@ -10,6 +10,9 @@
 \arguments{
 \item{x}{instance of H5S_ArraySeed}
 }
+\value{
+integer(2) vector of dimensions corresponding to R's layout, assuming 2-d data
+}
 \description{
 HDF Server content is assumed transposed relative to R matrix layout
 }
