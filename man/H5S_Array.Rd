@@ -11,6 +11,9 @@ H5S_Array(filepath, host)
 
 \item{host}{a character(1) name of 'host' in server}
 }
+\value{
+an instance of \code{\link[DelayedArray]{DelayedArray-class}}
+}
 \description{
 create H5S_Array instance given url (filepath) and entity (host) name
 }
