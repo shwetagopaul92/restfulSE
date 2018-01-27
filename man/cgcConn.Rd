@@ -28,11 +28,13 @@ will be used to authenticate the user and collect charges.
 Alternately the billing code can be given as a parameter.
 }
 \examples{
-cgcConn
-require(bigrquery)
-# defaults concern new GDC-compliant format
-if (nchar(Sys.getenv("CGC_BILLING"))>0) {
-    clin = cgcConn()
-    dbListTables(clin)
+if (interactive()) {
+ cgcConn
+ require(bigrquery)
+ # defaults concern new GDC-compliant format
+ if (nchar(Sys.getenv("CGC_BILLING"))>0) {
+     clin = cgcConn()
+     dbListTables(clin)
+ }
 }
 }
