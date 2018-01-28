@@ -8,6 +8,7 @@
 #' BigQuery Records are regarded as triples, within major groups defined by filtervbl.
 #' Triples have content subject - gene - value, to be pivoted to genes(rows) x 
 #' subjects(columns) with values as entries.
+#' @importFrom dplyr select_ filter_ group_by_ summarise tbl
 #' @export
 setClass("BQ3_Source", representation(
   bqconn = "BigQueryConnection",
