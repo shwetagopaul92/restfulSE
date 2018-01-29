@@ -93,8 +93,6 @@ setClass("H5S_Matrix", contains=c("DelayedMatrix",
 setMethod("matrixClass", "H5S_Array", function(x) "H5S_Matrix")
 
 #' coercion for remote array to remote matrix
-
-#' @name as
 #' @rdname H5S_Array-class
 #' @aliases coerce,H5S_Array,H5S_Matrix-method
 #' @export
