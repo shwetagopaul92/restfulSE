@@ -13,7 +13,7 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
                                                                       "ENSMUSG00000030786", "ENSMUSG00000031375")), .Names = c("SYMBOL", 
                                                                                                                                "GENEID"), row.names = c(NA, -13L), class = "data.frame")
 #' Convenience functions using EC2 server to extract tenx neurons full or subset data
-#' @import rhdf5client
+#' @rawNamespace import(rhdf5client, except = groups)
 #' @importFrom utils data
 #' @importFrom AnnotationDbi select keys
 #' @param url server URL
