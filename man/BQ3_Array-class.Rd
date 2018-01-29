@@ -3,11 +3,7 @@
 \docType{class}
 \name{BQ3_Array-class}
 \alias{BQ3_Array-class}
-\alias{as}
-\alias{coerce,BQ3_Array,BQ3_Matrix-method}
 \title{extension of DelayedArray for BigQuery content}
 \description{
 extension of DelayedArray for BigQuery content
-
-coercion for remote array to remote matrix
 }
