@@ -8,7 +8,8 @@
 #' BigQuery Records are regarded as triples, within major groups defined by filtervbl.
 #' Triples have content subject - gene - value, to be pivoted to genes(rows) x 
 #' subjects(columns) with values as entries.
-#' @importFrom dplyr select_ filter_ group_by_ summarise tbl
+#' @importFrom dplyr select_ filter_ group_by_ summarise tbl n
+#' @importFrom Biobase selectSome
 #' @export
 setClass("BQ3_Source", representation(
   bqconn = "BigQueryConnection",
@@ -189,9 +190,8 @@ setClass("BQ3_Matrix", contains=c("DelayedMatrix",
 
 setMethod("matrixClass", "BQ3_Array", function(x) "BQ3_Matrix")
 
-#' coercion for remote array to remote matrix
 
-#' @name as
+#' coercion for remote array to remote matrix
 #' @rdname BQ3_Array-class
 #' @aliases coerce,BQ3_Array,BQ3_Matrix-method
 #' @export
@@ -205,6 +205,19 @@ setMethod("DelayedArray", "BQ3_ArraySeed",
 #' @param filepath a BQ3_Source instance
 #' @return an instance of \code{\link[DelayedArray]{DelayedArray-class}}
 #' @examples
+#'
+#' # authentication issues may arise.  if you are authorized
+#' # to use bigquery with GPC project isb-cgc, a token may
+#' # be generated through the following
+#' # options(httr_oob_default=TRUE)
+#' # example(BQ3_Source)
+#' # a browser authentication event may occur, or if you are in
+#' # a browserless session, a URL will be emitted, possibly in
+#' # the context of warnings ... browse to this URL and an
+#' # authentication event will occur, and a token will be provided
+#' # this can be provided back to the R session to allow the
+#' # query to proceed
+#' #
 #' if (interactive()) {
 #'   con = cgcConn("TCGA_hg38_data_v0")
 #'   ss = BQ3_Source(con, filterval="TCGA-LUAD")
