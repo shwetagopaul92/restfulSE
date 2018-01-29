@@ -16,6 +16,19 @@ an instance of \code{\link[DelayedArray]{DelayedArray-class}}
 create BQ3_Array instance given url (filepath) and entity (host) name
 }
 \examples{
+
+# authentication issues may arise.  if you are authorized
+# to use bigquery with GPC project isb-cgc, a token may
+# be generated through the following
+# options(httr_oob_default=TRUE)
+# example(BQ3_Source)
+# a browser authentication event may occur, or if you are in
+# a browserless session, a URL will be emitted, possibly in
+# the context of warnings ... browse to this URL and an
+# authentication event will occur, and a token will be provided
+# this can be provided back to the R session to allow the
+# query to proceed
+#
 if (interactive()) {
   con = cgcConn("TCGA_hg38_data_v0")
   ss = BQ3_Source(con, filterval="TCGA-LUAD")
