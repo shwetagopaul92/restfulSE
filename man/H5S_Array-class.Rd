@@ -3,11 +3,7 @@
 \docType{class}
 \name{H5S_Array-class}
 \alias{H5S_Array-class}
-\alias{as}
-\alias{coerce,H5S_Array,H5S_Matrix-method}
 \title{extension of DelayedArray for HDF Server content}
 \description{
 extension of DelayedArray for HDF Server content
-
-coercion for remote array to remote matrix
 }
