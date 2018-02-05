@@ -47,7 +47,7 @@ about length(setdiff(*names(x), x@globalDimnames[[...]])).
 }
 \examples{
 require("rhdf5client")
-bigec2 = H5S_source(serverURL="http://54.174.163.77:5000")
+bigec2 = H5S_source(serverURL="http://h5s.channingremotedata.org:5000")
 banoh5 = bigec2[["assays"]] # banovichSE
 ehub = ExperimentHub::ExperimentHub()
 myfiles <- AnnotationHub::query(ehub , "restfulSEData")

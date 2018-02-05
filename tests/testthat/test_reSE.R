@@ -5,14 +5,14 @@ library(restfulSEData)
 context("connection")
 
 test_that("H5S_source completes", {
- bigec2 = H5S_source("http://54.174.163.77:5000")
+ bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
  expect_true(is(bigec2, "H5S_source"))
 })
 
 context("content wrapper structure") 
 
 test_that("H5S_source processes", {
- bigec2 = H5S_source("http://54.174.163.77:5000")
+ bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
  expect_true(all(dim(rhdf5client::groups(bigec2))==c(10,2))) 
  expect_true(is(rhdf5client::links(bigec2,1), "H5S_linkset"))
  expect_true(is(dataset(bigec2, "tenx_100k"), "H5S_dataset"))
@@ -38,7 +38,7 @@ test_that("sproc/isplit work", {
 context("targets generation")
 
 test_that("targets method works", {
- bigec2 = H5S_source("http://54.174.163.77:5000")
+ bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
  tt = targets(rhdf5client::links(bigec2, 1))
  expect_true(length(tt)>=9)  # july 5 2017
  expect_true(length(grep("host", tt))>=7) # added tenx_full dataset
@@ -47,7 +47,7 @@ test_that("targets method works", {
 context("RESTful SE")
 
 test_that("RESTfulSummarizedExperiment infrastructure works against server", {
- bigec2 = H5S_source("http://54.174.163.77:5000")
+ bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
  #data("st100k", package="restfulSEData")
  ehub = ExperimentHub::ExperimentHub()
  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
@@ -57,7 +57,7 @@ test_that("RESTfulSummarizedExperiment infrastructure works against server", {
  expect_true(is(rr, "RangedSummarizedExperiment"))
  #data("banoSEMeta", package="restfulSEData")
  myfiles[["EH551"]] -> banoSEMeta
- bigec2 = H5S_source("http://54.174.163.77:5000")
+ bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
  banoh5 = bigec2[["assays"]]
  rr = RESTfulSummarizedExperiment( banoSEMeta, banoh5 )
  expect_true(validObject(rr))
@@ -95,7 +95,7 @@ test_that("complex indexing succeeds", {
  ehub = ExperimentHub::ExperimentHub()
  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
  myfiles[["EH551"]] -> banoSEMeta
- bigec2 = H5S_source("http://54.174.163.77:5000")
+ bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
  banh = bigec2[["assays"]]
  rr = RESTfulSummarizedExperiment( banoSEMeta, banh )
  options(scipen = 999)
@@ -112,7 +112,7 @@ test_that("dim compatibility check is sensitive", {
  ehub = ExperimentHub::ExperimentHub()
  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
  myfiles[["EH551"]] -> banoSEMeta
- bigec2 = H5S_source("http://54.174.163.77:5000")
+ bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
  banoh5 = bigec2[["assays"]]
  expect_error(rr==RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )
 })
