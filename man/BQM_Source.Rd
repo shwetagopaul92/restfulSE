@@ -2,7 +2,9 @@
 % Please edit documentation in R/BQM_Array.R
 \name{BQM_Source}
 \alias{BQM_Source}
-\title{construct a BigQuery resource interface}
+\title{construct a BigQuery resource interface, for a matrix-like table
+with one column devoted to row identification (rowkeyfield)
+and all other columns assumed numeric}
 \usage{
 BQM_Source(bqconn, tblnm, rowkeyfield, maxdfsize = 5e+05)
 }
@@ -11,15 +13,20 @@ BQM_Source(bqconn, tblnm, rowkeyfield, maxdfsize = 5e+05)
 
 \item{tblnm}{character(1) table name known to bqconn}
 
-\item{rowkeyfield}{character(1) field in the table that will
+\item{rowkeyfield}{character(1) field in the table that will}
+
+\item{maxdfsize}{numeric(1) field in the table that will constrain as.data.frame for determining rownames
 generate rownames for matrices derived from table}
 }
 \description{
-construct a BigQuery resource interface
+construct a BigQuery resource interface, for a matrix-like table
+with one column devoted to row identification (rowkeyfield)
+and all other columns assumed numeric
 }
 \examples{
 if (interactive()) {
- con = bqConn("yriMulti")
+ con = bqConn(dataset="yriMulti", project=Sys.getenv("CGC_BILLING"),
+       billing=Sys.getenv("CGC_BILLING"))
  banoMeth = BQM_Source(con, tblnm="banovichSE_MethylationData",
      rowkeyfield="cg_methyl450")
  banoMeth
