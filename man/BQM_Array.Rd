@@ -30,8 +30,8 @@ create BQM_Array instance given url (filepath) and entity (host) name
 # query to proceed
 #
 if (interactive()) {
-  con = bqConn(project="cgc-05-0009", dataset="yriMulti", billing=
-          Sys.getenv("CGC_BILLING"))
+  con = bqConn(dataset="yriMulti", project=Sys.getenv("CGC_BILLING"),
+       billing=Sys.getenv("CGC_BILLING"))
   ss = BQM_Source(con, "banovichSE_methylationData", "cg_Methyl450")
   BQM_Array(ss)
 }
