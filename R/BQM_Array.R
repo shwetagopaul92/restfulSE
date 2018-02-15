@@ -28,6 +28,13 @@ setMethod("show", "BQM_Source", function(object) {
  cat("\t", selectSome(object@allcolnames), "\n")
 })
 
+#' generate a connection to BigQuery for specific dataset
+#' @note You will need to authenticate with Google.
+#' @param dataset character(1) name of dataset in project
+#' @param project character(1) name of project
+#' @param billing character(1) billing code for project
+#' @examples
+#' bqConn
 #' @export
 bqConn = function(dataset, project, billing) {
     requireNamespace("DBI")
@@ -43,6 +50,7 @@ bqConn = function(dataset, project, billing) {
 #' @param bqconn instance of BigQueryConnection from bigrquery
 #' @param tblnm character(1) table name known to bqconn
 #' @param rowkeyfield character(1) field in the table that will
+#' @param maxdfsize numeric(1) field in the table that will constrain as.data.frame for determining rownames
 #' generate rownames for matrices derived from table
 #' @examples
 #' if (interactive()) {
