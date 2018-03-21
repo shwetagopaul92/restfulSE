@@ -10,6 +10,7 @@
 #' subjects(columns) with values as entries.
 #' @importFrom dplyr select_ filter_ group_by_ summarise tbl n
 #' @importFrom Biobase selectSome
+#' @import DelayedArray
 #' @export
 setClass("BQ3_Source", representation(
   bqconn = "BigQueryConnection",
@@ -87,7 +88,7 @@ setClass("BQ3_ArraySeed",
    contains="Array",
    slots = c(
      filepath="BQ3_Source"))
-#
+#'@import DelayedArray
 BQ3_ArraySeed = function(filepath) {
   requireNamespace("bigrquery")
 #  tst = try(validObject(obj <- BQ3_Source(filepath@bqconn)))
@@ -173,8 +174,7 @@ BQ3matgen = function(x, i, j, maxrow=Inf) {
   mat[] = as.double(mat)
   mat
 }
-
-
+#' @import DelayedArray
 setMethod("extract_array", "BQ3_ArraySeed", function(x, index) {
   stopifnot(length(index)==2)
   BQ3matgen(x, index[[1]], index[[2]], maxrow=Inf)
@@ -194,6 +194,7 @@ setMethod("matrixClass", "BQ3_Array", function(x) "BQ3_Matrix")
 #' coercion for remote array to remote matrix
 #' @rdname BQ3_Array-class
 #' @aliases coerce,BQ3_Array,BQ3_Matrix-method
+#' @import DelayedArray
 #' @export
 setAs("BQ3_Array", "BQ3_Matrix", function(from)
    new("BQ3_Matrix", from))
