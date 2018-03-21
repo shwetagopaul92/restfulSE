@@ -191,6 +191,7 @@ setMethod("matrixClass", "BQM_Array", function(x) "BQM_Matrix")
 #' coercion for remote array to remote matrix
 #' @rdname BQM_Array-class
 #' @aliases coerce,BQM_Array,BQM_Matrix-method
+#' @import DelayedArray
 #' @export
 setAs("BQM_Array", "BQM_Matrix", function(from)
    new("BQM_Matrix", from))
