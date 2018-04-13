@@ -17,6 +17,8 @@ se1.3M(url = "http://h5s.channingremotedata.org:5000", tag = "tenx_full")
 }
 \value{
 RESTfulSummarizedExperiment
+
+SummarizedExperiment instance
 }
 \description{
 Convenience functions using EC2 server to extract tenx neurons full or subset data

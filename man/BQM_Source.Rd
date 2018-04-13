@@ -18,6 +18,9 @@ BQM_Source(bqconn, tblnm, rowkeyfield, maxdfsize = 5e+05)
 \item{maxdfsize}{numeric(1) field in the table that will constrain as.data.frame for determining rownames
 generate rownames for matrices derived from table}
 }
+\value{
+instance of BQM_Source
+}
 \description{
 construct a BigQuery resource interface, for a matrix-like table
 with one column devoted to row identification (rowkeyfield)
