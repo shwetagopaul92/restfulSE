@@ -1,3 +1,14 @@
+#' @rawNamespace importClassesFrom("DelayedArray", "DelayedArray")
+#' @importFrom DelayedArray matrixClass
+#' @importFrom S4Vectors new2
+newDA = function (seed = new("array"), Class = "DelayedArray") 
+{
+    seed_ndim <- length(dim(seed))
+    if (seed_ndim == 2L) 
+        Class <- matrixClass(new(Class))
+    new2(Class, seed = seed)
+}
+
 # 
 # implementation of 
 # https://github.com/Bioconductor/DelayedArray/blob/master/vignettes/02-Implementing_a_backend.Rmd
@@ -201,7 +212,8 @@ setAs("BQ3_Array", "BQ3_Matrix", function(from)
    new("BQ3_Matrix", from))
 
 setMethod("DelayedArray", "BQ3_ArraySeed",
-   function(seed) DelayedArray:::new_DelayedArray(seed, Class="BQ3_Array"))
+#   function(seed) DelayedArray:::new_DelayedArray(seed, Class="BQ3_Array"))
+   function(seed) newDA(seed, Class="BQ3_Array"))
 #
 #' create BQ3_Array instance given url (filepath) and entity (host) name
 #' @param filepath a BQ3_Source instance
