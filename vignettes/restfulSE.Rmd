@@ -52,28 +52,16 @@ dense HDF5 matrix to support natural slicing.  Thanks to native compression
 in HDF5, the data volume expansion is modest.
 
 A helper function in the restfulSE package creates a `RESTfulSummarizedExperiment` instance that points to the full numerical dataset.
-```{r do10x,eval=FALSE}
+```{r do10x,eval=TRUE}
 library(restfulSE)
 my10x = se1.3M()
 my10x
-```
-```
-class: RESTfulSummarizedExperiment 
-dim: 27998 1306127 
-metadata(0):
-assays(1): (served by HDF5Server)
-rownames(27998): ENSMUSG00000051951 ENSMUSG00000089699 ...
-  ENSMUSG00000096730 ENSMUSG00000095742
-rowData names(2): geneid symbol
-colnames(1306127): AAACCTGAGATAGGAG-1 AAACCTGAGCGGCTTC-1 ...
-  TTTGTCAGTTAAAGTG-133 TTTGTCATCTGAAAGA-133
-colData names(4): Barcode Sequence Library Mouse
 ```
 
 As an exercise, we acquire the ENSEMBL identifiers for mouse genes annotated to
 hippocampus development, which has GO ID GO:0021766, and check counts
 for 10 genes on 6 samples:
-```{r doanno, eval=FALSE}
+```{r doanno, eval=TRUE}
 library(org.Mm.eg.db)
 hippdev = select(org.Mm.eg.db, 
     keys="GO:0021766", keytype="GO", column="ENSEMBL")$ENSEMBL
@@ -171,15 +159,15 @@ banref = bigec2[["assays"]] # arbitrary name assigned long ago
 banref
 ```
 
-We build a RESTfulSummarizedExperiment by combining an assay-free
+We build a SummarizedExperiment by combining an assay-free
 RangedSummarizedExperiment with this reference.
 ```{r doba3}
 ehub = ExperimentHub::ExperimentHub()
 myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-myfiles[["EH551"]] -> banoSEMeta
-#data("banoSEMeta", package = "restfulSEData")
-rbano = RESTfulSummarizedExperiment(banoSEMeta, banref)
-rbano
+banoSE = myfiles[["EH551"]] # no assay data
+ds = H5S_Array("http://h5s.channingremotedata.org:5000", "assays")
+assays(banoSE) = SimpleList(betas=ds)
+banoSE
 ```
 
 We can update the SummarizedExperiment metadata 
@@ -187,7 +175,7 @@ through subsetting operations, and then extract the relevant
 assay data.  The data are retrieved from the remote server
 with the `assay` method.
 ```{r doba4}
-rbanoSub = rbano[5:8, c(3:9, 40:50)] 
+rbanoSub = banoSE[5:8, c(3:9, 40:50)] 
 assay(rbanoSub) 
 ```
 
@@ -198,20 +186,14 @@ assay(rbanoSub)
 We have used Martin Morgan's TENxGenomics package
 to create a dense HDF5 representation of the 
 assay data, and placed it on the `bigec2` server.
-The metadata are available as `st100k` in this package;
+The metadata are available as `se100k` in this package;
 we have used EnsDb.Mmusculus.v79 to supply gene ranges
 where available; genes reported but without addresses
 are addressed at chr1:2 with width 0.  The rows
 are sorted by genomic address within chromosomes.
 
 ```{r gettx}
-txdat = bigec2[["tenx_100k_sorted"]]
-ehub = ExperimentHub::ExperimentHub()
-myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-myfiles[["EH552"]] -> st100k
-#data("st100k", package = "restfulSEData")
-tenx100k = RESTfulSummarizedExperiment( st100k, 
-   txdat )
+tenx100k = se100k()
 tenx100k
 ```
 

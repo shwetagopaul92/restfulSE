@@ -13,6 +13,9 @@ bqConn(dataset, project, billing)
 
 \item{billing}{character(1) billing code for project}
 }
+\value{
+an instance of BigQueryConnection
+}
 \description{
 generate a connection to BigQuery for specific dataset
 }
