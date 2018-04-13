@@ -33,6 +33,7 @@ setMethod("show", "BQM_Source", function(object) {
 #' @param dataset character(1) name of dataset in project
 #' @param project character(1) name of project
 #' @param billing character(1) billing code for project
+#' @return an instance of BigQueryConnection
 #' @examples
 #' bqConn
 #' @export
@@ -52,6 +53,7 @@ bqConn = function(dataset, project, billing) {
 #' @param rowkeyfield character(1) field in the table that will
 #' @param maxdfsize numeric(1) field in the table that will constrain as.data.frame for determining rownames
 #' generate rownames for matrices derived from table
+#' @return instance of BQM_Source
 #' @examples
 #' if (interactive()) {
 #'  con = bqConn(dataset="yriMulti", project=Sys.getenv("CGC_BILLING"),

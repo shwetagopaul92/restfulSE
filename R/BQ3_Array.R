@@ -45,6 +45,7 @@ setMethod("show", "BQ3_Source", function(object) {
 #' for example, all records pertaining to a given tumor in TCGA
 #' @param filterval character(1) value in the range of filtervbl to identify records to retain --
 #' @param assayvbl character(1) field with assay quantifications
+#' @return instance of BQ3_Source
 #' @examples
 #' if (interactive()) {
 #'  con = cgcConn("TCGA_hg38_data_v0")
