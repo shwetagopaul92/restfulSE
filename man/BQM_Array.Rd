@@ -33,6 +33,7 @@ if (interactive()) {
   con = bqConn(dataset="yriMulti", project=Sys.getenv("CGC_BILLING"),
        billing=Sys.getenv("CGC_BILLING"))
   ss = BQM_Source(con, "banovichSE_methylationData", "cg_Methyl450")
-  BQM_Array(ss)
+  #BQM_Array(ss)
+  BQM_Array(ss)["cg00000029",c("NA18498", "NA18499", "NA18501"),drop=FALSE]
 }
 }
