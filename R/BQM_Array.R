@@ -162,7 +162,9 @@ BQMmatgen = function(x, i, j, maxrow=Inf) {
 #
   if (!allrows) datf = datf %>%
        filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) # row confinement
-  if (!allcols) datf = datf %>% dbplyr:::select.tbl_lazy(one_of(c(rowkeyfield, colsel))) # col confinement
+  rn = (datf %>% select_(rowkeyfield) %>% as.data.frame(n=maxrow))[[1]]
+  if (!allcols) datf = datf %>% dplyr::select(one_of(c(rowkeyfield,colsel)))
+#tbl(one_of(c(rowkeyfield, colsel))) # col confinement
   datf = (datf %>% as.data.frame(n=maxrow))
   options(warn=owarn)
   rownames(datf) = as.character(datf[,rowkeyfield])
@@ -199,7 +201,8 @@ setAs("BQM_Array", "BQM_Matrix", function(from)
    new("BQM_Matrix", from))
 
 setMethod("DelayedArray", "BQM_ArraySeed",
-   function(seed) DelayedArray:::new_DelayedArray(seed, Class="BQM_Array"))
+   function(seed) newDA(seed, Class="BQM_Array"))
+#   function(seed) DelayedArray:::new_DelayedArray(seed, Class="BQM_Array"))
 #
 #' create BQM_Array instance given url (filepath) and entity (host) name
 #' @param filepath a BQM_Source instance
@@ -222,7 +225,8 @@ setMethod("DelayedArray", "BQM_ArraySeed",
 #'   con = bqConn(dataset="yriMulti", project=Sys.getenv("CGC_BILLING"),
 #'        billing=Sys.getenv("CGC_BILLING"))
 #'   ss = BQM_Source(con, "banovichSE_methylationData", "cg_Methyl450")
-#'   BQM_Array(ss)
+#'   #BQM_Array(ss)
+#'   BQM_Array(ss)["cg00000029",c("NA18498", "NA18499", "NA18501"),drop=FALSE]
 #' }
 #' @export
 BQM_Array = function(filepath)
