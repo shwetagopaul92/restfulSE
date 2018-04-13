@@ -27,6 +27,9 @@ for example, all records pertaining to a given tumor in TCGA}
 
 \item{assayvbl}{character(1) field with assay quantifications}
 }
+\value{
+instance of BQ3_Source
+}
 \description{
 construct a BigQuery resource interface
 }
