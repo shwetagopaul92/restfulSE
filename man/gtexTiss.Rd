@@ -12,7 +12,7 @@ gtexTiss(url = "http://h5s.channingremotedata.org:5000", tag = "tissues")
 \item{tag}{name of hdf5 file on server}
 }
 \value{
-RESTfulSummarizedExperiment instance
+SummarizedExperiment instance
 }
 \description{
 Convenience function for access to gene-level GTEx tissues, as quantified in recount
