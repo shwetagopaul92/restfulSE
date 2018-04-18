@@ -8,7 +8,7 @@
 #' assigned to environment variable \code{CGC_BILLING}, that
 #' will be used to authenticate the user and collect charges.
 #' Alternately the billing code can be given as a parameter.
-#' @return instance of \code{\link[bigrquery]{BigQueryConnection-class}}
+#' @return instance of \code{\link[bigrquery:DBI]{BigQueryConnection-class}}
 #' @examples
 #' if (interactive()) {
 #'  cgcConn
