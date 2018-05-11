@@ -7,7 +7,7 @@
 BQ3_Source(bqconn, tblnm = "RNAseq_Gene_Expression",
   rowkeyfield = "Ensembl_gene_id", colkeyfield = "case_barcode",
   filtervbl = "project_short_name", filterval = "TCGA-GBM",
-  assayvbl = "HTSeq__Counts")
+  assayvbl = "HTSeq__Counts", assaysampletype = "TP")
 }
 \arguments{
 \item{bqconn}{instance of BigQueryConnection from bigrquery}
@@ -26,6 +26,8 @@ for example, all records pertaining to a given tumor in TCGA}
 \item{filterval}{character(1) value in the range of filtervbl to identify records to retain --}
 
 \item{assayvbl}{character(1) field with assay quantifications}
+
+\item{assaysampletype}{character(1) value for filtering pancancer-atlas assays, which include normals and other sample types, defaulting to "TP"; ignored if project element of \code{bqconn} is not `pancancer-atlas`}
 }
 \value{
 instance of BQ3_Source
