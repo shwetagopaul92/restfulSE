@@ -7,6 +7,7 @@
 #' @param colDFilterValue character(1) defaulting to "BRCA"
 #' @param assayDataTableName character(1) defaulting to "pancanMiRs_EBadjOnProtocolPlatformWithoutRepsWithUnCorrectMiRs_08_04_16_annot"
 #' @param assayFeatureName character(1) defaulting to "ID"
+#' @param assaySampleTypeCode character(1) defaulting to "TP"
 #' @param subjectIDName character(1) defaulting to "ParticipantBarcode"
 #' @param tumorFieldName character(1) defaulting to "Study"
 #' @param tumorFieldValue character(1) defaulting to "BRCA"
@@ -37,6 +38,7 @@ pancan_SE = function(bqcon,
   colDFilterValue = "BRCA",
   assayDataTableName = "pancanMiRs_EBadjOnProtocolPlatformWithoutRepsWithUnCorrectMiRs_08_04_16_annot",
   assayFeatureName = "ID",
+  assaySampleTypeCode = "TP",
   subjectIDName = "ParticipantBarcode",
   tumorFieldName = "Study",
   tumorFieldValue = "BRCA",
@@ -48,6 +50,7 @@ pancan_SE = function(bqcon,
  assaySrc = BQ3_Source(bqconn = bqcon,
    tblnm = assayDataTableName,
    rowkeyfield = assayFeatureName,
+   assaysampletype = assaySampleTypeCode,
    colkeyfield = subjectIDName,
    filtervbl = tumorFieldName,
    filterval = tumorFieldValue,
