@@ -8,9 +8,9 @@ pancan_SE(bqcon, colDataTableName = "clinical_PANCAN_patient_with_followup",
   colDSubjectIdName = "bcr_patient_barcode", colDFilterField = "acronym",
   colDFilterValue = "BRCA",
   assayDataTableName = "pancanMiRs_EBadjOnProtocolPlatformWithoutRepsWithUnCorrectMiRs_08_04_16_annot",
-  assayFeatureName = "ID", subjectIDName = "ParticipantBarcode",
-  tumorFieldName = "Study", tumorFieldValue = "BRCA",
-  assayValueFieldName = "miRNAexpr")
+  assayFeatureName = "ID", assaySampleTypeCode = "TP",
+  subjectIDName = "ParticipantBarcode", tumorFieldName = "Study",
+  tumorFieldValue = "BRCA", assayValueFieldName = "miRNAexpr")
 }
 \arguments{
 \item{bqcon}{a BigQueryConnection instance}
@@ -26,6 +26,8 @@ pancan_SE(bqcon, colDataTableName = "clinical_PANCAN_patient_with_followup",
 \item{assayDataTableName}{character(1) defaulting to "pancanMiRs_EBadjOnProtocolPlatformWithoutRepsWithUnCorrectMiRs_08_04_16_annot"}
 
 \item{assayFeatureName}{character(1) defaulting to "ID"}
+
+\item{assaySampleTypeCode}{character(1) defaulting to "TP"}
 
 \item{subjectIDName}{character(1) defaulting to "ParticipantBarcode"}
 
