@@ -32,6 +32,7 @@ setClass("BQ3_Source", representation(
   filterval = "character",
   filtervbl = "character",
   assayvbl = "character",
+  assaysampletype = "character",
   allrownames = "character",
   allcolnames = "character"))
 setMethod("show", "BQ3_Source", function(object) {
@@ -56,6 +57,7 @@ setMethod("show", "BQ3_Source", function(object) {
 #' for example, all records pertaining to a given tumor in TCGA
 #' @param filterval character(1) value in the range of filtervbl to identify records to retain --
 #' @param assayvbl character(1) field with assay quantifications
+#' @param assaysampletype character(1) value for filtering pancancer-atlas assays, which include normals and other sample types, defaulting to "TP"; ignored if project element of \code{bqconn} is not `pancancer-atlas`
 #' @return instance of BQ3_Source
 #' @examples
 #' if (interactive()) {
@@ -67,11 +69,18 @@ setMethod("show", "BQ3_Source", function(object) {
 BQ3_Source = function(bqconn, tblnm = "RNAseq_Gene_Expression",
  rowkeyfield = "Ensembl_gene_id", colkeyfield = "case_barcode",
  filtervbl = "project_short_name", filterval = "TCGA-GBM",
-   assayvbl = "HTSeq__Counts") {
+   assayvbl = "HTSeq__Counts", assaysampletype="TP") {
  stopifnot(tblnm %in% dbListTables(bqconn))
  options(useFancyQuotes=FALSE)
- ini = bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, colkeyfield) %>%
+ if (slot(bqconn, "project") != "pancancer-atlas") {
+ ini = bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, 
+        colkeyfield) %>%
     filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) 
+    } else ini = 
+    bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, 
+        colkeyfield, "SampleTypeLetterCode") %>%
+    filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) %>%
+       filter(SampleTypeLetterCode == assaysampletype)
  rowdf = ini %>% 
     select_(rowkeyfield) %>% group_by_(rowkeyfield) %>% summarise(n=n()) %>% as.data.frame(n=100000)
  coldf = ini %>%
@@ -88,6 +97,7 @@ BQ3_Source = function(bqconn, tblnm = "RNAseq_Gene_Expression",
        rowkeyfield=rowkeyfield, colkeyfield=colkeyfield,
        filtervbl = filtervbl, filterval = filterval,
        assayvbl = assayvbl,
+       assaysampletype = assaysampletype,
        allrownames = as.character(rowdf[,rowkeyfield]),
        allcolnames = as.character(coldf[,colkeyfield]))
 }
@@ -141,6 +151,7 @@ BQ3matgen = function(x, i, j, maxrow=Inf) {
   filtervbl = x@filepath@filtervbl
   filterval = x@filepath@filterval
   assayvbl = x@filepath@assayvbl
+  assaysampletype = x@filepath@assaysampletype
   allrows = FALSE
   allcols = FALSE
   if (!is.null(i) & length(i)>0) 
