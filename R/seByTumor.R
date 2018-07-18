@@ -1,5 +1,5 @@
 #' Simplify connection to a BigQuery dataset for the project "isb-cgc"
-#' @importFrom bigrquery dbConnect dbi_driver
+#' @importFrom bigrquery dbConnect bigquery
 #' @param dataset character string with dataset name
 #' @param project character string with project name
 #' @param billing character(1) with billing code
@@ -21,7 +21,7 @@
 #' }
 #' @export
 cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=Sys.getenv("CGC_BILLING"))
-  DBI::dbConnect(dbi_driver(), project = project,
+  DBI::dbConnect(bigquery(), project = project,
         dataset = dataset, billing = billing)
 
 #
@@ -110,7 +110,7 @@ setClass("BQSummarizedExperiment", contains="SummarizedExperiment",
 #'         bqConnAssay=assayQ)
 #'   print(myexpShell)
 #'   print(nrow(myexpShell) == 60483)
-#'   print(ncol(myexpShell) == 522)
+#'   print(ncol(myexpShell) == 515) # 7/18/2018
 #'   assay(myexpShell[11:15,1:4]) # some case_barcodes repeat
 #'   }
 #'  }
@@ -131,18 +131,28 @@ seByTumor = function(tumorCode = "LUAD",
 # suggestion from mike lawrence
 #clin <- clinRef %>% filter(project_short_name==newn)
 #rowData <- inner_join(clin, assayRef, by=colkey) %>%
-#    dplyr::select(rdColsToKeep)
+#    dplyr::select(rdColsToKeep)  ## 7/2018 -- inner join not supported in bigrquery+
 
  requireNamespace("SummarizedExperiment")
  newn = paste0("TCGA-", tumorCode)
  clinRef = bqConnClinical %>% tbl("Clinical")
  clin = clinRef %>% filter(project_short_name==newn)
- h = clin %>% dplyr::select(case_barcode) %>% head() %>% as.data.frame()
+ #h = clin %>% dplyr::select(case_barcode) %>% head() %>% as.data.frame()
+ #keeper = h[[1]][1]
+ assayRef = bqConnAssay %>% tbl(assayTblName) %>% filter(project_short_name==newn)
+ h = assayRef %>% dplyr::select(case_barcode) %>% head() %>% as.data.frame()
  keeper = h[[1]][1]
- assayRef = bqConnAssay %>% tbl(assayTblName)
+# the following just gets feature names for a single barcode
  assay = assayRef %>% filter(case_barcode==keeper) %>% dplyr::select(rdColsToKeep)
+# clin is materialized ... seems potentially voluminous?
  clin = as.data.frame(clin)
+ inassay = assayRef %>% filter(project_short_name==newn) %>% 
+    dplyr::select(case_barcode) %>% dplyr::group_by(case_barcode) %>%
+    dplyr::summarise(n=n()) %>% as.data.frame()
+ inassay_barcodes = inassay[,1]
+# at this point subset clin
  rownames(clin) = clin[,colkey]
+ clin = clin[intersect(rownames(clin), inassay_barcodes),]
  se = SummarizedExperiment(colData=clin, rowData=DataFrame(assay %>% as.data.frame()))
  se@NAMES = rowData(se)[,rowkey]
  new("BQSummarizedExperiment", se, rowQref = assayRef,
@@ -165,12 +175,13 @@ seByTumor = function(tumorCode = "LUAD",
 #' @exportMethod assay
 setMethod("assay", c("BQSummarizedExperiment", "missing"), 
   function(x, i, ...) {
+  clmax = function(...) suppressWarnings(max(...))
   rd = rowData(x)[,x@rowkey]
   cd = colData(x)[,x@colkey]
 
   df = x@rowQref %>% dplyr::select(one_of(c(x@rowkey, x@colkey, x@assayvbl))) %>% filter_(paste0(x@rowkey, " %in% rd & ", x@colkey, " %in% cd")) %>% # assumes colkey shared to assay table
       as.data.frame()
-  res = dcast(df, as.formula(paste0(x@rowkey, "~", x@colkey)), fun.aggregate=max, value.var=x@assayvbl)
+  res = dcast(df, as.formula(paste0(x@rowkey, "~", x@colkey)), fun.aggregate=clmax, value.var=x@assayvbl)
   mat = data.matrix(res[,-1])
   rownames(mat) = as.character(res[,1])
   mat
