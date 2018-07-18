@@ -190,7 +190,7 @@ BQ3matgen = function(x, i, j, maxrow=Inf) {
        filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) # minor row confinement
   df = (df %>% as.data.frame(n=maxrow))
   df = df[ which(df[[colkeyfield]] %in% x@filepath@allcolnames), ]
-  df = dcast(df, as.formula(paste(rowkeyfield, "~", colkeyfield, collapse="")), value.var=assayvbl)
+  df = dcast(df, as.formula(paste(rowkeyfield, "~", colkeyfield, collapse="")), value.var=assayvbl, fun.aggregate=mean)
   rownames(df) = df[,1]
   df = df[,-1]
   mat = data.matrix(df)
