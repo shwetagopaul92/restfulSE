@@ -98,8 +98,9 @@ BQ3_Source = function(bqconn, tblnm = "RNAseq_Gene_Expression",
        filtervbl = filtervbl, filterval = filterval,
        assayvbl = assayvbl,
        assaysampletype = assaysampletype,
-       allrownames = as.character(rowdf[,rowkeyfield]),
-       allcolnames = as.character(coldf[,colkeyfield]))
+# produce a determinate order on seed dimnames
+       allrownames = sort(as.character(rowdf[,rowkeyfield])),
+       allcolnames = sort(as.character(coldf[,colkeyfield])))
 }
 #
 #  
@@ -200,7 +201,15 @@ BQ3matgen = function(x, i, j, maxrow=Inf) {
 #' @import DelayedArray
 setMethod("extract_array", "BQ3_ArraySeed", function(x, index) {
   stopifnot(length(index)==2)
-  BQ3matgen(x, index[[1]], index[[2]], maxrow=Inf)
+  if (is.null(index[[1]])) {
+     nomNrow = length(x@filepath@allrownames)
+     index[[1]] = unique(c(seq_len(10), (nomNrow-9):nomNrow))
+     }
+  rsel = x@filepath@allrownames[ index[[1]] ]
+  csel = x@filepath@allcolnames[ index[[2]] ]
+  ans = BQ3m2(x, rsel, csel, maxrow=Inf)
+  ans[order(index[[1]]), order(index[[2]])] = ans
+  ans
 })
 #  
 #' extension of DelayedArray for BigQuery content
@@ -251,3 +260,63 @@ setMethod("DelayedArray", "BQ3_ArraySeed",
 #' @export
 BQ3_Array = function(filepath)
   DelayedArray(BQ3_ArraySeed(filepath))
+
+BQ3m2 = function(x, i, j, maxrow=Inf) {
+  stopifnot(is.character(i), is.character(j))
+  i = sort(i)
+  j = sort(j)
+  bqconn = x@filepath@bqconn
+  tblnm = x@filepath@tblnm
+  rowkeyfield = x@filepath@rowkeyfield
+  colkeyfield = x@filepath@colkeyfield
+  filtervbl = x@filepath@filtervbl
+  filterval = x@filepath@filterval
+  assayvbl = x@filepath@assayvbl
+  assaysampletype = x@filepath@assaysampletype
+  allrows = FALSE
+  allcols = FALSE
+  if (!is.null(i) & length(i)>0) 
+    rowsel = i
+  else if (is.null(i)) {
+    rowsel = x@filepath@allrownames
+    allrows = TRUE  # condition the filter
+    }
+  else if (length(i)==0) {
+    if (length(j)==0 & !is.null(j)) return(matrix(0, nrow=0, ncol=0))
+      else if (is.null(j)) cn = x@filepath@allcolnames
+      else cn = j
+    ans = matrix(0, nrow=0, ncol=length(cn))
+    colnames(ans) = cn
+    return(ans)
+    }
+  if (!is.null(j) & length(j)>0) {
+      colsel = j
+      }
+  else if (is.null(j)) {
+      colsel = x@filepath@allcolnames
+      allcols = TRUE
+      }
+  else if (length(j)==0) {
+      ans = matrix(0, nrow=length(i), ncol=0)
+      rownames(ans) = rowsel
+      return(ans)
+      }
+  options(useFancyQuotes=FALSE)
+  df = bqconn %>% tbl(tblnm) %>%   # QUESTION: Can this reference be carried in the seed?
+       select_(rowkeyfield, colkeyfield, filtervbl, assayvbl) %>%  # confine columns
+       filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
+  if (!allcols) df = df %>%
+       filter_(paste(c(colkeyfield, "%in% colsel"), collapse="")) # col confinement
+  if (!allrows) df = df %>%
+       filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) # minor row confinement
+  df = (df %>% as.data.frame(n=maxrow))
+  df = df[ which(df[[colkeyfield]] %in% x@filepath@allcolnames), ]
+  df = dcast(df, as.formula(paste(rowkeyfield, "~", colkeyfield, collapse="")), value.var=assayvbl, fun.aggregate=mean)
+  rownames(df) = df[,1]
+  df = df[,-1]
+  mat = data.matrix(df)
+  mat[] = as.double(mat)
+  print("input to extract_array:")
+  print(mat)
+  mat[i, j]
+}
