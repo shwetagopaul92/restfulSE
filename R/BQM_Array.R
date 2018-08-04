@@ -40,7 +40,7 @@ setMethod("show", "BQM_Source", function(object) {
 bqConn = function(dataset, project, billing) {
     requireNamespace("DBI")
     requireNamespace("bigrquery")
-    con <- DBI::dbConnect(bigrquery::dbi_driver(), project = project,
+    con <- DBI::dbConnect(bigquery(), project = project,
         dataset = dataset, billing = billing)
     con
 }
