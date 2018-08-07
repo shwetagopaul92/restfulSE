@@ -53,7 +53,7 @@ if (interactive() & requireNamespace("DBI") &
   pancan_BQ_loc = function (dataset="Annotated", 
                 billing=Sys.getenv("CGC_BILLING")) 
   {
-      con <- DBI::dbConnect(bigrquery::dbi_driver(), 
+      con <- DBI::dbConnect(bigrquery::bigquery(), 
          project = "pancancer-atlas",         
          dataset = dataset, billing = billing)
       con     

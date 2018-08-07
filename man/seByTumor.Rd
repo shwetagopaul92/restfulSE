@@ -55,7 +55,7 @@ if (interactive()) {
         bqConnAssay=assayQ)
   print(myexpShell)
   print(nrow(myexpShell) == 60483)
-  print(ncol(myexpShell) == 522)
+  print(ncol(myexpShell) == 515) # 7/18/2018
   assay(myexpShell[11:15,1:4]) # some case_barcodes repeat
   }
  }
