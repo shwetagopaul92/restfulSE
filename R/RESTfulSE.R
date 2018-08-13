@@ -70,13 +70,11 @@ setMethod("assayNames", "RESTfulSummarizedExperiment", function(x, ...) {
 setMethod("[", c("RESTfulSummarizedExperiment",
      "numeric", "numeric", "ANY"), function(x,i,j,...,drop=FALSE) {
   if (is(x, "RangedSummarizedExperiment")) {
-#   x = BiocGenerics:::replaceSlots(x, rowRanges = rowRanges(x)[i],
    x = replaceSlots(x, rowRanges = rowRanges(x)[i],
                          colData = colData(x)[j,],
                          check=FALSE)
    }
   else if (is(x, "SummarizedExperiment")) {
-#   x = BiocGenerics:::replaceSlots(x, rowData = rowData(x)[i],
    x = replaceSlots(x, rowData = rowData(x)[i],
                          colData = colData(x)[j,],
                          check=FALSE)

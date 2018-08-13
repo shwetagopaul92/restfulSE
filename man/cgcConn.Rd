@@ -15,7 +15,7 @@ cgcConn(dataset = "TCGA_bioclin_v0", project = "isb-cgc",
 \item{billing}{character(1) with billing code}
 }
 \value{
-instance of \code{\link[bigrquery]{BigQueryConnection-class}}
+instance of \code{\link[bigrquery:DBI]{BigQueryConnection-class}}
 }
 \description{
 Simplify connection to a BigQuery dataset for the project "isb-cgc"
@@ -28,11 +28,13 @@ will be used to authenticate the user and collect charges.
 Alternately the billing code can be given as a parameter.
 }
 \examples{
-cgcConn
-require(bigrquery)
-# defaults concern new GDC-compliant format
-if (nchar(Sys.getenv("CGC_BILLING"))>0) {
-    clin = cgcConn()
-    dbListTables(clin)
+if (interactive()) {
+ cgcConn
+ require(bigrquery)
+ # defaults concern new GDC-compliant format
+ if (nchar(Sys.getenv("CGC_BILLING"))>0) {
+     clin = cgcConn()
+     dbListTables(clin)
+ }
 }
 }

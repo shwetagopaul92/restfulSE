@@ -8,14 +8,16 @@
 #' assigned to environment variable \code{CGC_BILLING}, that
 #' will be used to authenticate the user and collect charges.
 #' Alternately the billing code can be given as a parameter.
-#' @return instance of \code{\link[bigrquery]{BigQueryConnection-class}}
+#' @return instance of \code{\link[bigrquery:DBI]{BigQueryConnection-class}}
 #' @examples
-#' cgcConn
-#' require(bigrquery)
-#' # defaults concern new GDC-compliant format
-#' if (nchar(Sys.getenv("CGC_BILLING"))>0) {
-#'     clin = cgcConn()
-#'     dbListTables(clin)
+#' if (interactive()) {
+#'  cgcConn
+#'  require(bigrquery)
+#'  # defaults concern new GDC-compliant format
+#'  if (nchar(Sys.getenv("CGC_BILLING"))>0) {
+#'      clin = cgcConn()
+#'      dbListTables(clin)
+#'  }
 #' }
 #' @export
 cgcConn = function(dataset="TCGA_bioclin_v0", project="isb-cgc", billing=Sys.getenv("CGC_BILLING"))
@@ -97,18 +99,20 @@ setClass("BQSummarizedExperiment", contains="SummarizedExperiment",
 #' function is provided to generate an example of this approach
 #' with minimal user configuration.
 #' @examples
-#' require(bigrquery)
-#' # be sure that .cgcBilling is set 
-#' code = Sys.getenv("CGC_BILLING")
-#' if (!(nchar(code)==0)) {
-#'  clinQ = cgcConn(billing=code)
-#'  assayQ = cgcConn( dataset = "TCGA_hg38_data_v0", billing=code )
-#'  myexpShell = seByTumor( bqConnClinical=clinQ,
-#'        bqConnAssay=assayQ)
-#'  print(myexpShell)
-#'  print(nrow(myexpShell) == 60483)
-#'  print(ncol(myexpShell) == 522)
-#'  assay(myexpShell[11:15,1:4]) # some case_barcodes repeat
+#' if (interactive()) {
+#'  require(bigrquery)
+#'  # be sure that .cgcBilling is set 
+#'  code = Sys.getenv("CGC_BILLING")
+#'  if (!(nchar(code)==0)) {
+#'   clinQ = cgcConn(billing=code)
+#'   assayQ = cgcConn( dataset = "TCGA_hg38_data_v0", billing=code )
+#'   myexpShell = seByTumor( bqConnClinical=clinQ,
+#'         bqConnAssay=assayQ)
+#'   print(myexpShell)
+#'   print(nrow(myexpShell) == 60483)
+#'   print(ncol(myexpShell) == 522)
+#'   assay(myexpShell[11:15,1:4]) # some case_barcodes repeat
+#'   }
 #'  }
 #' @export
 seByTumor = function(tumorCode = "LUAD", 

@@ -114,5 +114,9 @@ test_that("dim compatibility check is sensitive", {
  myfiles[["EH551"]] -> banoSEMeta
  bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
  banoh5 = bigec2[["assays"]]
+<<<<<<< HEAD
  expect_error(rr==RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )
+=======
+ expect_error( rr == RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )
+>>>>>>> upstream/RELEASE_3_7
 })

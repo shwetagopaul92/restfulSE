@@ -13,9 +13,11 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
                                                                       "ENSMUSG00000030786", "ENSMUSG00000031375")), .Names = c("SYMBOL", 
                                                                                                                                "GENEID"), row.names = c(NA, -13L), class = "data.frame")
 #' Convenience functions using EC2 server to extract tenx neurons full or subset data
-#' @import rhdf5client
+#' @rawNamespace import(rhdf5client, except = groups)
 #' @importFrom utils data
 #' @importFrom AnnotationDbi select keys
+#' @importFrom rhdf5client H5S_Array
+#' @importFrom S4Vectors SimpleList
 #' @param url server URL
 #' @param tag string giving the internal dataset name
 #' @return RESTfulSummarizedExperiment
@@ -31,12 +33,12 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 #' @export
 se100k = function(url="http://h5s.channingremotedata.org:5000",
    tag="tenx_100k_sorted") {
-  src = H5S_source(url)
-  ds = src[[tag]]
+  ds = H5S_Array(url, tag)
   ehub = ExperimentHub::ExperimentHub()
   myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-  myfiles[["EH552"]] -> st100k
-  RESTfulSummarizedExperiment(st100k, ds)
+  st100k <- myfiles[["EH552"]] 
+  assays(st100k) = SimpleList(counts=ds)
+  st100k
 }
 #' @rdname se100k
 #' @aliases se1.3M
@@ -44,37 +46,34 @@ se100k = function(url="http://h5s.channingremotedata.org:5000",
 #' with features in their order as given in the original HDF5
 #' while se100k provides access to only 100k neurons with
 #' expression features sorted by genomic location
+#' @return SummarizedExperiment instance
 #' @export
 se1.3M = function(url="http://h5s.channingremotedata.org:5000",
    tag="tenx_full") {
-  src = H5S_source(url)
-  ds = src[[tag]]
-  #data("full_1Mneurons", package = "restfulSEData")
+  ds = H5S_Array(url, tag)
   ehub = ExperimentHub::ExperimentHub()
   myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-  myfiles[["EH554"]] -> full_1Mneurons
-  full_1Mneurons = as(full_1Mneurons, "RangedSummarizedExperiment")
-  RESTfulSummarizedExperiment(full_1Mneurons, ds)
+  full_1Mneurons = myfiles[["EH554"]]
+  assays(full_1Mneurons) = SimpleList(counts=ds)
+  full_1Mneurons
 }
 
 #' Convenience function for access to gene-level GTEx tissues, as quantified in recount
 #' @import ExperimentHub
 #' @param url ip address/host for HDF5 server
 #' @param tag name of hdf5 file on server
-#' @return RESTfulSummarizedExperiment instance
+#' @return SummarizedExperiment instance
 #' @examples
 #' gtexTiss()
 #' @export
 gtexTiss = function(url="http://h5s.channingremotedata.org:5000",
    tag="tissues") {
-  src = H5S_source(url)
-  ds = src[[tag]]
-  #data("gtexRecount", package = "restfulSEData")
+  ds = H5S_Array(url, tag)
   ehub = ExperimentHub::ExperimentHub()
   myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-  myfiles[["EH556"]] -> gtexRecount
-  gtexTiss = as(gtexRecount, "RangedSummarizedExperiment")
-  RESTfulSummarizedExperiment(gtexTiss, ds)
+  gtexTiss = myfiles[["EH556"]] 
+  assays(gtexTiss) = SimpleList(recount=ds)
+  gtexTiss
 }
 
 #library(restfulSE)
