@@ -4,7 +4,8 @@
 \alias{gtexTiss}
 \title{Convenience function for access to gene-level GTEx tissues, as quantified in recount}
 \usage{
-gtexTiss(url = "http://h5s.channingremotedata.org:5000", tag = "tissues")
+gtexTiss(url = "http://h5s.channingremotedata.org:5000",
+  tag = "tissues")
 }
 \arguments{
 \item{url}{ip address/host for HDF5 server}
