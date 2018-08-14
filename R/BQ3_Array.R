@@ -3,10 +3,10 @@
 #' @importFrom S4Vectors new2
 newDA = function (seed = new("array"), Class = "DelayedArray") 
 {
-    seed_ndim <- length(dim(seed))
-    if (seed_ndim == 2L) 
-        Class <- matrixClass(new(Class))
-    new2(Class, seed = seed)
+  seed_ndim <- length(dim(seed))
+  if (seed_ndim == 2L) 
+    Class <- matrixClass(new(Class))
+  new2(Class, seed = seed)
 }
 
 # 
@@ -32,17 +32,18 @@ setClass("BQ3_Source", representation(
   filterval = "character",
   filtervbl = "character",
   assayvbl = "character",
+  assaysampletype = "character",
   allrownames = "character",
   allcolnames = "character"))
 setMethod("show", "BQ3_Source", function(object) {
- cat(sprintf("BQ3_Source for project %s, dataset %s, assayvbl %s\n",
+  cat(sprintf("BQ3_Source for project %s, dataset %s, assayvbl %s\n",
               object@bqconn@project, object@bqconn@dataset, object@assayvbl))
- cat("table [filter]:\n")
- cat(sprintf("\t%s, [%s == %s]\n", object@tblnm, object@filtervbl, sQuote(object@filterval)))
- cat(sprintf("rownames (of %d):\n", length(object@allrownames)))
- cat("\t", selectSome(object@allrownames), "\n")
- cat(sprintf("colnames (of %d):\n", length(object@allcolnames)))
- cat("\t", selectSome(object@allcolnames), "\n")
+  cat("table [filter]:\n")
+  cat(sprintf("\t%s, [%s == %s]\n", object@tblnm, object@filtervbl, sQuote(object@filterval)))
+  cat(sprintf("rownames (of %d):\n", length(object@allrownames)))
+  cat("\t", selectSome(object@allrownames), "\n")
+  cat(sprintf("colnames (of %d):\n", length(object@allcolnames)))
+  cat("\t", selectSome(object@allcolnames), "\n")
 })
 
 #' construct a BigQuery resource interface
@@ -56,6 +57,7 @@ setMethod("show", "BQ3_Source", function(object) {
 #' for example, all records pertaining to a given tumor in TCGA
 #' @param filterval character(1) value in the range of filtervbl to identify records to retain --
 #' @param assayvbl character(1) field with assay quantifications
+#' @param assaysampletype character(1) value for filtering pancancer-atlas assays, which include normals and other sample types, defaulting to "TP"; ignored if project element of \code{bqconn} is not `pancancer-atlas`
 #' @return instance of BQ3_Source
 #' @examples
 #' if (interactive()) {
@@ -65,31 +67,40 @@ setMethod("show", "BQ3_Source", function(object) {
 #' }
 #' @export  
 BQ3_Source = function(bqconn, tblnm = "RNAseq_Gene_Expression",
- rowkeyfield = "Ensembl_gene_id", colkeyfield = "case_barcode",
- filtervbl = "project_short_name", filterval = "TCGA-GBM",
-   assayvbl = "HTSeq__Counts") {
- stopifnot(tblnm %in% dbListTables(bqconn))
- options(useFancyQuotes=FALSE)
- ini = bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, colkeyfield) %>%
-    filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) 
- rowdf = ini %>% 
+                      rowkeyfield = "Ensembl_gene_id", colkeyfield = "case_barcode",
+                      filtervbl = "project_short_name", filterval = "TCGA-GBM",
+                      assayvbl = "HTSeq__Counts", assaysampletype="TP") {
+  stopifnot(tblnm %in% dbListTables(bqconn))
+  options(useFancyQuotes=FALSE)
+  if (slot(bqconn, "project") != "pancancer-atlas") {
+    ini = bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, 
+                                            colkeyfield) %>%
+      filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) 
+  } else ini = 
+    bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, 
+                                      colkeyfield, "SampleTypeLetterCode") %>%
+    filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) %>%
+    filter(SampleTypeLetterCode == assaysampletype)
+  rowdf = ini %>% 
     select_(rowkeyfield) %>% group_by_(rowkeyfield) %>% summarise(n=n()) %>% as.data.frame(n=100000)
- coldf = ini %>%
+  coldf = ini %>%
     select_(colkeyfield) %>% group_by_(colkeyfield) %>% summarise(n=n()) %>% as.data.frame(n=100000)
- colns = coldf[,2]
- ntab = table(colns)
- modal = ntab[which.max(ntab)]
- outl = which(ntab != modal)
- if (length(outl)>0) {
-   message(paste(colkeyfield, "has", sum(ntab[outl]), "contributors with excess contributions that are omitted"))
-   coldf = coldf[ which(coldf[,2] == as.numeric(names(modal))), ]
-   }
- new("BQ3_Source", bqconn=bqconn, tblnm = tblnm,
-       rowkeyfield=rowkeyfield, colkeyfield=colkeyfield,
-       filtervbl = filtervbl, filterval = filterval,
-       assayvbl = assayvbl,
-       allrownames = as.character(rowdf[,rowkeyfield]),
-       allcolnames = as.character(coldf[,colkeyfield]))
+  colns = coldf[,2]
+  ntab = table(colns)
+  modal = ntab[which.max(ntab)]
+  outl = which(ntab != modal)
+  if (length(outl)>0) {
+    message(paste(colkeyfield, "has", sum(ntab[outl]), "contributors with excess contributions that are omitted"))
+    coldf = coldf[ which(coldf[,2] == as.numeric(names(modal))), ]
+  }
+  new("BQ3_Source", bqconn=bqconn, tblnm = tblnm,
+      rowkeyfield=rowkeyfield, colkeyfield=colkeyfield,
+      filtervbl = filtervbl, filterval = filterval,
+      assayvbl = assayvbl,
+      assaysampletype = assaysampletype,
+      # produce a determinate order on seed dimnames
+      allrownames = sort(as.character(rowdf[,rowkeyfield])),
+      allcolnames = sort(as.character(coldf[,colkeyfield])))
 }
 #
 #  
@@ -97,18 +108,18 @@ BQ3_Source = function(bqconn, tblnm = "RNAseq_Gene_Expression",
 #' BQ3_Array for BigQuery matrix content
 #' @import DelayedArray
 setClass("BQ3_ArraySeed",
-   contains="Array",
-   slots = c(
-     filepath="BQ3_Source"))
+         contains="Array",
+         slots = c(
+           filepath="BQ3_Source"))
 #'@import DelayedArray
 BQ3_ArraySeed = function(filepath) {
   requireNamespace("bigrquery")
-#  tst = try(validObject(obj <- BQ3_Source(filepath@bqconn)))
-#  if (!is(obj, "BQ3_Source")) stop("could not resolve BQ3_Source request")
+  #  tst = try(validObject(obj <- BQ3_Source(filepath@bqconn)))
+  #  if (!is(obj, "BQ3_Source")) stop("could not resolve BQ3_Source request")
   stopifnot(is(filepath, "BQ3_Source"))
   stopifnot(is(filepath@bqconn, "BigQueryConnection"))
   new("BQ3_ArraySeed", filepath=filepath)
-  }
+}
 #
 #' dimnames are saved in the BQ3_ArraySeed
 #' @param x instance of BQ3_ArraySeed
@@ -122,7 +133,7 @@ setMethod("dimnames", "BQ3_ArraySeed", function(x) {
 #' @return integer(2) vector of dimensions corresponding to R's layout, assuming 2-d data
 #' @export
 setMethod("dim", "BQ3_ArraySeed", function(x) {
-#  # note that for HDF Server the internal dims are
+  #  # note that for HDF Server the internal dims are
   # transposed relative to R expectations
   as.integer(c(length(x@filepath@allrownames), length(x@filepath@allcolnames)))
 })
@@ -141,6 +152,7 @@ BQ3matgen = function(x, i, j, maxrow=Inf) {
   filtervbl = x@filepath@filtervbl
   filterval = x@filepath@filterval
   assayvbl = x@filepath@assayvbl
+  assaysampletype = x@filepath@assaysampletype
   allrows = FALSE
   allcols = FALSE
   if (!is.null(i) & length(i)>0) 
@@ -148,38 +160,38 @@ BQ3matgen = function(x, i, j, maxrow=Inf) {
   else if (is.null(i)) {
     rowsel = x@filepath@allrownames
     allrows = TRUE  # condition the filter
-    }
+  }
   else if (length(i)==0) {
     if (length(j)==0 & !is.null(j)) return(matrix(0, nrow=0, ncol=0))
-      else if (is.null(j)) cn = x@filepath@allcolnames
-      else cn = x@filepath@allcolnames[j]
+    else if (is.null(j)) cn = x@filepath@allcolnames
+    else cn = x@filepath@allcolnames[j]
     ans = matrix(0, nrow=0, ncol=length(cn))
     colnames(ans) = cn
     return(ans)
-    }
+  }
   if (!is.null(j) & length(j)>0) {
-      colsel = x@filepath@allcolnames[j]
-      }
+    colsel = x@filepath@allcolnames[j]
+  }
   else if (is.null(j)) {
-      colsel = x@filepath@allcolnames
-      allcols = TRUE
-      }
+    colsel = x@filepath@allcolnames
+    allcols = TRUE
+  }
   else if (length(j)==0) {
-      ans = matrix(0, nrow=length(i), ncol=0)
-      rownames(ans) = rowsel
-      return(ans)
-      }
+    ans = matrix(0, nrow=length(i), ncol=0)
+    rownames(ans) = rowsel
+    return(ans)
+  }
   options(useFancyQuotes=FALSE)
   df = bqconn %>% tbl(tblnm) %>%   # QUESTION: Can this reference be carried in the seed?
-       select_(rowkeyfield, colkeyfield, filtervbl, assayvbl) %>%  # confine columns
-       filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
+    select_(rowkeyfield, colkeyfield, filtervbl, assayvbl) %>%  # confine columns
+    filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
   if (!allcols) df = df %>%
-       filter_(paste(c(colkeyfield, "%in% colsel"), collapse="")) # col confinement
+    filter_(paste(c(colkeyfield, "%in% colsel"), collapse="")) # col confinement
   if (!allrows) df = df %>%
-       filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) # minor row confinement
+    filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) # minor row confinement
   df = (df %>% as.data.frame(n=maxrow))
   df = df[ which(df[[colkeyfield]] %in% x@filepath@allcolnames), ]
-  df = dcast(df, as.formula(paste(rowkeyfield, "~", colkeyfield, collapse="")), value.var=assayvbl)
+  df = dcast(df, as.formula(paste(rowkeyfield, "~", colkeyfield, collapse="")), value.var=assayvbl, fun.aggregate=mean)
   rownames(df) = df[,1]
   df = df[,-1]
   mat = data.matrix(df)
@@ -189,7 +201,15 @@ BQ3matgen = function(x, i, j, maxrow=Inf) {
 #' @import DelayedArray
 setMethod("extract_array", "BQ3_ArraySeed", function(x, index) {
   stopifnot(length(index)==2)
-  BQ3matgen(x, index[[1]], index[[2]], maxrow=Inf)
+  if (is.null(index[[1]])) {
+    nomNrow = length(x@filepath@allrownames)
+    index[[1]] = unique(c(seq_len(10), (nomNrow-9):nomNrow))
+  }
+  rsel = x@filepath@allrownames[ index[[1]] ]
+  csel = x@filepath@allcolnames[ index[[2]] ]
+  ans = BQ3m2(x, rsel, csel, maxrow=Inf)
+  ans[order(index[[1]]), order(index[[2]])] = ans
+  ans
 })
 #  
 #' extension of DelayedArray for BigQuery content
@@ -198,7 +218,7 @@ setClass("BQ3_Array", contains="DelayedArray")
 #' extension of DelayedMatrix for HDF Server content
 #' @exportClass BQ3_Matrix
 setClass("BQ3_Matrix", contains=c("DelayedMatrix", 
-     "BQ3_Array"))
+                                  "BQ3_Array"))
 
 setMethod("matrixClass", "BQ3_Array", function(x) "BQ3_Matrix")
 
@@ -209,11 +229,11 @@ setMethod("matrixClass", "BQ3_Array", function(x) "BQ3_Matrix")
 #' @import DelayedArray
 #' @export
 setAs("BQ3_Array", "BQ3_Matrix", function(from)
-   new("BQ3_Matrix", from))
+  new("BQ3_Matrix", from))
 
 setMethod("DelayedArray", "BQ3_ArraySeed",
-#   function(seed) DelayedArray:::new_DelayedArray(seed, Class="BQ3_Array"))
-   function(seed) newDA(seed, Class="BQ3_Array"))
+          #   function(seed) DelayedArray:::new_DelayedArray(seed, Class="BQ3_Array"))
+          function(seed) newDA(seed, Class="BQ3_Array"))
 #
 #' create BQ3_Array instance given url (filepath) and entity (host) name
 #' @param filepath a BQ3_Source instance
@@ -240,3 +260,63 @@ setMethod("DelayedArray", "BQ3_ArraySeed",
 #' @export
 BQ3_Array = function(filepath)
   DelayedArray(BQ3_ArraySeed(filepath))
+
+BQ3m2 = function(x, i, j, maxrow=Inf) {
+  stopifnot(is.character(i), is.character(j))
+  i = sort(i)
+  j = sort(j)
+  bqconn = x@filepath@bqconn
+  tblnm = x@filepath@tblnm
+  rowkeyfield = x@filepath@rowkeyfield
+  colkeyfield = x@filepath@colkeyfield
+  filtervbl = x@filepath@filtervbl
+  filterval = x@filepath@filterval
+  assayvbl = x@filepath@assayvbl
+  assaysampletype = x@filepath@assaysampletype
+  allrows = FALSE
+  allcols = FALSE
+  if (!is.null(i) & length(i)>0) 
+    rowsel = i
+  else if (is.null(i)) {
+    rowsel = x@filepath@allrownames
+    allrows = TRUE  # condition the filter
+  }
+  else if (length(i)==0) {
+    if (length(j)==0 & !is.null(j)) return(matrix(0, nrow=0, ncol=0))
+    else if (is.null(j)) cn = x@filepath@allcolnames
+    else cn = j
+    ans = matrix(0, nrow=0, ncol=length(cn))
+    colnames(ans) = cn
+    return(ans)
+  }
+  if (!is.null(j) & length(j)>0) {
+    colsel = j
+  }
+  else if (is.null(j)) {
+    colsel = x@filepath@allcolnames
+    allcols = TRUE
+  }
+  else if (length(j)==0) {
+    ans = matrix(0, nrow=length(i), ncol=0)
+    rownames(ans) = rowsel
+    return(ans)
+  }
+  options(useFancyQuotes=FALSE)
+  df = bqconn %>% tbl(tblnm) %>%   # QUESTION: Can this reference be carried in the seed?
+    select_(rowkeyfield, colkeyfield, filtervbl, assayvbl) %>%  # confine columns
+    filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
+  if (!allcols) df = df %>%
+    filter_(paste(c(colkeyfield, "%in% colsel"), collapse="")) # col confinement
+  if (!allrows) df = df %>%
+    filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) # minor row confinement
+  df = (df %>% as.data.frame(n=maxrow))
+  df = df[ which(df[[colkeyfield]] %in% x@filepath@allcolnames), ]
+  df = dcast(df, as.formula(paste(rowkeyfield, "~", colkeyfield, collapse="")), value.var=assayvbl, fun.aggregate=mean)
+  rownames(df) = df[,1]
+  df = df[,-1]
+  mat = data.matrix(df)
+  mat[] = as.double(mat)
+  print("input to extract_array:")
+  print(mat)
+  mat[i, j]
+}
