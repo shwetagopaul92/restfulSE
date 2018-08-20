@@ -53,7 +53,7 @@ se1.3M = function(url="http://h5s.channingremotedata.org:5000",
   ds = H5S_Array(url, tag)
   ehub = ExperimentHub::ExperimentHub()
   myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-  full_1Mneurons = myfiles[["EH554"]]
+  full_1Mneurons = myfiles[["EH1589"]]
   assays(full_1Mneurons) = SimpleList(counts=ds)
   full_1Mneurons
 }
