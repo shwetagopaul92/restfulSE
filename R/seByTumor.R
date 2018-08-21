@@ -49,10 +49,10 @@ seByTumor_2016 = function(tumorCode = "LUAD", assayTblName="mRNA_UNC_HiSeq_RSEM"
  Study = NULL
  ParticipantBarcode = NULL
  clin = bqConn %>% tbl("Clinical_data") %>% filter(Study==tumorCode) 
- h = clin %>% dplyr::select(ParticipantBarcode) %>% head() %>% as.data.frame()
+ h = clin %>% dplyr::select(ParticipantBarcode) %>% head() %>% as.data.frame(n=Inf)
  keeper = h[[1]][1]
  assay = bqConn %>% tbl(assayTblName) %>% filter(Study==tumorCode & ParticipantBarcode==keeper) %>% dplyr::select(rdColsToKeep)
- SummarizedExperiment(colData=as.data.frame(clin), rowData=DataFrame(assay %>% as.data.frame()))
+ SummarizedExperiment(colData=as.data.frame(clin), rowData=DataFrame(assay %>% as.data.frame(n=Inf)))
 }
 
 #' Define a class to use BigQuery data through SummarizedExperiment interface
@@ -140,7 +140,7 @@ seByTumor = function(tumorCode = "LUAD",
  #h = clin %>% dplyr::select(case_barcode) %>% head() %>% as.data.frame()
  #keeper = h[[1]][1]
  assayRef = bqConnAssay %>% tbl(assayTblName) %>% filter(project_short_name==newn)
- h = assayRef %>% dplyr::select(case_barcode) %>% head() %>% as.data.frame()
+ h = assayRef %>% dplyr::select(case_barcode) %>% head() %>% as.data.frame(n=Inf)
  keeper = h[[1]][1]
 # the following just gets feature names for a single barcode
  assay = assayRef %>% filter(case_barcode==keeper) %>% dplyr::select(rdColsToKeep)
@@ -148,12 +148,12 @@ seByTumor = function(tumorCode = "LUAD",
  clin = as.data.frame(clin)
  inassay = assayRef %>% filter(project_short_name==newn) %>% 
     dplyr::select(case_barcode) %>% dplyr::group_by(case_barcode) %>%
-    dplyr::summarise(n=n()) %>% as.data.frame()
+    dplyr::summarise(n=n()) %>% as.data.frame(n=Inf)
  inassay_barcodes = inassay[,1]
 # at this point subset clin
  rownames(clin) = clin[,colkey]
  clin = clin[intersect(rownames(clin), inassay_barcodes),]
- se = SummarizedExperiment(colData=clin, rowData=DataFrame(assay %>% as.data.frame()))
+ se = SummarizedExperiment(colData=clin, rowData=DataFrame(assay %>% as.data.frame(n=Inf)))
  se@NAMES = rowData(se)[,rowkey]
  new("BQSummarizedExperiment", se, rowQref = assayRef,
      colQref = clinRef, rowkey=rowkey, colkey=colkey, assayvbl=assayvbl)
@@ -180,7 +180,7 @@ setMethod("assay", c("BQSummarizedExperiment", "missing"),
   cd = colData(x)[,x@colkey]
 
   df = x@rowQref %>% dplyr::select(one_of(c(x@rowkey, x@colkey, x@assayvbl))) %>% filter_(paste0(x@rowkey, " %in% rd & ", x@colkey, " %in% cd")) %>% # assumes colkey shared to assay table
-      as.data.frame()
+      as.data.frame(n=Inf)
   res = dcast(df, as.formula(paste0(x@rowkey, "~", x@colkey)), fun.aggregate=clmax, value.var=x@assayvbl)
   mat = data.matrix(res[,-1])
   rownames(mat) = as.character(res[,1])

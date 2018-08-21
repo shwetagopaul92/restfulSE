@@ -4,7 +4,8 @@
 \alias{seByTumor_2016}
 \title{Given a BigQueryConnection to the 2016 ISB TCGA bigtables, obtain a SummarizedExperiment 'shell' rowData and colData}
 \usage{
-seByTumor_2016(tumorCode = "LUAD", assayTblName = "mRNA_UNC_HiSeq_RSEM",
+seByTumor_2016(tumorCode = "LUAD",
+  assayTblName = "mRNA_UNC_HiSeq_RSEM",
   rdColsToKeep = c("original_gene_symbol", "HGNC_gene_symbol", "gene_id",
   "Study"), bqConn)
 }
