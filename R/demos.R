@@ -15,7 +15,7 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 #' Convenience functions using EC2 server to extract tenx neurons full or subset data
 #' @rawNamespace import(rhdf5client, except = groups)
 #' @importFrom utils data
-#' @importFrom AnnotationDbi select keys
+#' @importFrom AnnotationDbi keys
 #' @importFrom rhdf5client H5S_Array
 #' @importFrom S4Vectors SimpleList
 #' @param url server URL
@@ -52,8 +52,8 @@ se1.3M = function(url="http://h5s.channingremotedata.org:5000",
    tag="tenx_full") {
   ds = H5S_Array(url, tag)
   ehub = ExperimentHub::ExperimentHub()
-  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-  full_1Mneurons = myfiles[["EH1589"]]
+  tag = names(AnnotationHub::query(ehub, "full_1Mneurons"))
+  full_1Mneurons = ehub[[tag[1]]]
   assays(full_1Mneurons) = SimpleList(counts=ds)
   full_1Mneurons
 }

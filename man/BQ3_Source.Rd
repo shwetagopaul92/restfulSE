@@ -7,7 +7,7 @@
 BQ3_Source(bqconn, tblnm = "RNAseq_Gene_Expression",
   rowkeyfield = "Ensembl_gene_id", colkeyfield = "case_barcode",
   filtervbl = "project_short_name", filterval = "TCGA-GBM",
-  assayvbl = "HTSeq__Counts", assaysampletype = "TP")
+  assayvbl = "HTSeq__Counts", assaysampletype = "TP", maxnrec = Inf)
 }
 \arguments{
 \item{bqconn}{instance of BigQueryConnection from bigrquery}
@@ -28,12 +28,17 @@ for example, all records pertaining to a given tumor in TCGA}
 \item{assayvbl}{character(1) field with assay quantifications}
 
 \item{assaysampletype}{character(1) value for filtering pancancer-atlas assays, which include normals and other sample types, defaulting to "TP"; ignored if project element of \code{bqconn} is not `pancancer-atlas`}
+
+\item{maxnrec}{numeric(1) defaults to Inf: number of records to convert with as.data.frame}
 }
 \value{
 instance of BQ3_Source
 }
 \description{
 construct a BigQuery resource interface
+}
+\note{
+Tailored to ISB-CGC projects 'isb-cgc' and 'pancancer-atlas'.
 }
 \examples{
 if (interactive()) {
