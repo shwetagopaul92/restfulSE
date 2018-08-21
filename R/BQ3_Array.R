@@ -19,7 +19,7 @@ newDA = function (seed = new("array"), Class = "DelayedArray")
 #' BigQuery Records are regarded as triples, within major groups defined by filtervbl.
 #' Triples have content subject - gene - value, to be pivoted to genes(rows) x 
 #' subjects(columns) with values as entries.
-#' @importFrom dplyr select_ filter_ group_by_ summarise tbl n
+#' @importFrom dplyr select_ filter_ group_by_ summarise tbl n select
 #' @importFrom Biobase selectSome
 #' @import DelayedArray
 #' @export
@@ -58,6 +58,8 @@ setMethod("show", "BQ3_Source", function(object) {
 #' @param filterval character(1) value in the range of filtervbl to identify records to retain --
 #' @param assayvbl character(1) field with assay quantifications
 #' @param assaysampletype character(1) value for filtering pancancer-atlas assays, which include normals and other sample types, defaulting to "TP"; ignored if project element of \code{bqconn} is not `pancancer-atlas`
+#' @param maxnrec numeric(1) defaults to Inf: number of records to convert with as.data.frame
+#' @note Tailored to ISB-CGC projects 'isb-cgc' and 'pancancer-atlas'.
 #' @return instance of BQ3_Source
 #' @examples
 #' if (interactive()) {
@@ -69,22 +71,31 @@ setMethod("show", "BQ3_Source", function(object) {
 BQ3_Source = function(bqconn, tblnm = "RNAseq_Gene_Expression",
  rowkeyfield = "Ensembl_gene_id", colkeyfield = "case_barcode",
  filtervbl = "project_short_name", filterval = "TCGA-GBM",
-   assayvbl = "HTSeq__Counts", assaysampletype="TP") {
+   assayvbl = "HTSeq__Counts", assaysampletype="TP", maxnrec=Inf) {
  stopifnot(tblnm %in% dbListTables(bqconn))
+conc = function (x) 
+paste("c(", paste0(sQuote(x), collapse = ","), ")", collapse = "")
+
  options(useFancyQuotes=FALSE)
- if (slot(bqconn, "project") != "pancancer-atlas") {
- ini = bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, 
+ if (slot(bqconn, "project") == "pancancer-atlas") {
+
+    ini = bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, 
+        colkeyfield, "SampleTypeLetterCode") %>%
+    filter_(paste(c(filtervbl, "%in%", conc(filterval)), collapse="")) %>%
+       filter(SampleTypeLetterCode == assaysampletype)
+
+    } else  {
+
+    ini = bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, 
         colkeyfield) %>%
     filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) 
-    } else ini = 
-    bqconn %>% tbl(tblnm) %>% select_(rowkeyfield, filtervbl, 
-        colkeyfield, "SampleTypeLetterCode") %>%
-    filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) %>%
-       filter(SampleTypeLetterCode == assaysampletype)
+    
+    }
+
  rowdf = ini %>% 
-    select_(rowkeyfield) %>% group_by_(rowkeyfield) %>% summarise(n=n()) %>% as.data.frame(n=100000)
+    select_(rowkeyfield) %>% group_by_(rowkeyfield) %>% summarise(n=n()) %>% as.data.frame(n=maxnrec)
  coldf = ini %>%
-    select_(colkeyfield) %>% group_by_(colkeyfield) %>% summarise(n=n()) %>% as.data.frame(n=100000)
+    select_(colkeyfield) %>% group_by_(colkeyfield) %>% summarise(n=n()) %>% as.data.frame(n=maxnrec)
  colns = coldf[,2]
  ntab = table(colns)
  modal = ntab[which.max(ntab)]
@@ -139,76 +150,19 @@ setMethod("dim", "BQ3_ArraySeed", function(x) {
 })
 #
 
-# this function will accept numeric or NULL for i and j
-# it will generate the full data for a tumor but retrieval
-# can be very slow so should be used for targeted queries
-# or try to reshape in BigQuery
-BQ3matgen = function(x, i, j, maxrow=Inf) {
-  stopifnot(is.numeric(i) | is.null(i), is.numeric(j) | is.null(j))
-  bqconn = x@filepath@bqconn
-  tblnm = x@filepath@tblnm
-  rowkeyfield = x@filepath@rowkeyfield
-  colkeyfield = x@filepath@colkeyfield
-  filtervbl = x@filepath@filtervbl
-  filterval = x@filepath@filterval
-  assayvbl = x@filepath@assayvbl
-  assaysampletype = x@filepath@assaysampletype
-  allrows = FALSE
-  allcols = FALSE
-  if (!is.null(i) & length(i)>0) 
-    rowsel = x@filepath@allrownames[i]
-  else if (is.null(i)) {
-    rowsel = x@filepath@allrownames
-    allrows = TRUE  # condition the filter
-    }
-  else if (length(i)==0) {
-    if (length(j)==0 & !is.null(j)) return(matrix(0, nrow=0, ncol=0))
-      else if (is.null(j)) cn = x@filepath@allcolnames
-      else cn = x@filepath@allcolnames[j]
-    ans = matrix(0, nrow=0, ncol=length(cn))
-    colnames(ans) = cn
-    return(ans)
-    }
-  if (!is.null(j) & length(j)>0) {
-      colsel = x@filepath@allcolnames[j]
-      }
-  else if (is.null(j)) {
-      colsel = x@filepath@allcolnames
-      allcols = TRUE
-      }
-  else if (length(j)==0) {
-      ans = matrix(0, nrow=length(i), ncol=0)
-      rownames(ans) = rowsel
-      return(ans)
-      }
-  options(useFancyQuotes=FALSE)
-  df = bqconn %>% tbl(tblnm) %>%   # QUESTION: Can this reference be carried in the seed?
-       select_(rowkeyfield, colkeyfield, filtervbl, assayvbl) %>%  # confine columns
-       filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
-  if (!allcols) df = df %>%
-       filter_(paste(c(colkeyfield, "%in% colsel"), collapse="")) # col confinement
-  if (!allrows) df = df %>%
-       filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) # minor row confinement
-  df = (df %>% as.data.frame(n=maxrow))
-  df = df[ which(df[[colkeyfield]] %in% x@filepath@allcolnames), ]
-  df = dcast(df, as.formula(paste(rowkeyfield, "~", colkeyfield, collapse="")), value.var=assayvbl, fun.aggregate=mean)
-  rownames(df) = df[,1]
-  df = df[,-1]
-  mat = data.matrix(df)
-  mat[] = as.double(mat)
-  mat
-}
 #' @import DelayedArray
 setMethod("extract_array", "BQ3_ArraySeed", function(x, index) {
   stopifnot(length(index)==2)
-  if (is.null(index[[1]])) {
-     nomNrow = length(x@filepath@allrownames)
-     index[[1]] = unique(c(seq_len(10), (nomNrow-9):nomNrow))
-     }
-  rsel = x@filepath@allrownames[ index[[1]] ]
+#  if (is.null(index[[1]])) {
+#     nomNrow = length(x@filepath@allrownames)
+#     index[[1]] = unique(c(seq_len(10), (nomNrow-9):nomNrow))
+#     }
+  rsel = x@filepath@allrownames
+  if (!is.null(index[[1]])) rsel = x@filepath@allrownames[ index[[1]] ]
   csel = x@filepath@allcolnames[ index[[2]] ]
   ans = BQ3m2(x, rsel, csel, maxrow=Inf)
-  ans[order(index[[1]]), order(index[[2]])] = ans
+  if (!is.null(index[[1]])) ans[order(index[[1]]), order(index[[2]])] = ans
+  else ans[, order(index[[2]])] = ans
   ans
 })
 #  
@@ -302,13 +256,26 @@ BQ3m2 = function(x, i, j, maxrow=Inf) {
       return(ans)
       }
   options(useFancyQuotes=FALSE)
-  df = bqconn %>% tbl(tblnm) %>%   # QUESTION: Can this reference be carried in the seed?
+  isPancan = x@filepath@bqconn@project == "pancancer-atlas"
+  if (isPancan) {
+     df = bqconn %>% tbl(tblnm) %>%   
+       select_(rowkeyfield, colkeyfield, filtervbl, assayvbl, "SampleTypeLetterCode") %>%  # confine columns
+       filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
+     } else {
+     df = bqconn %>% tbl(tblnm) %>%  
        select_(rowkeyfield, colkeyfield, filtervbl, assayvbl) %>%  # confine columns
        filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
+     }
   if (!allcols) df = df %>%
        filter_(paste(c(colkeyfield, "%in% colsel"), collapse="")) # col confinement
-  if (!allrows) df = df %>%
-       filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) # minor row confinement
+  if (!allrows) {
+       if (isPancan) {
+         df = df %>% filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) %>%
+           filter( SampleTypeLetterCode == assaysampletype ) # minor row confinement
+           } else {
+         df = df %>% filter_(paste(c(rowkeyfield, "%in% rowsel"), collapse="")) 
+           }
+       }
   df = (df %>% as.data.frame(n=maxrow))
   df = df[ which(df[[colkeyfield]] %in% x@filepath@allcolnames), ]
   df = dcast(df, as.formula(paste(rowkeyfield, "~", colkeyfield, collapse="")), value.var=assayvbl, fun.aggregate=mean)
@@ -316,7 +283,5 @@ BQ3m2 = function(x, i, j, maxrow=Inf) {
   df = df[,-1]
   mat = data.matrix(df)
   mat[] = as.double(mat)
-  print("input to extract_array:")
-  print(mat)
-  mat[i, j]
+  mat[i, j, drop=FALSE] # for length(i)==1 need frop=FALSE
 }
