@@ -163,8 +163,8 @@ We build a SummarizedExperiment by combining an assay-free
 RangedSummarizedExperiment with this reference.
 ```{r doba3}
 ehub = ExperimentHub::ExperimentHub()
-myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-banoSE = myfiles[["EH551"]] # no assay data
+tag = names(AnnotationHub::query(ehub, "banoSEMeta"))
+banoSE = ehub[[tag[1]]]
 ds = H5S_Array("http://h5s.channingremotedata.org:5000", "assays")
 assays(banoSE) = SimpleList(betas=ds)
 banoSE
@@ -242,8 +242,8 @@ details.
 ```{r lktas}
 #data("tasicST6", package = "restfulSEData")
 ehub = ExperimentHub::ExperimentHub()
-myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-myfiles[["EH557"]] -> tasicST6
+tag = names(AnnotationHub::query(ehub, "tasicST6"))
+tasicST6 = ehub[[tag[1]]]
 tasicST6
 ```
 
@@ -263,8 +263,8 @@ assembled on 64 samples of immortalized B-cells from the YRI HapMap cohort.
 library(restfulSE)
 #data("banoSEMeta", package = "restfulSEData")
 ehub = ExperimentHub::ExperimentHub()
-myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-myfiles[["EH551"]] -> banoSEMeta
+tag = names(AnnotationHub::query(ehub, "banoSEMeta"))
+banoSEMeta = ehub[[tag[1]]]
 banoSEMeta
 ```
 
