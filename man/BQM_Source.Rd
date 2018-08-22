@@ -6,7 +6,7 @@
 with one column devoted to row identification (rowkeyfield)
 and all other columns assumed numeric}
 \usage{
-BQM_Source(bqconn, tblnm, rowkeyfield, maxdfsize = 500000)
+BQM_Source(bqconn, tblnm, rowkeyfield, maxdfsize = 5e+05)
 }
 \arguments{
 \item{bqconn}{instance of BigQueryConnection from bigrquery}

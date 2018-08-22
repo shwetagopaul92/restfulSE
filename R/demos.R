@@ -52,8 +52,8 @@ se1.3M = function(url="http://h5s.channingremotedata.org:5000",
    tag="tenx_full") {
   ds = H5S_Array(url, tag)
   ehub = ExperimentHub::ExperimentHub()
-  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-  full_1Mneurons = myfiles[["EH554"]]
+  tag = names(AnnotationHub::query(ehub, "full_1Mneurons"))
+  full_1Mneurons = ehub[[tag[1]]]
   assays(full_1Mneurons) = SimpleList(counts=ds)
   full_1Mneurons
 }
@@ -71,7 +71,7 @@ gtexTiss = function(url="http://h5s.channingremotedata.org:5000",
   ds = H5S_Array(url, tag)
   ehub = ExperimentHub::ExperimentHub()
   myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-  gtexTiss = myfiles[["EH556"]] 
+  gtexTiss = myfiles[["EH556"]]
   assays(gtexTiss) = SimpleList(recount=ds)
   gtexTiss
 }
