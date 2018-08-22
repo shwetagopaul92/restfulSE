@@ -35,8 +35,8 @@ se100k = function(url="http://h5s.channingremotedata.org:5000",
    tag="tenx_100k_sorted") {
   ds = H5S_Array(url, tag)
   ehub = ExperimentHub::ExperimentHub()
-  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-  st100k <- myfiles[["EH552"]] 
+  tag = names(AnnotationHub::query(ehub, "st100k"))
+  st100k = ehub[[tag[1]]]
   assays(st100k) = SimpleList(counts=ds)
   st100k
 }
@@ -70,8 +70,8 @@ gtexTiss = function(url="http://h5s.channingremotedata.org:5000",
    tag="tissues") {
   ds = H5S_Array(url, tag)
   ehub = ExperimentHub::ExperimentHub()
-  myfiles <- AnnotationHub::query(ehub , "restfulSEData")
-  gtexTiss = myfiles[["EH556"]]
+  tag = names(AnnotationHub::query(ehub, "gtexRecount"))
+  gtexTiss = ehub[[tag[1]]]
   assays(gtexTiss) = SimpleList(recount=ds)
   gtexTiss
 }
