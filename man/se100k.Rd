@@ -8,8 +8,7 @@
 se100k(url = "http://h5s.channingremotedata.org:5000",
   tag = "tenx_100k_sorted")
 
-se1.3M(url = "http://h5s.channingremotedata.org:5000",
-  tag = "tenx_full")
+se1.3M(url = "http://h5s.channingremotedata.org:5000", tag = "tenx_full")
 }
 \arguments{
 \item{url}{server URL}
