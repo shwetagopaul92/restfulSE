@@ -4,13 +4,8 @@
 \alias{pancan_SE}
 \title{illustrate DelayedArray assay from BigQuery backend in SummarizedExperiment}
 \usage{
-pancan_SE(bqcon,
-  colDataTableName = "clinical_PANCAN_patient_with_followup",
-<<<<<<< HEAD
-  clinVars = basic_clinvars(),
-=======
->>>>>>> 96942d93114642fc2b2df08468dfc9ce034c3cd5
-  colDSubjectIdName = "bcr_patient_barcode",
+pancan_SE(bqcon, colDataTableName = "clinical_PANCAN_patient_with_followup",
+  clinVars = basic_clinvars(), colDSubjectIdName = "bcr_patient_barcode",
   colDFilterField = "acronym", colDFilterValue = "BRCA",
   assayDataTableName = "pancanMiRs_EBadjOnProtocolPlatformWithoutRepsWithUnCorrectMiRs_08_04_16_annot",
   assayFeatureName = "ID", assaySampleTypeCode = "TP",
