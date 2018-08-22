@@ -5,8 +5,7 @@
 \alias{assays,RESTfulSummarizedExperiment-method}
 \title{Assays access for RESTfulSummarizedExperiment}
 \usage{
-\S4method{assays}{RESTfulSummarizedExperiment}(x, ...,
-  withDimnames = TRUE)
+\S4method{assays}{RESTfulSummarizedExperiment}(x, ..., withDimnames = TRUE)
 }
 \arguments{
 \item{x}{instance of RESTfulSummarizedExperiment}
