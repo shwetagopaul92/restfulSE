@@ -258,11 +258,19 @@ BQ3m2 = function(x, i, j, maxrow=Inf) {
   options(useFancyQuotes=FALSE)
   isPancan = x@filepath@bqconn@project == "pancancer-atlas"
   if (isPancan) {
+<<<<<<< HEAD
      df = bqconn %>% tbl(tblnm) %>%   
        select_(rowkeyfield, colkeyfield, filtervbl, assayvbl, "SampleTypeLetterCode") %>%  # confine columns
        filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
      } else {
      df = bqconn %>% tbl(tblnm) %>%  
+=======
+     df = bqconn %>% tbl(tblnm) %>%   # QUESTION: Can this reference be carried in the seed?
+       select_(rowkeyfield, colkeyfield, filtervbl, assayvbl, "SampleTypeLetterCode") %>%  # confine columns
+       filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
+     } else {
+     df = bqconn %>% tbl(tblnm) %>%   # QUESTION: Can this reference be carried in the seed?
+>>>>>>> 96942d93114642fc2b2df08468dfc9ce034c3cd5
        select_(rowkeyfield, colkeyfield, filtervbl, assayvbl) %>%  # confine columns
        filter_(paste(c(filtervbl, "==", sQuote(filterval)), collapse="")) # major row confinement
      }
@@ -283,5 +291,9 @@ BQ3m2 = function(x, i, j, maxrow=Inf) {
   df = df[,-1]
   mat = data.matrix(df)
   mat[] = as.double(mat)
+<<<<<<< HEAD
   mat[i, j, drop=FALSE] # for length(i)==1 need frop=FALSE
+=======
+  mat[i, j]
+>>>>>>> 96942d93114642fc2b2df08468dfc9ce034c3cd5
 }
