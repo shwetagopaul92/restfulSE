@@ -279,9 +279,10 @@ BQ3m2 = function(x, i, j, maxrow=Inf) {
   df = (df %>% as.data.frame(n=maxrow))
   df = df[ which(df[[colkeyfield]] %in% x@filepath@allcolnames), ]
   df = dcast(df, as.formula(paste(rowkeyfield, "~", colkeyfield, collapse="")), value.var=assayvbl, fun.aggregate=mean)
-  rownames(df) = df[,1]
+  rownames(df) = df[,1,drop=FALSE]
   df = df[,-1]
   mat = data.matrix(df)
   mat[] = as.double(mat)
-  mat[i, j, drop=FALSE] # for length(i)==1 need frop=FALSE
+  dimnames(mat) = dimnames(df)
+  mat[i, j, drop=FALSE] # for length(i)==1 need drop=FALSE
 }
