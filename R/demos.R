@@ -33,7 +33,8 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 #' @export
 se100k = function(url="http://h5s.channingremotedata.org:5000",
    tag="tenx_100k_sorted") {
-  ds = H5S_Array(url, tag)
+  #ds = H5S_Array(url, tag)
+  ds = H5S_Array(endpoint=url, filepath="", host=tag)
   ehub = ExperimentHub::ExperimentHub()
   tag = names(AnnotationHub::query(ehub, "st100k"))
   st100k = ehub[[tag[1]]]
@@ -50,7 +51,8 @@ se100k = function(url="http://h5s.channingremotedata.org:5000",
 #' @export
 se1.3M = function(url="http://h5s.channingremotedata.org:5000",
    tag="tenx_full") {
-  ds = H5S_Array(url, tag)
+  #ds = H5S_Array(url, tag)
+  ds = H5S_Array(endpoint=url,filepath="",host=tag)
   ehub = ExperimentHub::ExperimentHub()
   tag = names(AnnotationHub::query(ehub, "full_1Mneurons"))
   full_1Mneurons = ehub[[tag[1]]]
@@ -68,7 +70,8 @@ se1.3M = function(url="http://h5s.channingremotedata.org:5000",
 #' @export
 gtexTiss = function(url="http://h5s.channingremotedata.org:5000",
    tag="tissues") {
-  ds = H5S_Array(url, tag)
+  #ds = H5S_Array(url, tag)
+  ds = H5S_Array(endpoint=url,filepath="",host=tag)
   ehub = ExperimentHub::ExperimentHub()
   tag = names(AnnotationHub::query(ehub, "gtexRecount"))
   gtexTiss = ehub[[tag[1]]]
