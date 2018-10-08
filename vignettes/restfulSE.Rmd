@@ -165,7 +165,8 @@ RangedSummarizedExperiment with this reference.
 ehub = ExperimentHub::ExperimentHub()
 tag = names(AnnotationHub::query(ehub, "banoSEMeta"))
 banoSE = ehub[[tag[1]]]
-ds = H5S_Array("http://h5s.channingremotedata.org:5000", "assays")
+#ds = H5S_Array("http://h5s.channingremotedata.org:5000", "assays")
+ds = H5S_Array("http://h5s.channingremotedata.org:5000", "", "assays")
 assays(banoSE) = SimpleList(betas=ds)
 banoSE
 ```
