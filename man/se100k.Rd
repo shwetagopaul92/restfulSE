@@ -3,12 +3,11 @@
 \name{se100k}
 \alias{se100k}
 \alias{se1.3M}
-\title{Convenience functions using EC2 server to extract tenx neurons full or subset data}
+\title{Convenience functions using HSDS server to extract tenx neurons full or subset data}
 \usage{
-se100k(url = "http://h5s.channingremotedata.org:5000",
-  tag = "tenx_100k_sorted")
+se100k(url = URL_hsds(), tag = "assay001")
 
-se1.3M(url = "http://h5s.channingremotedata.org:5000", tag = "tenx_full")
+se1.3M(url = URL_hsds(), tag = "newassay001")
 }
 \arguments{
 \item{url}{server URL}
@@ -21,7 +20,7 @@ RESTfulSummarizedExperiment
 SummarizedExperiment instance
 }
 \description{
-Convenience functions using EC2 server to extract tenx neurons full or subset data
+Convenience functions using HSDS server to extract tenx neurons full or subset data
 }
 \note{
 se1.3M provides access to the full 1.3 million neurons
