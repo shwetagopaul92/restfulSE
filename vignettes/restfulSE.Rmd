@@ -146,17 +146,16 @@ library(rhdf5client)
 
 ```{r dobanoyy}
 library(restfulSE)
-bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
-bigec2
-dsmeta(bigec2)[1:2,] # two groups
-dsmeta(bigec2)[1,2][[1]] # all dataset candidates in group 1
+hsds = H5S_source(URL_hsds())
+hsds
+
 ```
 
-We use double-bracket subscripting to grab a reference to a
-dataset from an H5S source.
+To grab a dataset of interest from the HSDS server 
 ```{r doba2}
-banref = bigec2[["assays"]] # arbitrary name assigned long ago
-banref
+hsdsCon = setPath(hsds,"/home/reshg/bano_meQTLex.h5")
+fetchDatasets(hsdsCon) #grab the dataset id of interest 
+banoh5 = H5S_dataset2(hsdsCon,"d-435d7ad4-9f13-11e8-92c2-0242ac120021")
 ```
 
 We build a SummarizedExperiment by combining an assay-free
@@ -165,8 +164,7 @@ RangedSummarizedExperiment with this reference.
 ehub = ExperimentHub::ExperimentHub()
 tag = names(AnnotationHub::query(ehub, "banoSEMeta"))
 banoSE = ehub[[tag[1]]]
-#ds = H5S_Array("http://h5s.channingremotedata.org:5000", "assays")
-ds = H5S_Array("http://h5s.channingremotedata.org:5000", "", "assays")
+ds = H5S_Array(URL_hsds(), "/home/reshg/bano_meQTLex.h5", "assay001")
 assays(banoSE) = SimpleList(betas=ds)
 banoSE
 ```
@@ -280,26 +278,11 @@ on the remote server.
 
 ### Server
 
-Given the URL of a server running HDF5 server, we create
+Given the URL of a server running HSDS server, we create
 an instance of `H5S_source`:
 ```{r doso}
-mys = H5S_source(serverURL="http://h5s.channingremotedata.org:5000")
+mys = H5S_source(serverURL=URL_hsds())
 mys
 ```
 
-### Groups
-
-The server identifies a collection of 'groups'.  For the server
-we are working with, only one group, at the root, is of interest.
-```{r lkg}
-groups(mys)
-```
-
-### Links for a group
-
-There is a class to hold the link set for any group:
-```{r lkhl}
-lin1 = rhdf5client::links(mys,1)
-lin1
-```
 
