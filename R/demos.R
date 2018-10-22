@@ -71,7 +71,7 @@ se1.3M = function(url=URL_hsds(),
 gtexTiss = function(url=URL_hsds(),
    tag="assay001") {
   #ds = H5S_Array(url, tag)
-  ds = H5S_Array(endpoint=url,filepath="/home/reshg/gtex_tissues.h5",host=tag)
+  ds = H5S_Array(endpoint=url,filepath="/shared/bioconductor/gtex_tissues.h5",host=tag)
   ehub = ExperimentHub::ExperimentHub()
   tag = names(AnnotationHub::query(ehub, "gtexRecount"))
   gtexTiss = ehub[[tag[1]]]
