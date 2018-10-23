@@ -5,21 +5,22 @@ library(restfulSEData)
 context("connection")
 
 test_that("H5S_source completes", {
- bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
- expect_true(is(bigec2, "H5S_source"))
+ #bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
+ hsds = H5S_source(URL_hsds())
+ expect_true(is(hsds, "H5S_source"))
 })
 
-context("content wrapper structure") 
+#context("content wrapper structure") 
 
-test_that("H5S_source processes", {
- bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
- expect_true(all(dim(rhdf5client::groups(bigec2))==c(2,2))) 
- expect_true(is(rhdf5client::links(bigec2,1), "H5S_linkset"))
- expect_true(is(dataset(bigec2, "tenx_100k"), "H5S_dataset"))
- expect_true(is(bigec2[["tenx_100k"]], "H5S_dataset"))
- expect_true(is(dsmeta(bigec2), "DataFrame"))
- expect_true(all(dim(dsmeta(bigec2))==c(2,3))) 
-})
+#test_that("H5S_source processes", {
+ #bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
+ #expect_true(all(dim(rhdf5client::groups(bigec2))==c(2,2))) 
+ #expect_true(is(rhdf5client::links(bigec2,1), "H5S_linkset"))
+ #expect_true(is(dataset(bigec2, "tenx_100k"), "H5S_dataset"))
+ #expect_true(is(bigec2[["tenx_100k"]], "H5S_dataset"))
+ #expect_true(is(dsmeta(bigec2), "DataFrame"))
+ #expect_true(all(dim(dsmeta(bigec2))==c(2,3))) 
+#})
 
 context("indexing infrastructure")
 
@@ -35,31 +36,34 @@ test_that("sproc/isplit work", {
  expect_true(identical(ss, unlist(sproc(ii))))
 })
 
-context("targets generation")
+#context("targets generation")
 
-test_that("targets method works", {
- bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
- tt = targets(rhdf5client::links(bigec2, 1))
- expect_true(length(tt)>=9)  # july 5 2017
- expect_true(length(grep("host", tt))>=7) # added tenx_full dataset
-})
+#test_that("targets method works", {
+ #bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
+ #tt = targets(rhdf5client::links(bigec2, 1))
+ #expect_true(length(tt)>=9)  # july 5 2017
+ #expect_true(length(grep("host", tt))>=7) # added tenx_full dataset
+#})
 
 context("RESTful SE")
 
 test_that("RESTfulSummarizedExperiment infrastructure works against server", {
- bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
- #data("st100k", package="restfulSEData")
+ hsds = H5S_source(URL_hsds())
  ehub = ExperimentHub::ExperimentHub()
  tagt = names(AnnotationHub::query(ehub, "st100k"))
  st100k = ehub[[tagt[1]]]
- n100k_served = bigec2[["tenx_100k_sorted"]]  
+ hsdsCon = setPath(hsds,"/home/reshg/tenx_100k_sorted.h5")
+ n100k_served = H5S_dataset2(hsdsCon,"d-a92fe068-cd82-11e8-9b4b-0242ac120009")
+ #n100k_served = bigec2[["tenx_100k_sorted"]]  
  rr = RESTfulSummarizedExperiment( st100k, n100k_served )
  expect_true(is(rr, "RangedSummarizedExperiment"))
  #data("banoSEMeta", package="restfulSEData")
  tag = names(AnnotationHub::query(ehub, "banoSEMeta"))
  banoSEMeta = ehub[[tag[1]]]
- bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
- banoh5 = bigec2[["assays"]]
+ #bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
+ #banoh5 = bigec2[["assays"]]
+ hsdsCon = setPath(hsds,"/home/reshg/bano_meQTLex.h5")
+ banoh5 = H5S_dataset2(hsdsCon,"d-435d7ad4-9f13-11e8-92c2-0242ac120021")
  rr = RESTfulSummarizedExperiment( banoSEMeta, banoh5 )
  expect_true(validObject(rr))
  expect_true(all(dim(rr)==rev(internalDim(banoh5))))
@@ -96,8 +100,9 @@ test_that("complex indexing succeeds", {
  ehub = ExperimentHub::ExperimentHub()
  tag = names(AnnotationHub::query(ehub, "banoSEMeta"))
  banoSEMeta = ehub[[tag[1]]]
- bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
- banh = bigec2[["assays"]]
+ hsds = H5S_source(URL_hsds())
+ hsdsCon = setPath(hsds,"/shared/bioconductor/bano_meQTLex.h5")
+ banh = H5S_dataset2(hsdsCon,"d-435d7ad4-9f13-11e8-92c2-0242ac120021")
  rr = RESTfulSummarizedExperiment( banoSEMeta, banh )
  options(scipen = 999)
  rrsel = rr[c(1,3,5,200000,300000),c(1,5,7)]
@@ -113,8 +118,9 @@ test_that("dim compatibility check is sensitive", {
  ehub = ExperimentHub::ExperimentHub()
  tag = names(AnnotationHub::query(ehub, "banoSEMeta"))
  banoSEMeta = ehub[[tag[1]]]
- bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
- banoh5 = bigec2[["assays"]]
+ hsds = H5S_source(URL_hsds())
+ hsdsCon = setPath(hsds,"/shared/bioconductor/bano_meQTLex.h5")
+ banoh5 = H5S_dataset2(hsdsCon,"d-435d7ad4-9f13-11e8-92c2-0242ac120021")
  expect_error( rr == RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )
 })
 
