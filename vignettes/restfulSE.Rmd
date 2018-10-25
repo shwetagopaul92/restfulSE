@@ -40,10 +40,7 @@ several data structures are introduced
 - to model the server data architecture and 
 - to perform targeted extraction of numerical data from HDF5 arrays stored on the server. 
 
-We maintain, thanks to a grant from the National Cancer Institute,
-the server [http://h5s.channingremotedata.org:5000/](http://h5s.channingremotedata.org:5000/).  Visit this URL to get a flavor of the
-server structure: datasets, groups, and datatypes are high-level elements to be manipulated to work
-with data values from the server.
+We work with HDF Object store (https://www.hdfgroup.org/solutions/hdf-cloud/). 
 
 ### Illustration with 10x genomics 1.3 million neurons
 
