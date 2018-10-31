@@ -1,7 +1,11 @@
 Package: restfulSE
 Title: Access matrix-like HDF5 server content or BigQuery content through a SummarizedExperiment interface
 Description: This package provides functions and classes to interface with remote data stores by operating on SummarizedExperiment-like objects.
+<<<<<<< HEAD
 Version: 1.4.0
+=======
+Version: 1.5.0
+>>>>>>> 9e485ed3ec28b7b909c0828360d91f601d26fbdd
 Authors@R: c(
  person("Vincent", "Carey", role = c("aut"), email = "stvjc@channing.harvard.edu"),
  person("Shweta", "Gopaulakrishnan", role = c("cre","aut"), email = "reshg@channing.harvard.edu")
