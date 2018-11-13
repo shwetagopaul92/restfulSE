@@ -5,7 +5,6 @@ library(restfulSEData)
 context("connection")
 
 test_that("H5S_source completes", {
- #bigec2 = H5S_source("http://h5s.channingremotedata.org:5000")
  hsds = H5S_source(URL_hsds())
  expect_true(is(hsds, "H5S_source"))
 })
