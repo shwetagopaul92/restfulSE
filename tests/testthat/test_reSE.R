@@ -123,4 +123,3 @@ test_that("dim compatibility check is sensitive", {
  banoh5 = H5S_dataset2(hsdsCon,"d-435d7ad4-9f13-11e8-92c2-0242ac120021")
  expect_error( rr == RESTfulSummarizedExperiment(banoSEMeta[-1,], banoh5) )
 })
-
