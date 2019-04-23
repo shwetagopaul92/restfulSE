@@ -4,12 +4,15 @@
 \alias{gtexTiss}
 \title{Convenience function for access to gene-level GTEx tissues, as quantified in recount}
 \usage{
-gtexTiss(url = URL_hsds(), tag = "assay001")
+gtexTiss(endpoint = URL_hsds(), svrtype = "hsds",
+  dsetname = "/assay001")
 }
 \arguments{
-\item{url}{ip address/host for HDF5 server}
+\item{endpoint}{endpoint URL of remote server}
 
-\item{tag}{name of hdf5 file on server}
+\item{svrtype}{type of server, must be either 'hsds' or 'h5serv'}
+
+\item{dsetname}{complete internal path to dataset in H5 file}
 }
 \value{
 SummarizedExperiment instance

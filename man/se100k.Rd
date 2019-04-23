@@ -5,14 +5,18 @@
 \alias{se1.3M}
 \title{Convenience functions using HSDS server to extract tenx neurons full or subset data}
 \usage{
-se100k(url = URL_hsds(), tag = "assay001")
+se100k(endpoint = URL_hsds(), svrtype = "hsds",
+  dsetname = "/assay001")
 
-se1.3M(url = URL_hsds(), tag = "newassay001")
+se1.3M(endpoint = URL_hsds(), svrtype = "hsds",
+  dsetname = "/newassay001")
 }
 \arguments{
-\item{url}{server URL}
+\item{endpoint}{endpoint URL of remote server}
 
-\item{tag}{string giving the internal dataset name}
+\item{svrtype}{type of server, must be either 'hsds' or 'h5serv'}
+
+\item{dsetname}{complete internal path to dataset in H5 file}
 }
 \value{
 RESTfulSummarizedExperiment

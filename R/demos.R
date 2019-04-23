@@ -18,8 +18,9 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 #' @importFrom AnnotationDbi keys
 #' @importFrom rhdf5client H5S_Array
 #' @importFrom S4Vectors SimpleList
-#' @param url server URL
-#' @param tag string giving the internal dataset name
+#' @param endpoint endpoint URL of remote server
+#' @param svrtype type of server, must be either 'hsds' or 'h5serv'
+#' @param dsetname complete internal path to dataset in H5 file
 #' @return RESTfulSummarizedExperiment
 #' @examples
 #' ss = se100k()
@@ -31,10 +32,10 @@ tasicCortex = function() structure(list(SYMBOL = c("Snap25", "Gad1", "Vip", "Sst
 #' names(csums) = tc$SYMBOL
 #' csums
 #' @export
-se100k = function(url=URL_hsds(),
-   tag="assay001") {
-  #ds = H5S_Array(url, tag)
-  ds = H5S_Array(endpoint=url, filepath="/home/reshg/tenx_100k_sorted.h5", host=tag)
+se100k = function(endpoint=URL_hsds(), svrtype="hsds",
+   dsetname="/assay001") {
+  ds = HSDSArray(endpoint=endpoint,svrtype=svrtype,
+                 domain="/home/reshg/tenx_100k_sorted.h5",dsetname=dsetname)
   ehub = ExperimentHub::ExperimentHub()
   tag = names(AnnotationHub::query(ehub, "st100k"))
   st100k = ehub[[tag[1]]]
@@ -49,10 +50,10 @@ se100k = function(url=URL_hsds(),
 #' expression features sorted by genomic location
 #' @return SummarizedExperiment instance
 #' @export
-se1.3M = function(url=URL_hsds(),
-   tag="newassay001") {
-  #ds = H5S_Array(url, tag)
-  ds = H5S_Array(endpoint=url,filepath="/shared/bioconductor/tenx_full.h5",host=tag)
+se1.3M = function(endpoint=URL_hsds(),svrtype="hsds",
+    dsetname="/newassay001") {
+  ds = HSDSArray(endpoint=endpoint,svrtype=svrtype,
+                 domain="/shared/bioconductor/tenx_full.h5",dsetname=dsetname)
   ehub = ExperimentHub::ExperimentHub()
   tag = names(AnnotationHub::query(ehub, "full_1Mneurons"))
   full_1Mneurons = ehub[[tag[1]]]
@@ -62,16 +63,17 @@ se1.3M = function(url=URL_hsds(),
 
 #' Convenience function for access to gene-level GTEx tissues, as quantified in recount
 #' @import ExperimentHub
-#' @param url ip address/host for HDF5 server
-#' @param tag name of hdf5 file on server
+#' @param endpoint endpoint URL of remote server
+#' @param svrtype type of server, must be either 'hsds' or 'h5serv'
+#' @param dsetname complete internal path to dataset in H5 file
 #' @return SummarizedExperiment instance
 #' @examples
 #' gtexTiss()
 #' @export
-gtexTiss = function(url=URL_hsds(),
-   tag="assay001") {
-  #ds = H5S_Array(url, tag)
-  ds = H5S_Array(endpoint=url,filepath="/shared/bioconductor/gtex_tissues2.h5",host=tag)
+gtexTiss = function(endpoint=URL_hsds(),svrtype="hsds",
+   dsetname="/assay001") {
+  ds = HSDSArray(endpoint=endpoint,svrtype=svrtype,
+                 domain="/shared/bioconductor/gtex_tissues2.h5",dsetname=dsetname)
   ehub = ExperimentHub::ExperimentHub()
   tag = names(AnnotationHub::query(ehub, "gtexRecount"))
   gtexTiss = ehub[[tag[1]]]

@@ -1,7 +1,7 @@
 Package: restfulSE
 Title: Access matrix-like HDF5 server content or BigQuery content through a SummarizedExperiment interface
 Description: This package provides functions and classes to interface with remote data stores by operating on SummarizedExperiment-like objects.
-Version: 1.5.0
+Version: 1.5.2
 Authors@R: c(
  person("Vincent", "Carey", role = c("aut"), email = "stvjc@channing.harvard.edu"),
  person("Shweta", "Gopaulakrishnan", role = c("cre","aut"), email = "reshg@channing.harvard.edu")
@@ -14,7 +14,7 @@ Depends: R (>= 3.5), SummarizedExperiment,DelayedArray
 License: Artistic-2.0
 LazyLoad: yes
 biocViews: Infrastructure, SingleCell, Transcriptomics, Sequencing, Coverage
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Collate: localReplaceSlots.R RESTfulSE.R demos.R seByTumor.R isbCgc.R BQ3_Array.R BQM_Array.R pancan_SE.R
 VignetteBuilder: knitr
 Encoding: UTF-8
