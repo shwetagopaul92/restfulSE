@@ -13,13 +13,8 @@ Imports: utils, stats, methods, S4Vectors, Biobase,reshape2, AnnotationDbi, DBI,
 Depends: R (>= 3.5), SummarizedExperiment,DelayedArray
 License: Artistic-2.0
 LazyLoad: yes
-<<<<<<< HEAD
 biocViews: Infrastructure, SingleCell, Transcriptomics, Sequencing, Coverage
 RoxygenNote: 6.1.1
-=======
-biocViews: ImmunoOncology, Infrastructure, SingleCell, Transcriptomics, Sequencing, Coverage
-RoxygenNote: 6.1.0
->>>>>>> upstream/master
 Collate: localReplaceSlots.R RESTfulSE.R demos.R seByTumor.R isbCgc.R BQ3_Array.R BQM_Array.R pancan_SE.R
 VignetteBuilder: knitr
 Encoding: UTF-8
