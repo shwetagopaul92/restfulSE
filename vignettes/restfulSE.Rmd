@@ -63,7 +63,7 @@ library(org.Mm.eg.db)
 hippdev = select(org.Mm.eg.db, 
     keys="GO:0021766", keytype="GO", column="ENSEMBL")$ENSEMBL
 hippdev = intersect(hippdev, rownames(my10x))
-unname(assay(my10x[ hippdev[1:10], 10001:10006]))
+#unname(assay(my10x[ hippdev[1:10], 10001:10006]))
 ```
 The result:
 ```
@@ -141,27 +141,14 @@ library(rhdf5client)
 })
 ```
 
-```{r dobanoyy}
-library(restfulSE)
-hsds = H5S_source(URL_hsds())
-hsds
-
-```
-
-To grab a dataset of interest from the HSDS server 
-```{r doba2}
-hsdsCon = setPath(hsds,"/home/reshg/bano_meQTLex.h5")
-fetchDatasets(hsdsCon) #grab the dataset id of interest 
-banoh5 = H5S_dataset2(hsdsCon,"d-435d7ad4-9f13-11e8-92c2-0242ac120021")
-```
-
 We build a SummarizedExperiment by combining an assay-free
 RangedSummarizedExperiment with this reference.
 ```{r doba3}
 ehub = ExperimentHub::ExperimentHub()
 tag = names(AnnotationHub::query(ehub, "banoSEMeta"))
 banoSE = ehub[[tag[1]]]
-ds = H5S_Array(URL_hsds(), "/home/reshg/bano_meQTLex.h5", "assay001")
+ds = HSDSArray(endpoint=URL_hsds(),svrtype="hsds",
+                 domain="/shared/bioconductor/bano_meQTLex.h5",dsetname="/assay001")
 assays(banoSE) = SimpleList(betas=ds)
 banoSE
 ```
@@ -218,11 +205,11 @@ hippocampus on 4000 samples.  t-SNE is then used to project
 the log-transformed measures to the plane.
 ```{r getdat, cache=TRUE}
 hipn = assay(tenx100k[hgok,1:4000])  # slow
-d = dist(t(log(1+hipn)), method="manhattan")
-proj = Rtsne(d)
+#d = dist(t(log(1+hipn)), method="manhattan")
+#proj = Rtsne(d)
 ```
 ```{r plt,fig=TRUE}
-plot(proj$Y)
+#plot(proj$Y)
 ```
 
 ### A set of genes related to the visual cortex
@@ -247,9 +234,6 @@ Key high-level discrimination concerns cells regarded as
 GABAergic vs. glutamatergic (inhibitory vs excitatory
 neurotransmission).
 
-
-   
-
 ## Background
 
 Banovich et al. published a subset of DNA methylation measures
@@ -271,15 +255,5 @@ component is simply copied into the server data space
 on the remote server.  
 
 
-## Hierarchy of server resources
-
-### Server
-
-Given the URL of a server running HSDS server, we create
-an instance of `H5S_source`:
-```{r doso}
-mys = H5S_source(serverURL=URL_hsds())
-mys
-```
 
 
